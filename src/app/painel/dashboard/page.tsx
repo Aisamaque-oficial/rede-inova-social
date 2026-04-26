@@ -78,7 +78,7 @@ export default function PainelDashboardPage() {
 
       {/* 🚀 QUICK ACTIONS - ACESSO RÁPIDO */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Link href="/planejamento/relatorio-acessos">
+        <Link href="/painel/relatorio-acessos">
           <Card className="p-8 bg-primary text-slate-950 border-none rounded-[2.5rem] hover:scale-[1.02] transition-all cursor-pointer shadow-xl shadow-primary/20 group relative overflow-hidden">
              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:rotate-12 transition-transform">
                 <Activity className="w-24 h-24" />

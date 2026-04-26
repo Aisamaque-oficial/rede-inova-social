@@ -14,6 +14,7 @@ import { ContentMagnifier } from '@/components/content-magnifier';
 import { LISSAAssistant } from '@/components/lissa-assistant';
 import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { usePathname } from 'next/navigation';
+import { ActivityTracker } from '@/components/activity-tracker';
 
 const metadata: Metadata = {
   title: 'RedeInovaSocial',
@@ -57,6 +58,7 @@ export default function RootLayout({
         {fontLinks}
       </head>
       <body className="font-body antialiased bg-immersive" suppressHydrationWarning>
+        <ActivityTracker />
         <AccessibilityProvider>
                 <div className="flex flex-col min-h-screen">
                     <div 
