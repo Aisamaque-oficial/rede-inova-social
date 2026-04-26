@@ -27,20 +27,10 @@ export function CMSPageRenderer({
     defaultBlocks, 
     className 
 }: CMSPageRendererProps) {
-    const [blocks, setBlocks] = useState<CMSBlock[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [mounted, setMounted] = useState(false);
-
-    const loadData = async () => {
-        setIsLoading(true);
-        if (isStudio) {
-            await dataService.initializePageBlocks(pageId, defaultBlocks);
-        }
-        
-        const data = await dataService.getPageBlocks(pageId);
-        
-        if (data.length === 0 && defaultBlocks.length > 0) {
-            setBlocks(defaultBlocks.map((def, i) => ({
+    // Initialize with default blocks immediately if we have them
+    const [blocks, setBlocks] = useState<CMSBlock[]>(() => {
+        if (defaultBlocks.length > 0) {
+            return defaultBlocks.map((def, i) => ({
                 id: def.id || `${pageId}_default_${Math.random()}`,
                 pageId: pageId,
                 type: def.type || 'text',
@@ -53,8 +43,22 @@ export function CMSPageRenderer({
                 accessibility: { librasUrl: '', altText: '', description: '', ...def.accessibility },
                 style: { alignment: 'left', preset: 'neutral', ...def.style },
                 metadata: { version: 1, lastEditedAt: new Date().toISOString(), lastEditedByName: 'Sistema' }
-            } as CMSBlock)));
-        } else {
+            } as CMSBlock));
+        }
+        return [];
+    });
+    const [isLoading, setIsLoading] = useState(true);
+    const [mounted, setMounted] = useState(false);
+
+    const loadData = async () => {
+        setIsLoading(true);
+        if (isStudio) {
+            await dataService.initializePageBlocks(pageId, defaultBlocks);
+        }
+        
+        const data = await dataService.getPageBlocks(pageId);
+        
+        if (data.length > 0) {
             setBlocks(data);
         }
         setIsLoading(false);
@@ -77,7 +81,8 @@ export function CMSPageRenderer({
         mobile: 'max-w-[390px] mx-auto border-x border-slate-200 shadow-2xl'
     };
 
-    if (!mounted || isLoading) {
+    // Only show skeleton if we have NO blocks at all AND we are loading
+    if (!mounted || (isLoading && blocks.length === 0)) {
         return (
             <div className="space-y-6 container mx-auto">
                 <Skeleton className="h-12 w-3/4 rounded-2xl" />

@@ -34,22 +34,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [showingSplash, setShowingSplash] = useState(true);
-
-  useEffect(() => {
-    const hasBeenShown = sessionStorage.getItem('splashShown');
-    if (hasBeenShown) {
-      setShowingSplash(false);
-      return;
-    }
-    
-    const a = setTimeout(() => {
-        setShowingSplash(false);
-        sessionStorage.setItem('splashShown', 'true');
-    }, 3000);
-    return () => clearTimeout(a);
-  }, []);
-
     const pathname = usePathname();
     const isInternalArea = 
         pathname?.startsWith('/dashboard') || 
@@ -75,16 +59,12 @@ export default function RootLayout({
       <body className="font-body antialiased bg-immersive" suppressHydrationWarning>
         <AccessibilityProvider>
                 <div className="flex flex-col min-h-screen">
-                    {showingSplash ? (
-                        <SplashScreen key="splash" />
-                    ) : (
-                        <div 
-                            key="content"
-                            className="flex flex-col min-h-screen"
-                        >
-                            {children}
-                        </div>
-                    )}
+                    <div 
+                        key="content"
+                        className="flex flex-col min-h-screen"
+                    >
+                        {children}
+                    </div>
                 </div>
                 {!isInternalArea && (
                     <>
