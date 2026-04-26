@@ -251,6 +251,9 @@ const loadFromStorage = (key: string, defaultData: any) => {
 // Dados Iniciais de Exceção (Demo)
 const INITIAL_EXCEPTIONS: ExceptionRequest[] = [];
 
+// Cache dinâmico de setores (Baseline do mock-data)
+let dynamicSectors: SectorDefinition[] = [...sectors];
+
 // Sistema de Observadores para Dados Locais (Bypass Mode)
 const newsListeners: ((news: News[]) => void)[] = [];
 const leaderListeners: ((leaders: CommunityLeader[]) => void)[] = [];
@@ -449,21 +452,21 @@ export const dataService = {
   },
 
   generateIdentifier(sector: string): string {
-    const sigla = this.getSectorSigla(sector);
+    const sigla = this.getSectorSigla(sector).toUpperCase();
     const year = new Date().getFullYear();
     const count = projectTasks.filter(t => 
-      t.sector?.toUpperCase() === sigla.toUpperCase() || 
+      t.sector?.toString().toUpperCase() === sigla || 
       t.sectorId?.toLowerCase() === sector.toLowerCase()
     ).length + 1;
     const formattedCount = String(count).padStart(3, '0');
     
-    return `${sigla.toUpperCase()}-INOVA/${formattedCount}/${year}`;
+    return `${sigla}-INOVA/${formattedCount}/${year}`;
   },
 
   getSectorIdBySigla(sigla: string) {
     if (!sigla) return 'ascom';
     const normalizedSigla = sigla.toUpperCase().trim();
-    const sector = sectors.find(s => 
+    const sector = dynamicSectors.find(s => 
       s.sigla.toUpperCase() === normalizedSigla || 
       s.id.toLowerCase() === normalizedSigla.toLowerCase() ||
       (normalizedSigla === 'CGP' && s.id === 'cgp')
@@ -481,10 +484,13 @@ export const dataService = {
 
   suggestWorkflow(sectorId: string, typeId: string): Flow | null {
     const normalizedId = sectorId.toLowerCase().trim();
-    if (normalizedId === 'cgp' || normalizedId === 'coordenação geral do projeto') {
+    // Tenta encontrar o setor no cache dinâmico para pegar a sigla real
+    const sector = dynamicSectors.find(s => s.id === normalizedId || s.sigla.toLowerCase() === normalizedId);
+    
+    if (normalizedId === 'cgp' || (sector && sector.sigla === 'CGP')) {
       return standardFlows.find(f => f.id === 'flow-governanca') || standardFlows.find(f => f.id === 'flow-ascom') || null;
     }
-    if (normalizedId === 'ascom') return standardFlows.find(f => f.id === 'flow-ascom') || null;
+    if (normalizedId === 'ascom' || (sector && sector.sigla === 'ASCOM')) return standardFlows.find(f => f.id === 'flow-ascom') || null;
     
     // Sugestão padrão baseada no setor
     return standardFlows.find(f => f.sectorId === sectorId) || null;
@@ -1011,7 +1017,7 @@ export const dataService = {
    */
   getSectorSigla(sectorId: string): string {
     if (!sectorId) return 'GERAL';
-    const sector = sectors.find(s => s.id === sectorId || s.sigla === sectorId);
+    const sector = dynamicSectors.find(s => s.id === sectorId || s.sigla === sectorId);
     return sector?.sigla || sectorId;
   },
 
@@ -4271,7 +4277,11 @@ export const dataService = {
   },
 
   getSectorCoordinatorId(sectorId: string): string | null {
-     // Simplificação: Cada setor tem um ID padrão de coordenador no mock
+     // 1. Tentar obter do cache dinâmico (mais novo)
+     const sector = dynamicSectors.find(s => s.id === sectorId || s.sigla === sectorId);
+     if (sector?.coordinatorId) return sector.coordinatorId;
+
+     // 2. Fallback: Mapeamento padrão legado
      const mapping: Record<string, string> = {
          'ascom': '2',
          'acessibilidade': '3',
@@ -4279,9 +4289,10 @@ export const dataService = {
          'social': '6',
          'redes': '7',
          'tech': '8',
-         'curadoria': '9'
+         'curadoria': '9',
+         'cgp': '1'
      };
-     return mapping[sectorId] || null;
+     return mapping[sectorId.toLowerCase()] || mapping[sectorId] || null;
   },
 
   _createNotification(userId: string, data: any) {
@@ -4334,20 +4345,28 @@ export const dataService = {
   },
 
   subscribeToSectors(callback: (sectors: SectorDefinition[]) => void) {
+    // Se o usuário não estiver logado, usamos o fallback estático inicial
     if (!auth.currentUser) {
-        callback(sectors);
+        callback(dynamicSectors);
         return () => {};
     }
 
     const q = query(collection(db, SECTORS_COLLECTION), orderBy('order', 'asc'));
-    return onSnapshot(q, (snapshot) => {
-      const dynamicSectors = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as SectorDefinition));
-      callback(dynamicSectors.length > 0 ? dynamicSectors : sectors);
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const dbSectors = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as SectorDefinition));
+      
+      if (dbSectors.length > 0) {
+          dynamicSectors = dbSectors;
+      } else {
+          dynamicSectors = [...sectors];
+      }
+      callback(dynamicSectors);
     }, (error) => {
-      console.warn("[Firestore] Erro na assinatura de setores. Usando fallback estático:", error.message);
-      // Fallback para os dados do mock-data se as regras bloquearem
-      callback(sectors);
+      console.warn("[Firestore] Erro na assinatura de setores. Usando fallback:", error.message);
+      callback(dynamicSectors);
     });
+
+    return unsubscribe;
   },
 
   async createSector(data: Omit<SectorDefinition, 'id'>) {

@@ -48,6 +48,7 @@ export interface SectorDefinition {
   color: string;
   icon?: string;
   description: string;
+  coordinatorId?: string; // ID do usuário responsável pelo setor
 }
 
 export interface RoleDefinition {
