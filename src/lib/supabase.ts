@@ -1,10 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+// Fallback para evitar erro de build quando as variáveis não estão no Vercel
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder-project.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('⚠️ Supabase credentials missing. Activity logging will be disabled or mocked.');
+if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+  console.warn('⚠️ NEXT_PUBLIC_SUPABASE_URL não configurada. Use as Variáveis de Ambiente da Vercel.');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -18,7 +19,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
  *   user_name text,
  *   user_sector text,
  *   last_online timestamp with time zone default now(),
- *   session_duration bigint default 0, -- in seconds
+ *   session_duration bigint default 0, -- in minutes
  *   created_at timestamp with time zone default now()
  * );
  * 
