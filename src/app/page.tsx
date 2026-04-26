@@ -145,6 +145,11 @@ export default function LandingPage({ params, mode = 'live', device = 'desktop' 
     const userId = dataService.getCurrentUserId();
     const hasPermission = userId ? dataService.podeEditar(userId) : false;
     setCanEdit(hasPermission && isStudio);
+    
+    // Ensure sectors are initialized if it's the first visit
+    if (!isStudio) {
+      dataService.initializeDefaultSectors().catch(console.error);
+    }
   }, [isStudio]);
 
   return (
@@ -193,14 +198,14 @@ export default function LandingPage({ params, mode = 'live', device = 'desktop' 
                 transition={{ duration: 1.2, ease: "backOut" }}
                 className="relative flex items-center justify-center"
             >
-                <div className="absolute inset-0 bg-primary/20 rounded-full blur-[80px] scale-75 animate-pulse-slow" />
+                <div className="absolute inset-0 bg-primary/20 rounded-full blur-[80px] scale-75" />
                 <div className="relative z-10 p-8 md:p-12 glass-morphism rounded-[5rem] shadow-3xl hover:rotate-2 transition-transform duration-1000">
                     <Image
                         src={logoPath}
                         alt="Rede de Inovação Social"
                         width={600}
                         height={600}
-                        className="mx-auto aspect-square overflow-hidden object-contain drop-shadow-[0_35px_35px_rgba(0,0,0,0.15)] animate-heartbeat"
+                        className="mx-auto aspect-square overflow-hidden object-contain drop-shadow-[0_35px_35px_rgba(0,0,0,0.15)]"
                     />
                 </div>
                 

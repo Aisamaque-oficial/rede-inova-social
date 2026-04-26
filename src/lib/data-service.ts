@@ -1134,7 +1134,6 @@ export const dataService = {
                         this._syncTasksWithFirebase(firebaseTasks);
                     }
                 }, (error) => {
-                    // Silenciar erro de permissão para visitantes ou usuários sem acesso total
                     if (error.code === 'permission-denied') {
                         console.log("Acesso restrito ao Firebase (Modo Somente Leitura)");
                     } else {
@@ -4345,28 +4344,32 @@ export const dataService = {
   },
 
   subscribeToSectors(callback: (sectors: SectorDefinition[]) => void) {
-    // Se o usuário não estiver logado, usamos o fallback estático inicial
-    if (!auth.currentUser) {
-        callback(dynamicSectors);
-        return () => {};
-    }
+    // 1. Enviar o estado atual (mock ou cache) imediatamente
+    callback(dynamicSectors.length > 0 ? dynamicSectors : [...sectors]);
 
-    const q = query(collection(db, SECTORS_COLLECTION), orderBy('order', 'asc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const dbSectors = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as SectorDefinition));
-      
-      if (dbSectors.length > 0) {
+    // 2. Tentar escutar o Firestore (mesmo se não estiver logado, se as regras permitirem)
+    // Se falhar (regras de segurança), o catch cuidará de manter o mock
+    try {
+      const q = query(collection(db, SECTORS_COLLECTION), orderBy('order', 'asc'));
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        if (!snapshot.empty) {
+          const dbSectors = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as SectorDefinition));
           dynamicSectors = dbSectors;
-      } else {
-          dynamicSectors = [...sectors];
-      }
-      callback(dynamicSectors);
-    }, (error) => {
-      console.warn("[Firestore] Erro na assinatura de setores. Usando fallback:", error.message);
-      callback(dynamicSectors);
-    });
+          callback(dynamicSectors);
+        } else {
+          // Se snapshot vazio mas não erro, manter mock
+          callback(dynamicSectors.length > 0 ? dynamicSectors : [...sectors]);
+        }
+      }, (error) => {
+        console.warn("[Firestore] Erro na assinatura de setores. Mantendo estado atual:", error.message);
+        // Não sobrescrevemos com erro, apenas mantemos o que já temos
+      });
 
-    return unsubscribe;
+      return unsubscribe;
+    } catch (e) {
+      console.error("[Firestore] Falha crítica ao iniciar assinatura:", e);
+      return () => {};
+    }
   },
 
   async createSector(data: Omit<SectorDefinition, 'id'>) {

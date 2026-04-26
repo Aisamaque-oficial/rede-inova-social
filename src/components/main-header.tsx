@@ -55,13 +55,10 @@ export default function MainHeader() {
                                 src={logo} 
                                 alt="Rede de Inovação Social" 
                                 fill 
-                                className="object-contain drop-shadow-md animate-heartbeat" 
+                                className="object-contain drop-shadow-md" 
                             />
                         </motion.div>
-                        <motion.div 
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.2, ease: "easeOut" }}
+                        <div 
                             className={cn(
                                 "flex flex-col transition-opacity duration-300",
                                 isScrolled ? "opacity-100" : "opacity-90"
@@ -78,7 +75,7 @@ export default function MainHeader() {
                             )}>
                                 <span translate="no">no Médio Sudoeste Baiano</span>
                             </span>
-                        </motion.div>
+                        </div>
                     </Link>
 
                     <div className="hidden lg:flex items-center gap-1">
