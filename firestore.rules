@@ -1,0 +1,137 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ────────────────────────────────────
+    // 🛡️ FUNÇÕES AUXILIARES DE GOVERNANÇA
+    // ────────────────────────────────────
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isActive() {
+      return isAuthenticated() && getUserData().ativo == true;
+    }
+
+    function hasPermission(perm) {
+      let userDoc = get(/databases/$(database)/documents/users/$(request.auth.uid));
+      return isAuthenticated() && userDoc != null && (
+        userDoc.data.role == 'ADMIN' || 
+        userDoc.data.cargo == 'Coordenador Geral' ||
+        userDoc.data.cargo == 'COORDENADOR GERAL' ||
+        (userDoc.data.permissoes != null && userDoc.data.permissoes[perm] == true)
+      );
+    }
+
+    // ────────────────────────────────────
+    // 👤 COLEÇÃO DE USUÁRIOS (/users)
+    // ────────────────────────────────────
+
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isAuthenticated() && (
+        request.auth.uid == userId || hasPermission('MANAGE_MEMBERS')
+      );
+      allow delete: if false; // Nunca deletar usuários
+    }
+
+    // ────────────────────────────────────
+    // 📝 CMS DRAFTS (Rascunhos — só Estúdio)
+    // ────────────────────────────────────
+
+    match /cms_drafts/{blockId} {
+      allow read: if isAuthenticated() && hasPermission('VIEW_STUDIO');
+      allow create, update: if isAuthenticated() && (
+        hasPermission('EDIT_TEXT') || hasPermission('EDIT_VISUAL')
+      );
+      allow delete: if isAuthenticated() && hasPermission('APPROVE_CONTENT');
+    }
+
+    // ────────────────────────────────────
+    // 🌍 CMS PUBLISHED (Site Público)
+    // ────────────────────────────────────
+
+    match /cms_published/{blockId} {
+      allow read: if true; // Público lê livremente
+      allow create, update: if isAuthenticated() && hasPermission('PUBLISH_CONTENT');
+      allow delete: if isAuthenticated() && hasPermission('PUBLISH_CONTENT');
+    }
+
+    // ────────────────────────────────────
+    // 📋 CMS AUDIT LOGS (Imutável)
+    // ────────────────────────────────────
+
+    match /cms_audit_logs/{logId} {
+      allow read: if isAuthenticated() && hasPermission('VIEW_AUDIT');
+      allow create: if isAuthenticated(); // Qualquer autenticado registra ação
+      allow update, delete: if false; // IMUTÁVEL — auditoria nunca é alterada
+    }
+
+    // ────────────────────────────────────
+    // 📸 CMS MEDIA
+    // ────────────────────────────────────
+
+    match /cms_media/{mediaId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated() && (
+        hasPermission('EDIT_VISUAL') || hasPermission('EDIT_TEXT')
+      );
+      allow delete: if isAuthenticated() && hasPermission('APPROVE_CONTENT');
+    }
+
+    // ────────────────────────────────────
+    // 🔄 CMS REVIEWS
+    // ────────────────────────────────────
+
+    match /cms_reviews/{reviewId} {
+      allow read: if isAuthenticated() && hasPermission('VIEW_STUDIO');
+      allow create: if isAuthenticated() && hasPermission('REQUEST_REVIEW');
+      allow update: if isAuthenticated() && (
+        hasPermission('APPROVE_CONTENT') || hasPermission('PUBLISH_CONTENT')
+      );
+      allow delete: if false;
+    }
+
+    // ────────────────────────────────────
+    // 📊 COLEÇÕES EXISTENTES (Preservadas)
+    // ────────────────────────────────────
+
+    match /visits/counter {
+      allow read, write: if true;
+    }
+
+    match /tasks/{taskId} {
+       allow read, write: if isAuthenticated();
+    }
+
+    match /news/{newsId} {
+       allow read: if true;
+       allow write: if isAuthenticated();
+    }
+
+    match /gallery/{imageId} {
+       allow read, create: if isAuthenticated();
+       allow delete: if isAuthenticated();
+    }
+
+    match /documents/{docId} {
+       allow read, write: if isAuthenticated();
+    }
+
+    // ────────────────────────────────────
+    // 🏢 SETORES (Estrutura Organizacional)
+    // ────────────────────────────────────
+
+    match /sectors/{sectorId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && hasPermission('VIEW_ALL_SECTORS');
+    }
+  }
+}

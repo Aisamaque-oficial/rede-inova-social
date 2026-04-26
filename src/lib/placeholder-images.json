@@ -1,0 +1,268 @@
+{
+  "placeholderImages": [
+    {
+      "id": "jornada-bg",
+      "description": "Macro fotografia de uma semente brotando com luz solar dourada.",
+      "imageUrl": "/assets/jornada_bg.png",
+      "imageHint": "seedling sprouting"
+    },
+    {
+      "id": "planejamento-foto-nova-1",
+      "description": "Foto do planejamento da equipe.",
+      "imageUrl": "/images/Fotos de Planejamento/PLANEJAMENTO01.jpeg",
+      "imageHint": "team meeting"
+    },
+    {
+      "id": "aisamaque",
+      "description": "Aisamaque Gomes",
+      "imageUrl": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjUzNDA5MTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "andrea",
+      "description": "Andréa Gomes",
+      "imageUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjUzNDA5MTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "bruna",
+      "description": "Bruna Almeida",
+      "imageUrl": "https://images.unsplash.com/photo-1521119989659-a83eee488004?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjUzNDA5MTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "janine",
+      "description": "Janine",
+      "imageUrl": "https://images.unsplash.com/photo-1540569014015-19a7be504e3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjUzNDA5MTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "simone",
+      "description": "Simone",
+      "imageUrl": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjUzNDA5MTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "thaise_nucleo",
+      "description": "Taise Sá Santos",
+      "imageUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjUzNDA5MTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "beide",
+      "description": "Beide",
+      "imageUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjUzNDA5MTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "ilana",
+      "description": "Ilana",
+      "imageUrl": "https://images.unsplash.com/photo-1590086782792-42dd2350140d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjUzNDA5MTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "jaqueline",
+      "description": "Jaqueline",
+      "imageUrl": "https://images.unsplash.com/photo-1590086782792-42dd2350140d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjUzNDA5MTh8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "thais_bolsista",
+      "description": "Thaís",
+      "imageUrl": "https://images.unsplash.com/photo-1531123414780-f74242c2b052?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzY1MzQwOTE4fDA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "sara",
+      "description": "Sara",
+      "imageUrl": "https://images.unsplash.com/photo-1521119989659-a83eee488004?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjUzNDA5MTh8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "dayane",
+      "description": "Dayane",
+      "imageUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmZW1hbGUlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjU4NzkwNTl8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "amanda",
+      "description": "Amanda Milly",
+      "imageUrl": "https://images.unsplash.com/photo-1580489944761-15a19d654956?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxmZW1hbGUlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjU4NzkwNTl8MA&ixlibrb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "danielle",
+      "description": "Danielle Gonçalves",
+      "imageUrl": "https://images.unsplash.com/photo-1554151228-14d9def656e4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxmZW1hbGUlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjU4NzkwNTl8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "sirlane",
+      "description": "Sirlane",
+      "imageUrl": "https://images.unsplash.com/photo-1557053910-d9eadeed1c58?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxmZW1hbGUlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjU4NzkwNTl8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "placeholder_male",
+      "description": "Membro da equipe",
+      "imageUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYWxlJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzY1ODc5MDc5fDA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "placeholder_female_1",
+      "description": "Membro da equipe",
+      "imageUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmZW1hbGUlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjU4NzkwNTl8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "placeholder_female_2",
+      "description": "Membro da equipe",
+      "imageUrl": "https://images.unsplash.com/photo-1580489944761-15a19d654956?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxmZW1hbGUlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjU4NzkwNTl8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "gallery1",
+      "description": "Oficina de culinária saudável.",
+      "imageUrl": "https://images.unsplash.com/photo-1763116591141-a636e57bc442?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjb21tdW5pdHklMjB3b3Jrc2hvcHxlbnwwfHx8fDE3NjUzNTI5OTR8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "community workshop"
+    },
+    {
+      "id": "gallery2",
+      "description": "Feira de agricultura familiar.",
+      "imageUrl": "https://images.unsplash.com/photo-1576181456177-2b99ac0aa1ef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZmFybWVycyUyMG1hcmtldHxlbnwwfHx8fDE3NjUzMzQ1NjF8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "farmers market"
+    },
+    {
+      "id": "gallery3",
+      "description": "Crianças aprendendo sobre plantas.",
+      "imageUrl": "https://images.unsplash.com/photo-1652040007040-6d8a8277536d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjaGlsZHJlbiUyMGdhcmRlbmluZ3xlbnwwfHx8fDE3NjUzNjg3NDV8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "children gardening"
+    },
+    {
+      "id": "gallery4",
+      "description": "Momento de planejamento da equipe.",
+      "imageUrl": "/images/Fotos de Planejamento/PLANEJAMENTO01.jpeg",
+      "imageHint": "team meeting"
+    },
+    {
+      "id": "gallery5",
+      "description": "Horta comunitária.",
+      "imageUrl": "https://images.unsplash.com/photo-1555955208-94f6fafea771?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb21tdW5pdHklMjBnYXJkZW58ZW58MHx8fHwxNzY1Mjg4MzkxfDA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "community garden"
+    },
+    {
+      "id": "gallery6",
+      "description": "Distribuição de alimentos.",
+      "imageUrl": "https://images.unsplash.com/photo-1609139027234-57570f43f692?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxmb29kJTIwZGlzdHJpYnV0aW9ufGVufDB8fHx8fDE3NjUzMTI4NzF8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "food distribution"
+    },
+    {
+      "id": "event_garden",
+      "description": "Workshop de jardinagem",
+      "imageUrl": "https://images.unsplash.com/photo-1466692476868-aefcdfb1bce3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx1cmJhbiUyMGdhcmRlbmluZyUyMHdvcmtzaG9wfGVufDB8fHx8fDE3NjU4MDQ0MjJ8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "urban gardening workshop"
+    },
+    {
+      "id": "event_seeds",
+      "description": "Pessoa segurando sementes",
+      "imageUrl": "https://images.unsplash.com/photo-1621376361834-899548467b45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZWVkJTIwc3dhcHxlbnwwfHx8fDE3NjU4MDQ0NzV8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "seed swap"
+    },
+    {
+      "id": "event_talk",
+      "description": "Roda de conversa na comunidade",
+      "imageUrl": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb21tdW5pdHklMjBtZWV0aW5nfGVufDB8fHx8fDE3NjU4MDQ1MDJ8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "community meeting"
+    },
+    {
+      "id": "news-main",
+      "description": "Oficina de tecnologia para produtores",
+      "imageUrl": "https://images.unsplash.com/photo-1518624539634-7a1664c32903?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx0ZWNobm9sb2d5JTIwd29ya3Nob3B8ZW58MHx8fHwxNzY5ODUwNTIxfDA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "technology workshop"
+    },
+    {
+      "id": "news-side-1",
+      "description": "Feira de agricultura familiar",
+      "imageUrl": "https://images.unsplash.com/photo-1600880292210-252c1d895847?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmYXJtZXJzJTIwbWFya2V0fGVufDB8fHx8fDE3NjUzMzQ1NjF8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "farmers market"
+    },
+    {
+      "id": "news-side-2",
+      "description": "Parceria com movimentos sociais",
+      "imageUrl": "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzb2NpYWwlMjBtb3ZlbWVudHxlbnwwfHx8fDE3Njk4NTA1OTZ8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "social movement"
+    },
+    {
+      "id": "news-side-3",
+      "description": "Novo site do projeto",
+      "imageUrl": "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx3ZWJzaXRlJTIwYWNjZXNzaWJpbGl0eXxlbnwwfHx8fDE3Njk4NTA2NDJ8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "website accessibility"
+    },
+    {
+      "id": "news-side-4",
+      "description": "Minicurso de alimentação saudável",
+      "imageUrl": "https://images.unsplash.com/photo-1490645935967-10de6ba17021?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoZWFsdGh5JTIwZm9vZHxlbnwwfHx8fDE3Njk4NTA2NzV8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "healthy food"
+    },
+    {
+      "id": "material-book-1",
+      "description": "Capa de livro sobre alimentação saudável",
+      "imageUrl": "https://images.unsplash.com/photo-1543362906-acfc16c67564?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxoZWFsdGh5JTIwZm9vZHxlbnwwfHx8fDE3Njk4NTMwMTd8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "healthy food"
+    },
+    {
+      "id": "material-book-2",
+      "description": "Capa de livro sobre hortas urbanas",
+      "imageUrl": "https://images.unsplash.com/photo-1466692476868-aefcdfb1bce3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx1cmJhbiUyMGdhcmRlbmluZyUyMHdvcmtzaG9wfGVufDB8fHx8fDE3NjU4MDQ0MjJ8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "urban garden"
+    },
+    {
+      "id": "material-book-3",
+      "description": "Capa de livro de receitas",
+      "imageUrl": "https://images.unsplash.com/photo-1495195129352-aeb325a55b65?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxyZWNpcGUlMjBib29rfGVufDB8fHx8fDE3Njk4NTMxMDJ8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "recipe book"
+    },
+    {
+      "id": "material-book-4",
+      "description": "Capa de livro sobre compostagem",
+      "imageUrl": "https://images.unsplash.com/photo-1593113630424-38531a89c8a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb21wb3N0fGVufDB8fHx8fDE3Njk4NTMyNDJ8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "compost soil"
+    },
+    {
+      "id": "bastidores-foto-1",
+      "description": "Equipe em atividade de pesquisa.",
+      "imageUrl": "https://images.unsplash.com/photo-1578916294529-01d51f25167d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxiZWhpbmQlMjB0aGUlMjBzY2VuZXMlMjBmaWxtbWFrpbmd8ZW58MHx8fHwxNzE2NDk0MjIyfDA&ixlib=rb-4.0.3&q=80&w=1080",
+      "imageHint": "research activity"
+    },
+    {
+      "id": "bastidores-foto-2",
+      "description": "Atividade de extensão com agricultor local.",
+      "imageUrl": "https://images.unsplash.com/photo-1618073194162-42e64d3fee3b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxpbnRlcnZpZXdpbmclMjBmYXJtZXJ8ZW58MHx8fHwxNzE2NDk0MzIyfDA&ixlib-rb-4.0.3&q=80&w=1080",
+      "imageHint": "extension activity"
+    },
+    {
+      "id": "bastidores-video-1",
+      "description": "Thumbnail de vídeo sobre compostagem.",
+      "imageUrl": "https://images.unsplash.com/photo-1593113630424-38531a89c8a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb21wb3N0fGVufDB8fHx8fDE3Njk4NTMyNDJ8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "compost soil"
+    },
+    {
+      "id": "bastidores-makingof-1",
+      "description": "Montagem de cenário para oficina.",
+      "imageUrl": "https://images.unsplash.com/photo-1616556134069-b45a9a164b48?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZXR0aW5nJTIwdXAlMjB3b3Jrc2hvcHxlbnwwfHx8fDE3MTY0OTQ1MTB8MA&ixlib-rb-4.0.3&q=80&w=1080",
+      "imageHint": "workshop setup"
+    },
+    {
+      "id": "bastidores-planning-1",
+      "description": "Momento de planejamento do projeto.",
+      "imageUrl": "/images/Fotos de Planejamento/PLANEJAMENTO01.jpeg",
+      "imageHint": "planning meeting"
+    },
+    {
+      "id": "bastidores-produtos-1",
+      "description": "Desenvolvimento de produtos do projeto",
+      "imageUrl": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwcm9kdWN0JTIwZGV2ZWxvcG1lbnR8ZW58MHx8fHwxNzE2NDk1MDAwfDA&ixlib-rb-4.0.3&q=80&w=1080",
+      "imageHint": "product development"
+    }
+  ]
+}

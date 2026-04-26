@@ -1,0 +1,259 @@
+export const strategicPlanning: StrategicPlanMonth[] = [
+  // --- MÊS 1: Planejamento e Articulação ---
+  {
+    id: "sp-m1",
+    monthName: "🗓️ MÊS 01 — Planejamento e Estruturação",
+    sector: "CGP",
+    tasks: [
+      { 
+        id: "task-m1-1", 
+        label: "Estruturação do comitê gestor", 
+        completed: false,
+        stageId: "ETAPA 1",
+        sectorId: "sec-cgp",
+        subtasks: [
+          { id: "sub-m1-1-1", label: "Criar lista de membros", completed: false },
+          { id: "sub-m1-1-2", label: "Definir papéis e responsabilidades", completed: false },
+          { id: "sub-m1-1-3", label: "Registrar reuniões iniciais", completed: false }
+        ]
+      },
+      { 
+        id: "task-m1-2", 
+        label: "Planejamento estratégico do projeto", 
+        completed: false,
+        stageId: "ETAPA 1",
+        sectorId: "sec-cgp",
+        subtasks: [
+          { id: "sub-m1-2-1", label: "Definir metas globais", completed: false },
+          { id: "sub-m1-2-2", label: "Criar calendário macro", completed: false },
+          { id: "sub-m1-2-3", label: "Definir indicadores iniciais", completed: false }
+        ]
+      }
+    ]
+  },
+  // --- MÊS 2: Comunicação e Início do Diagnóstico ---
+  {
+    id: "sp-m2",
+    monthName: "🗓️ MÊS 02 — Comunicação e Articulação",
+    sector: "ASCOM",
+    tasks: [
+      { 
+        id: "task-m2-1", 
+        label: "Estruturação da comunicação (ASCOM)", 
+        completed: false,
+        stageId: "ETAPA 1",
+        sectorId: "sec-ascom",
+        subtasks: [
+          { id: "sub-m2-1-1", label: "Definir identidade visual e linguagem", completed: false },
+          { id: "sub-m2-1-2", label: "Criar estrutura do site", completed: false },
+          { id: "sub-m2-1-3", label: "Definir fluxo de conteúdo entre setores", completed: false }
+        ]
+      },
+      { 
+        id: "task-m2-2", 
+        label: "Levantamento de dados territoriais", 
+        completed: false,
+        stageId: "ETAPA 2",
+        sectorId: "sec-social",
+        subtasks: [
+          { id: "sub-m2-2-1", label: "Início da aplicação de questionários", completed: false },
+          { id: "sub-m2-2-2", label: "Mapeamento de lideranças locais", completed: false }
+        ]
+      }
+    ]
+  },
+  // --- MÊS 3: Diagnóstico Participativo ---
+  {
+    id: "sp-m3",
+    monthName: "🗓️ MÊS 03 — Diagnóstico e Escuta comunitária",
+    sector: "SOCIAL",
+    tasks: [
+      { 
+        id: "task-m3-1", 
+        label: "Oficinas de escuta no território", 
+        completed: false,
+        stageId: "ETAPA 2",
+        sectorId: "sec-social",
+        subtasks: [
+          { id: "sub-m3-1-1", label: "Rodas de conversa e escuta", completed: false },
+          { id: "sub-m3-1-2", label: "Consolidar depoimentos locais", completed: false }
+        ]
+      },
+      { 
+        id: "task-m3-2", 
+        label: "Questionários territoriais", 
+        completed: false,
+        stageId: "ETAPA 2",
+        sectorId: "sec-social",
+        subtasks: [
+          { id: "sub-m3-2-1", label: "Entrevistas técnicas", completed: false },
+          { id: "sub-m3-2-2", label: "Registro de observações de campo", completed: false }
+        ]
+      }
+    ]
+  },
+  // --- MÊS 4: Relatório Diagnóstico e Início Formações ---
+  {
+    id: "sp-m4",
+    monthName: "🗓️ MÊS 04 — Consolidação e Planejamento",
+    sector: "CGP",
+    tasks: [
+      { 
+        id: "task-m4-1", 
+        label: "Finalização do relatório diagnóstico", 
+        completed: false,
+        stageId: "ETAPA 2",
+        sectorId: "sec-cgp",
+        subtasks: [
+          { id: "sub-m4-1-1", label: "Lançamento do portal de dados", completed: false }
+        ]
+      }
+    ]
+  },
+  // --- MÊS 5: Execução de Formações e LISSA ---
+  {
+    id: "sp-m5",
+    monthName: "🗓️ MÊS 05 — Implementação Técnica e Social",
+    sector: "SOCIAL",
+    tasks: [
+      { 
+        id: "task-m5-1", 
+        label: "Oficinas de formação (13 municípios)", 
+        completed: false,
+        stageId: "ETAPA 3",
+        sectorId: "sec-social",
+        subtasks: [
+          { id: "sub-m5-1-1", label: "Treinamento em Segurança Alimentar", completed: false },
+          { id: "sub-m5-1-2", label: "Distribuição de materiais educativos", completed: false }
+        ]
+      }
+    ]
+  },
+  // --- MÊS 6: Conteúdo Acessível e Curadoria ---
+  {
+    id: "sp-m6",
+    monthName: "🗓️ MÊS 06 — Produção de Conteúdo e Acessibilidade",
+    sector: "ACESSIBILIDADE",
+    tasks: [
+      { 
+        id: "task-m6-1", 
+        label: "Produção LISSA - Módulo Vídeo", 
+        completed: false,
+        stageId: "ETAPA 4",
+        sectorId: "sec-acess",
+        subtasks: [
+          { id: "sub-m6-1-1", label: "Gravação de tradução em Libras", completed: false },
+          { id: "sub-m6-1-2", label: "Acessibilização de conteúdos técnicos", completed: false }
+        ]
+      }
+    ]
+  },
+  // --- MÊS 7: Integração e Lançamento Beta ---
+  {
+    id: "sp-m7",
+    monthName: "🗓️ MÊS 07 — Consolidação e Testes",
+    sector: "TECH",
+    tasks: [
+      { 
+        id: "task-m7-1", 
+        label: "Lançamento da Plataforma RedeInova (Beta)", 
+        completed: false,
+        stageId: "ETAPA 4",
+        sectorId: "sec-tech",
+        subtasks: [
+          { id: "sub-m7-1-1", label: "Testes de usabilidade e performance", completed: false }
+        ]
+      }
+    ]
+  },
+  // --- MÊS 8: Expansão da Comunicação ---
+  {
+    id: "sp-m8",
+    monthName: "🗓️ MÊS 08 — Expansão e Monitoramento",
+    sector: "ASCOM",
+    tasks: [
+      { 
+        id: "task-m8-1", 
+        label: "Expansão da rede de difusão", 
+        completed: false,
+        stageId: "ETAPA 5",
+        sectorId: "sec-ascom",
+        subtasks: [
+          { id: "sub-m8-1-1", label: "Campanha de popularização da ciência", completed: false }
+        ]
+      }
+    ]
+  },
+  // --- MÊS 9: Ajustes e Novas Formações ---
+  {
+    id: "sp-m9",
+    monthName: "🗓️ MÊS 09 — Refinamento e Novas Metas",
+    sector: "SOCIAL",
+    tasks: [
+      { 
+        id: "task-m9-1", 
+        label: "Oficinas de reciclagem e feedback", 
+        completed: false,
+        stageId: "ETAPA 3",
+        sectorId: "sec-social",
+        subtasks: [
+          { id: "sub-m9-1-1", label: "Ajuste metodológico participativo", completed: false }
+        ]
+      }
+    ]
+  },
+  // --- MÊS 10: Curadoria e Relatórios Semestrais ---
+  {
+    id: "sp-m10",
+    monthName: "🗓️ MÊS 10 — Gestão da Informação e Auditoria",
+    sector: "CGP",
+    tasks: [
+      { 
+        id: "task-m10-1", 
+        label: "Auditoria de processos e impacto", 
+        completed: false,
+        stageId: "ETAPA 7",
+        sectorId: "sec-cgp",
+        subtasks: [
+          { id: "sub-m10-1-1", label: "Consolidar indicadores do 1º ciclo", completed: false }
+        ]
+      }
+    ]
+  },
+  // --- MÊS 11: Finalização de Produtos Digitais ---
+  {
+    id: "sp-m11",
+    monthName: "🗓️ MÊS 11 — Finalização e Integração Total",
+    sector: "TECH",
+    tasks: [
+      { 
+        id: "task-m11-1", 
+        label: "Produtos LISSA Finalizados", 
+        completed: false,
+        stageId: "ETAPA 4",
+        sectorId: "sec-tech",
+        subtasks: [
+          { id: "sub-m11-1-1", label: "Homologação de apps mobile", completed: false }
+        ]
+      }
+    ]
+  },
+  // --- MÊS 12: Encerramento do Primeiro Ciclo ---
+  {
+    id: "sp-m12",
+    monthName: "🗓️ MÊS 12 — Relatório Final e Sistematização",
+    sector: "CGP",
+    tasks: [
+      { 
+        id: "task-m12-1", 
+        label: "Relatório de Prestação de Contas", 
+        completed: false,
+        stageId: "ETAPA 7",
+        sectorId: "sec-cgp",
+        subtasks: [
+          { id: "sub-m12-1-1", label: "Publicar relatório final", completed: false }
+        ]
+      }
+    ]
+  }
+];

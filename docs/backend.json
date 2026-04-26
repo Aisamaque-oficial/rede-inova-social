@@ -1,0 +1,27 @@
+{
+  "entities": {
+    "VisitCounter": {
+      "title": "Visit Counter",
+      "description": "Stores the total number of website visits.",
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "number",
+          "description": "The total number of visits."
+        }
+      },
+      "required": ["count"]
+    }
+  },
+  "auth": {
+    "providers": ["email"]
+  },
+  "firestore": {
+    "/visits/{visitId}": {
+      "schema": {
+        "$ref": "#/backend/entities/VisitCounter"
+      },
+      "description": "Collection for visit counters. Contains one document, 'counter'."
+    }
+  }
+}

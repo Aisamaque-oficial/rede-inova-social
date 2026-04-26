@@ -1,0 +1,384 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 45 44% 96%; /* Bege claro */
+    --foreground: 20 10% 20%;
+    --card: 45 30% 98%;
+    --card-foreground: 20 10% 20%;
+    --popover: 45 30% 98%;
+    --popover-foreground: 20 10% 20%;
+    --primary: 90 45% 45%; /* Verde principal */
+    --primary-foreground: 90 30% 98%;
+    --secondary: 90 27% 88%; /* Verde mais claro */
+    --secondary-foreground: 20 10% 20%;
+    --muted: 90 27% 92%;
+    --muted-foreground: 20 10% 40%;
+    --accent: 90 35% 60%; /* Verde para destaques */
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 45 20% 85%;
+    --input: 45 20% 90%;
+    --ring: 90 45% 45%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+    --sidebar-background: 90 15% 25%; /* Verde escuro para sidebar */
+    --sidebar-foreground: 45 30% 96%;
+    --sidebar-primary: 45 44% 96%;
+    --sidebar-primary-foreground: 90 25% 20%;
+    --sidebar-accent: 90 15% 35%;
+    --sidebar-accent-foreground: 45 30% 96%;
+    --sidebar-border: 90 15% 20%;
+    --sidebar-ring: 90 45% 45%;
+  }
+  .dark {
+    --background: 20 10% 15%;
+    --foreground: 45 30% 96%;
+    --card: 20 10% 20%;
+    --card-foreground: 45 30% 96%;
+    --popover: 20 10% 15%;
+    --popover-foreground: 45 30% 96%;
+    --primary: 90 45% 50%;
+    --primary-foreground: 90 30% 98%;
+    --secondary: 90 15% 25%;
+    --secondary-foreground: 45 30% 96%;
+    --muted: 90 15% 20%;
+    --muted-foreground: 45 20% 70%;
+    --accent: 90 35% 60%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 90 15% 25%;
+    --input: 90 15% 25%;
+    --ring: 90 45% 50%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 20 10% 10%;
+    --sidebar-foreground: 45 30% 96%;
+    --sidebar-primary: 45 44% 96%;
+    --sidebar-primary-foreground: 20 10% 10%;
+    --sidebar-accent: 20 10% 20%;
+    --sidebar-accent-foreground: 45 30% 96%;
+    --sidebar-border: 20 10% 15%;
+    --sidebar-ring: 90 45% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+    .animate-pulse-slow {
+        animation: pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    .animate-fade-in-scale {
+        animation: fade-in-scale 1s ease-out forwards;
+    }
+    .animate-fade-in-delay {
+        animation: fade-in 1s ease-out 0.5s forwards;
+        opacity: 0;
+    }
+    .animate-scroll {
+      animation: scroll 40s linear infinite;
+    }
+    .hover\:pause-animation:hover {
+      animation-play-state: paused;
+    }
+    .text-shadow {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+    .text-shadow-lg {
+        text-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    @keyframes fade-in-scale {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .animate-spin-slow {
+        animation: spin 30s linear infinite;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    @keyframes floating {
+        0%, 100% { transform: translateY(0) rotate(0); }
+        50% { transform: translateY(-20px) rotate(5deg); }
+    }
+
+    .animate-floating-slow {
+        animation: floating 6s ease-in-out infinite;
+    }
+    .animate-floating-medium {
+        animation: floating 4s ease-in-out infinite;
+    }
+
+    @keyframes heartbeat {
+        0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(44, 210, 193, 0)); }
+        50% { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(44, 210, 193, 0.3)); }
+    }
+
+    .animate-heartbeat {
+        animation: heartbeat 3s ease-in-out infinite;
+    }
+
+
+    .blob-shape {
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+
+    .bg-immersive {
+        background-color: #fdfcf8;
+        background-image: 
+            radial-gradient(at 0% 0%, hsla(90, 45%, 45%, 0.05) 0, transparent 50%), 
+            radial-gradient(at 50% 0%, hsla(45, 44%, 96%, 0.1) 0, transparent 50%), 
+            radial-gradient(at 100% 0%, hsla(90, 45%, 45%, 0.05) 0, transparent 50%);
+        background-attachment: fixed;
+    }
+
+    .glass-morphism {
+        @apply backdrop-blur-xl bg-white/70 border border-white/20 shadow-xl;
+    }
+
+    .glass-morphism-dark {
+        @apply backdrop-blur-xl bg-slate-900/80 border border-white/10 shadow-2xl;
+    }
+
+    @keyframes reveal-up {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-reveal-up {
+        animation: reveal-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+}
+
+/* ==========================================================================
+   ACCESSIBILITY SUITE (Global Overrides)
+   ========================================================================== */
+
+/* High Contrast Mode */
+.mode-high-contrast, .high-contrast {
+    --background: 0 0% 0% !important;
+    --foreground: 60 100% 50% !important;
+    --card: 0 0% 0% !important;
+    --card-foreground: 60 100% 50% !important;
+    --primary: 60 100% 50% !important;
+    --primary-foreground: 0 0% 0% !important;
+    --border: 60 100% 50% !important;
+}
+
+/* Soft Dark Mode (Meia Luz) */
+.mode-soft-dark, .mode-dim {
+    --background: 210 20% 12% !important; /* Azul escuro suave */
+    --foreground: 210 20% 98% !important;
+    --card: 210 20% 16% !important;
+    --card-foreground: 210 20% 98% !important;
+    --popover: 210 20% 16% !important;
+    --popover-foreground: 210 20% 98% !important;
+    --primary: 90 40% 50% !important;
+    --primary-foreground: 0 0% 100% !important;
+    --secondary: 210 20% 20% !important;
+    --secondary-foreground: 210 20% 98% !important;
+    --muted: 210 15% 25% !important;
+    --muted-foreground: 210 10% 75% !important;
+    --accent: 90 30% 45% !important;
+    --accent-foreground: 0 0% 100% !important;
+    --border: 210 20% 25% !important;
+    --input: 210 20% 25% !important;
+    --ring: 90 40% 50% !important;
+    background-color: #1a1f26 !important;
+    color: #f8fafc !important;
+}
+
+.mode-soft-dark *, .mode-dim * {
+    border-color: #2d3748 !important;
+}
+
+/* Light Mode (Branco Total) */
+.mode-light {
+    --background: 0 0% 100% !important;
+    --foreground: 210 40% 2% !important;
+    --card: 0 0% 100% !important;
+    --card-foreground: 210 40% 2% !important;
+    --popover: 0 0% 100% !important;
+    --popover-foreground: 210 40% 2% !important;
+    --primary: 90 45% 40% !important;
+    --primary-foreground: 0 0% 100% !important;
+    --secondary: 210 40% 96% !important;
+    --secondary-foreground: 210 40% 2% !important;
+    --muted: 210 40% 94% !important;
+    --muted-foreground: 210 10% 40% !important;
+    --accent: 90 35% 55% !important;
+    --accent-foreground: 210 40% 2% !important;
+    --border: 210 20% 90% !important;
+    --input: 210 20% 90% !important;
+    --ring: 90 45% 40% !important;
+    background-color: #ffffff !important;
+    color: #020617 !important;
+}
+
+.mode-light * {
+    border-color: #e2e8f0 !important;
+}
+
+/* Modo Escuro (Dark) */
+.dark, .mode-dark {
+    --background: 210 20% 6% !important;
+    --foreground: 210 20% 98% !important;
+    --card: 210 20% 10% !important;
+    --card-foreground: 210 20% 98% !important;
+    --popover: 210 20% 8% !important;
+    --popover-foreground: 210 20% 98% !important;
+    --primary: 90 40% 53% !important;
+    --primary-foreground: 210 20% 98% !important;
+    --secondary: 210 20% 15% !important;
+    --secondary-foreground: 210 20% 98% !important;
+    --muted: 210 20% 15% !important;
+    --muted-foreground: 210 10% 70% !important;
+    --accent: 90 40% 45% !important;
+    --accent-foreground: 210 20% 98% !important;
+    --border: 210 20% 15% !important;
+    --input: 210 20% 15% !important;
+    --ring: 90 40% 53% !important;
+    background-color: #020617 !important;
+    color: #f8fafc !important;
+}
+
+/* Font Styles */
+[data-acc-font-style="serif"] * { font-family: 'PT Serif', serif !important; }
+[data-acc-font-style="dyslexic"] * { font-family: 'OpenDyslexic', sans-serif !important; }
+
+/* Spacing Mode */
+[data-acc-line-spacing="wide"] * { line-height: 1.8 !important; }
+[data-acc-line-spacing="extra-wide"] * { line-height: 2.2 !important; }
+[data-acc-letter-spacing="wide"] * { letter-spacing: 0.15em !important; }
+[data-acc-letter-spacing="extra-wide"] * { letter-spacing: 0.25em !important; }
+
+.acc-highlight-links a, 
+.acc-highlight-links button, 
+.acc-highlight-links [role="button"],
+.acc-highlight-links .interactive-element {
+    background-color: #000 !important;
+    color: #fff !important;
+    outline: 2px solid #fff !important;
+    box-shadow: 0 0 0 4px #000 !important;
+    text-decoration: underline !important;
+    font-weight: 900 !important;
+    z-index: 50 !important;
+    position: relative !important;
+}
+
+/* Target images and logos inside links */
+.acc-highlight-links a img,
+.acc-highlight-links button img {
+    outline: 4px solid #000 !important;
+    outline-offset: 2px !important;
+    background-color: #fff !important;
+    border-radius: 4px !important;
+}
+
+.acc-highlight-headers h1, 
+.acc-highlight-headers h2, 
+.acc-highlight-headers h3 {
+    background-color: #dcfce7 !important;
+    color: #166534 !important;
+    padding: 4px 8px !important;
+    border-radius: 4px !important;
+    border-left: 4px solid #166534 !important;
+}
+
+/* Visibility & Animations */
+.acc-hide-images img, 
+.acc-hide-images svg:not(.lucide),
+.acc-hide-images [style*="background-image"] {
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+.acc-pause-animations * {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* Saturation */
+[data-acc-saturation="low"] { filter: saturate(0.5); }
+[data-acc-saturation="high"] { filter: saturate(2); }
+
+/* Bold Text */
+.acc-bold-text, [data-acc-bold="true"],
+.acc-bold-text *, [data-acc-bold="true"] * {
+    font-weight: 900 !important;
+    text-shadow: 0.5px 0 0 currentColor, -0.5px 0 0 currentColor !important;
+    -webkit-text-stroke: 0.8px currentColor !important;
+}
+
+/* Dictionary Lookup Mode */
+.acc-dictionary-active {
+    cursor: help !important;
+}
+
+.acc-dictionary-active .acc-highlight-word {
+    text-decoration: underline dashed #3b82f6;
+    text-underline-offset: 4px;
+    cursor: help !important;
+    transition: all 0.2s;
+    display: inline-block;
+}
+
+.acc-dictionary-active .acc-highlight-word:hover {
+    color: #3b82f6 !important;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 4px;
+    transform: scale(1.1); /* Slightly more prominent jump */
+}
