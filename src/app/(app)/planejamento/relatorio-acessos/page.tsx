@@ -30,12 +30,32 @@ export default function RelatorioAcessosPage() {
     const isAuthorized = dataService.canManageTeam();
     setAuthorized(isAuthorized);
 
+    // 🚀 OTIMIZAÇÃO: Se não estiver autorizado ou se o Firebase não estiver configurado corretamente, 
+    // pula o carregamento pesado e vai para o fallback/erro imediatamente.
+    const isConfigValid = process.env.NEXT_PUBLIC_FIREBASE_API_KEY && process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+
     if (isAuthorized) {
-      loadData();
+      if (!isConfigValid) {
+          console.warn("Monitor de Acesso: Configuração do Firebase ausente. Ativando modo local.");
+          loadLocalData();
+      } else {
+          loadData();
+      }
     } else {
       setLoading(false);
     }
   }, []);
+
+  const loadLocalData = async () => {
+      setLoading(true);
+      try {
+          // Usa o método de listagem que já tem fallback mock
+          const data = await dataService.listarMembrosEquipe();
+          setUsers(data);
+      } finally {
+          setLoading(false);
+      }
+  };
 
   const loadData = async () => {
     setLoading(true);
@@ -49,10 +69,12 @@ export default function RelatorioAcessosPage() {
     }
   };
 
-  const filteredUsers = users.filter(u => 
-    u.nomeCompleto?.toLowerCase().includes(search.toLowerCase()) ||
-    u.department?.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredUsers = users.filter(u => {
+    const displayName = (u.nomeCompleto || u.name || "").toLowerCase();
+    const displaySector = (u.department || u.sector || "").toLowerCase();
+    const query = search.toLowerCase();
+    return displayName.includes(query) || displaySector.includes(query);
+  });
 
   const formatDistance = (timestamp: any) => {
     if (!timestamp) return "Nunca acessou";
@@ -173,7 +195,12 @@ export default function RelatorioAcessosPage() {
               <tbody className="divide-y divide-slate-50">
                 {filteredUsers.map((u) => {
                   const lastDate = u.last_online?.toDate ? u.last_online.toDate() : u.last_online ? new Date(u.last_online) : null;
-                  const isOnline = lastDate && (Date.now() - lastDate.getTime() < 5 * 10 * 1000); // Online nos últimos 5 min
+                  const isOnline = lastDate && (Date.now() - lastDate.getTime() < 5 * 60 * 1000); // Online nos últimos 5 min
+
+                  // Normalização de Dados (Firestore vs Mock)
+                  const displayName = u.nomeCompleto || u.name || "Membro Indefinido";
+                  const displaySector = u.department || u.sector || "GERAL";
+                  const displayCargo = u.cargo || (u.role === 'admin' ? 'Administrador' : 'Membro');
 
                   return (
                     <tr key={u.id} className="hover:bg-slate-50/80 transition-colors group">
@@ -184,7 +211,7 @@ export default function RelatorioAcessosPage() {
                                 {u.avatarUrl ? (
                                     <img src={u.avatarUrl} alt="" className="w-full h-full object-cover" />
                                 ) : (
-                                    u.nomeCompleto?.charAt(0) || "U"
+                                    displayName.charAt(0)
                                 )}
                             </div>
                             {isOnline && (
@@ -192,7 +219,7 @@ export default function RelatorioAcessosPage() {
                             )}
                           </div>
                           <div className="flex flex-col">
-                            <span className="font-black text-slate-900 group-hover:text-primary transition-colors">{u.nomeCompleto}</span>
+                            <span className="font-black text-slate-900 group-hover:text-primary transition-colors">{displayName}</span>
                             <span className="text-[10px] text-slate-400 uppercase font-bold tracking-tighter opacity-0 group-hover:opacity-100 transition-all">ID: {u.id || u.institutionalId}</span>
                           </div>
                         </div>
@@ -200,9 +227,9 @@ export default function RelatorioAcessosPage() {
                       <td className="px-8 py-6">
                         <div className="flex flex-col gap-1">
                           <Badge variant="outline" className="w-fit rounded-lg bg-slate-50 uppercase text-[9px] font-black tracking-widest text-slate-500 border-slate-200">
-                            {dataService.getSectorSigla(u.department || 'GERAL')}
+                            {dataService.getSectorSigla(displaySector)}
                           </Badge>
-                          <span className="text-[11px] text-slate-400 italic">{u.cargo || 'Membro'}</span>
+                          <span className="text-[11px] text-slate-400 italic">{displayCargo}</span>
                         </div>
                       </td>
                       <td className="px-8 py-6">

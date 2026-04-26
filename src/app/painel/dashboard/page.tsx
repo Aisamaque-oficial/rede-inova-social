@@ -9,11 +9,15 @@ import {
     Activity,
     Zap,
     AlertTriangle,
-    CheckCircle2
+    CheckCircle2,
+    ArrowRight,
+    Users
 } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
 import { OperationalTaskCard } from "@/components/operational-task-card";
 import { WorkflowPipeline } from "@/components/workflow-pipeline";
+import Link from "next/link";
 
 /**
  * 🏢 NOVO DASHBOARD ADMINISTRATIVO
@@ -88,6 +92,35 @@ export default function PainelDashboardPage() {
             Coordenação Geral do Projeto • {currentUser?.name}
          </p>
       </div>
+
+      {/* 🚀 QUICK ACTIONS - ACESSO RÁPIDO */}
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Link href="/planejamento/relatorio-acessos">
+          <Card className="p-6 bg-primary text-slate-950 border-none rounded-[2rem] hover:scale-[1.02] transition-all cursor-pointer shadow-xl shadow-primary/20 group border-b-4 border-slate-900/10">
+             <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-white/20 rounded-2xl group-hover:rotate-12 transition-transform">
+                    <Activity className="w-6 h-6" />
+                </div>
+                <Zap className="w-4 h-4 opacity-40" />
+             </div>
+             <h3 className="text-sm font-black uppercase tracking-tight leading-tight">Relatório de<br/>Acessos Ativos</h3>
+             <p className="text-[10px] font-bold opacity-60 mt-1 uppercase tracking-widest italic group-hover:translate-x-1 transition-transform">Ver agora →</p>
+          </Card>
+        </Link>
+
+        <Link href="/gerenciar/usuarios">
+          <Card className="p-6 bg-slate-900 text-white border-none rounded-[2rem] hover:scale-[1.02] transition-all cursor-pointer shadow-xl group">
+             <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-white/5 rounded-2xl group-hover:scale-110 transition-transform">
+                    <Users className="w-6 h-6 text-primary" />
+                </div>
+                <Clock className="w-4 h-4 opacity-40 text-primary" />
+             </div>
+             <h3 className="text-sm font-black uppercase tracking-tight leading-tight">Gerenciar<br/>Equipe e Cargos</h3>
+             <p className="text-[10px] font-bold opacity-40 mt-1 uppercase tracking-widest italic">Acessar base →</p>
+          </Card>
+        </Link>
+      </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
         <section className="space-y-4">
