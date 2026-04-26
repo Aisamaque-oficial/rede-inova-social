@@ -46,7 +46,7 @@ export default function MainHeader() {
                 <nav className="flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-3 group transition-transform hover:scale-105">
                         <div 
-                            className="relative w-12 h-12 flex-shrink-0"
+                            className="relative w-12 h-12 flex-shrink-0 animate-heartbeat"
                         >
                             <Image 
                                 src={logo} 

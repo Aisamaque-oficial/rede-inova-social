@@ -179,7 +179,7 @@ export default function LandingPage({ params, mode = 'live', device = 'desktop' 
             
             <div className="relative flex items-center justify-center">
                 <div className="absolute inset-0 bg-primary/20 rounded-full blur-[80px] scale-75" />
-                <div className="relative z-10 p-8 md:p-12 glass-morphism rounded-[5rem] shadow-3xl hover:rotate-2 transition-transform duration-1000">
+                <div className="relative z-10 p-8 md:p-12 glass-morphism rounded-[5rem] shadow-3xl hover:rotate-2 transition-transform duration-1000 animate-heartbeat">
                     <Image
                         src={logoPath}
                         alt="Rede de Inovação Social"
