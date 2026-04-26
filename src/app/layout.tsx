@@ -74,21 +74,18 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased bg-immersive" suppressHydrationWarning>
         <AccessibilityProvider>
-            <MotionConfig transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}>
-                <AnimatePresence mode="wait">
+                <div className="flex flex-col min-h-screen">
                     {showingSplash ? (
                         <SplashScreen key="splash" />
                     ) : (
-                        <motion.div 
+                        <div 
                             key="content"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
                             className="flex flex-col min-h-screen"
                         >
                             {children}
-                        </motion.div>
+                        </div>
                     )}
-                </AnimatePresence>
+                </div>
                 {!isInternalArea && (
                     <>
                         <LibrasOverlay />
@@ -99,7 +96,6 @@ export default function RootLayout({
                     </>
                 )}
                 <Toaster />
-            </MotionConfig>
             {/* SVG Filters for Daltonismo (Color Blindness) */}
             <svg style={{ display: 'none' }}>
                 <defs>
