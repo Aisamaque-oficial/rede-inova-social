@@ -145,11 +145,6 @@ export default function LandingPage({ params, mode = 'live', device = 'desktop' 
     const userId = dataService.getCurrentUserId();
     const hasPermission = userId ? dataService.podeEditar(userId) : false;
     setCanEdit(hasPermission && isStudio);
-    
-    // Ensure sectors are initialized if it's the first visit
-    if (!isStudio) {
-      dataService.initializeDefaultSectors().catch(console.error);
-    }
   }, [isStudio]);
 
   return (

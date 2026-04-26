@@ -40,6 +40,11 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     if (session && (session as any).requiresPasswordChange) {
        router.replace("/alterar-senha");
     }
+
+    // Ensure sectors are initialized if missing (runs for authenticated users)
+    if (user && dataService.podeEditar(user.uid)) {
+       dataService.initializeDefaultSectors().catch(console.error);
+    }
   }, [user, loading, router]);
 
   // 🔔 SISTEMA DE NOTIFICAÇÃO GLOBAL (DEMANDAS DO SITE)

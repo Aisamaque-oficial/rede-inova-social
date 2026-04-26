@@ -14,7 +14,7 @@ const tips = [
   "5. Higienize alimentos corretamente: Frutas, verduras e utensílios devem ser limpos para evitar contaminação microbiológica.",
   "6. Evite contaminação cruzada: Não use a mesma faca ou tábua para alimentos crus e prontos sem higienização.",
   "7. Armazene corretamente os alimentos: Temperatura inadequada favorece crescimento de microrganismos.",
-  "8. Respeite o prazo de validade: Mesmo que o alimento pareça “bom”, pode estar contaminado.",
+  "8. Respeite o prazo de validade: Mesmo que o alimento pareça 'bom', pode estar contaminado.",
   "🔷 BLOCO 3: EQUILÍBRIO NUTRICIONAL",
   "9. Inclua proteínas de qualidade: Carnes, ovos, leguminosas e laticínios são importantes para manutenção muscular.",
   "10. Consuma fibras diariamente: Presentes em frutas, verduras e grãos integrais — ajudam no funcionamento intestinal.",
