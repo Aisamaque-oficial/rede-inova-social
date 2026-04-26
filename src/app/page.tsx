@@ -14,7 +14,7 @@ import { dataService } from "@/lib/data-service";
 import { News, Sector } from "@/lib/mock-data";
 import { CMSPageRenderer } from "@/components/cms/CMSPageRenderer";
 import MainHeader from "@/components/main-header";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { ImageEditor } from "@/components/image-editor";
 import ImpactGoals from "@/components/impact-goals";
 import { Input } from "@/components/ui/input";
@@ -67,12 +67,7 @@ function NewsListPublic() {
   return (
     <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
       {newsList.map((item, index) => (
-        <motion.div
-            key={item.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-        >
+        <div key={item.id}>
             <Card className="flex flex-col border-none shadow-xl hover:shadow-2xl transition-all overflow-hidden bg-white/60 backdrop-blur-md rounded-[3rem] group h-full ring-1 ring-black/5">
             <CardHeader className="p-8 pb-4">
                 <div className="flex items-center gap-2 mb-4">
@@ -107,7 +102,7 @@ function NewsListPublic() {
                 </div>
             </CardContent>
             </Card>
-        </motion.div>
+        </div>
       ))}
     </div>
   );
@@ -158,12 +153,7 @@ export default function LandingPage({ params, mode = 'live', device = 'desktop' 
 
         <section className="container px-8 md:px-12 lg:px-24 pt-32 pb-20 relative z-10">
           <div className="grid items-center gap-16 lg:grid-cols-2">
-            <motion.div 
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 1, ease: "circOut" }}
-                className="flex flex-col justify-center space-y-8"
-            >
+            <div className="flex flex-col justify-center space-y-8">
               <div className="space-y-6">
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-2 ring-1 ring-primary/20">
                     <Sparkles className="h-3 w-3" />
@@ -185,14 +175,9 @@ export default function LandingPage({ params, mode = 'live', device = 'desktop' 
                   <Link href="/laboratorio">Laboratório LISSA</Link>
                 </Button>
               </div>
-            </motion.div>
+            </div>
             
-            <motion.div 
-                initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                transition={{ duration: 1.2, ease: "backOut" }}
-                className="relative flex items-center justify-center"
-            >
+            <div className="relative flex items-center justify-center">
                 <div className="absolute inset-0 bg-primary/20 rounded-full blur-[80px] scale-75" />
                 <div className="relative z-10 p-8 md:p-12 glass-morphism rounded-[5rem] shadow-3xl hover:rotate-2 transition-transform duration-1000">
                     <Image
@@ -203,23 +188,7 @@ export default function LandingPage({ params, mode = 'live', device = 'desktop' 
                         className="mx-auto aspect-square overflow-hidden object-contain drop-shadow-[0_35px_35px_rgba(0,0,0,0.15)]"
                     />
                 </div>
-                
-                {/* Floating elements */}
-                <motion.div 
-                    animate={{ y: [0, -20, 0] }} 
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute -top-10 -right-10 h-24 w-24 bg-white/40 backdrop-blur-xl rounded-[2rem] shadow-2xl flex items-center justify-center p-6 border border-white/20"
-                >
-                    <Image src={logoPath} alt="icon" width={80} height={80} className="opacity-40 grayscale" />
-                </motion.div>
-                <motion.div 
-                    animate={{ y: [0, 20, 0] }} 
-                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                    className="absolute -bottom-10 -left-10 h-32 w-32 bg-white/40 backdrop-blur-xl rounded-[3rem] shadow-2xl flex items-center justify-center p-8 border border-white/20"
-                >
-                    <div className="h-4 w-4 rounded-full bg-primary animate-ping" />
-                </motion.div>
-            </motion.div>
+            </div>
           </div>
         </section>
 
@@ -258,11 +227,7 @@ export default function LandingPage({ params, mode = 'live', device = 'desktop' 
         <section id="contato" className="py-32 relative overflow-hidden">
             <div className="container px-8 md:px-12 lg:px-24 relative z-10">
                 <div className="grid lg:grid-cols-2 gap-20 items-start">
-                    <motion.div 
-                        initial={{ opacity: 0, x: -30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        className="space-y-10"
-                    >
+                    <div className="space-y-10">
                         <div className="space-y-6">
                             <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-2">
                                 <FileText className="h-3 w-3" />
@@ -285,13 +250,9 @@ export default function LandingPage({ params, mode = 'live', device = 'desktop' 
                                 </div>
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
 
-                    <motion.div 
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        className="glass-morphism p-10 md:p-14 rounded-[4rem] shadow-2xl relative"
-                    >
+                    <div className="glass-morphism p-10 md:p-14 rounded-[4rem] shadow-2xl relative">
                         <div className="absolute -top-10 -right-10 h-32 w-32 bg-primary/20 blur-[60px] rounded-full" />
                         
                         <form className="space-y-8 relative z-10" onSubmit={async (e) => {
@@ -385,11 +346,11 @@ export default function LandingPage({ params, mode = 'live', device = 'desktop' 
                                 className="w-full h-16 rounded-[2rem] text-lg font-black uppercase tracking-tighter bg-primary shadow-lg hover:scale-[1.02] transition-all disabled:opacity-50"
                             >
                                 {isSubmitting ? <Loader2 className="animate-spin h-6 w-6" /> : (
-                                    <><Send className="mr-2 h-5 w-5" /> Enviar Mensagem</>
+                                    <span className="flex items-center"><Send className="mr-2 h-5 w-5" /> Enviar Mensagem</span>
                                 )}
                             </Button>
                         </form>
-                    </motion.div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -397,7 +358,7 @@ export default function LandingPage({ params, mode = 'live', device = 'desktop' 
         <section className="py-20 border-y border-primary/5 bg-white/10 backdrop-blur-sm">
             <div className="container px-8 md:px-12 lg:px-24">
                 <div className="flex flex-col items-center justify-center text-center space-y-6">
-                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">Parceiros & Realizadores</span>
+                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Parceiros e Realizadores</span>
                     <LogoCarousel />
                 </div>
             </div>
@@ -438,7 +399,7 @@ export default function LandingPage({ params, mode = 'live', device = 'desktop' 
                 <div className="flex flex-col items-center md:items-end justify-center space-y-4">
                     <div className="text-right">
                         <p className="text-[10px] font-black text-muted-foreground tracking-widest uppercase">IF Baiano / CNPq</p>
-                        <p className="text-[10px] font-black text-primary tracking-widest uppercase mt-1">© 2026 Todos os Direitos Reservados</p>
+                        <p className="text-[10px] font-black text-primary tracking-widest uppercase mt-1">&copy; 2026 Todos os Direitos Reservados</p>
                     </div>
                 </div>
             </div>

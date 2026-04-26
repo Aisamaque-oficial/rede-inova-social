@@ -21,20 +21,21 @@ export function RiskMonitor({ briefing }: RiskMonitorProps) {
     const [interveningRisk, setInterveningRisk] = React.useState<InstitutionalRisk | null>(null);
     const [isInterveneModalOpen, setIsInterveneModalOpen] = React.useState(false);
 
-    const handleIntervene = (risk: InstitutionalRisk) => {
+    const handleIntervene = (risk: any) => {
+        if (!risk.taskId && risk.sectorId) {
+            // Se for um gargalo geral sem tarefa específica
+            dataService.orientarSetor(risk.sectorId, "Gargalo Institucional");
+            return;
+        }
         setInterveningRisk(risk);
         setIsInterveneModalOpen(true);
     };
 
-    const handleOrientar = (risk: InstitutionalRisk) => {
-        dataService.orientarSetor(risk.sectorId, risk.taskId);
-    };
-
-    const handleEscalar = (risk: InstitutionalRisk) => {
+    const handleEscalar = (risk: any) => {
         window.dispatchEvent(new CustomEvent('openBottleneckModal', { 
             detail: {
-                reason: "Atraso institucional",
-                description: `Gargalo detectado pelo monitor de riscos na tarefa ${risk.taskTitle} (${risk.taskId}).`,
+                reason: risk.reason || "Atraso institucional",
+                description: risk.taskTitle ? `Gargalo detectado na tarefa ${risk.taskTitle} (${risk.taskId}).` : `Impasse no setor ${risk.sectorId}.`,
                 severity: risk.severity,
                 sectorId: risk.sectorId
             } 
@@ -109,7 +110,7 @@ export function RiskMonitor({ briefing }: RiskMonitorProps) {
                     <Button 
                       variant="outline" 
                       className="rounded-full h-11 text-[10px] font-black uppercase tracking-widest px-8 border-slate-200 hover:bg-slate-950 hover:text-white transition-all shadow-sm"
-                      onClick={() => handleIntervene(b.sectorId, b.reason)}
+                      onClick={() => handleIntervene(b)}
                     >
                       Intervir
                     </Button>
@@ -182,7 +183,7 @@ export function RiskMonitor({ briefing }: RiskMonitorProps) {
                                 <Button 
                                     variant="ghost" 
                                     className="h-12 rounded-2xl text-[9px] font-black uppercase tracking-widest bg-slate-50 hover:bg-primary hover:text-white transition-all shadow-sm"
-                                    onClick={() => dataService.orientarSetor(risk.sectorId, risk.taskId)}
+                                    onClick={() => handleIntervene(risk)}
                                 >
                                     Orientar Setor
                                 </Button>

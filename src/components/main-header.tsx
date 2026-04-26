@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { MobileNav } from "@/components/mobile-nav";
 import logo from "@/assets/logotransparente.png";
@@ -36,7 +36,7 @@ export default function MainHeader() {
     return (
         <header 
             className={cn(
-                "fixed top-0 left-0 right-0 z-50 transition-all duration-700",
+                "fixed top-0 left-0 right-0 z-50",
                 isScrolled 
                     ? "py-3 glass-morphism !bg-white/80" 
                     : "py-6 bg-transparent"
@@ -45,10 +45,7 @@ export default function MainHeader() {
             <div className="container mx-auto px-4 md:px-6">
                 <nav className="flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-3 group transition-transform hover:scale-105">
-                        <motion.div 
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.4, ease: "easeOut" }}
+                        <div 
                             className="relative w-12 h-12 flex-shrink-0"
                         >
                             <Image 
@@ -57,10 +54,10 @@ export default function MainHeader() {
                                 fill 
                                 className="object-contain drop-shadow-md" 
                             />
-                        </motion.div>
+                        </div>
                         <div 
                             className={cn(
-                                "flex flex-col transition-opacity duration-300",
+                                "flex flex-col",
                                 isScrolled ? "opacity-100" : "opacity-90"
                             )}>
                             <span className={cn(
@@ -91,11 +88,7 @@ export default function MainHeader() {
                                 >
                                     <span translate="no">{link.label}</span>
                                     {pathname === link.href && (
-                                        <motion.div 
-                                            layoutId="active-nav"
-                                            className="absolute inset-0 bg-primary/10 rounded-full -z-10"
-                                            transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                                        />
+                                        <div className="absolute inset-0 bg-primary/10 rounded-full -z-10" />
                                     )}
                                     <div className="absolute bottom-1 left-5 right-5 h-0.5 bg-primary origin-left scale-x-0 group-hover:scale-x-100 transition-transform" />
                                 </Link>

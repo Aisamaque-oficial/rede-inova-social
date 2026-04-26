@@ -3615,27 +3615,6 @@ export const dataService = {
     }).slice(0, 15);
   },
 
-  async orientarSetor(sectorId: string, taskId: string): Promise<void> {
-    const task = projectTasks.find(t => t.id === taskId);
-    const user = this.getCurrentUser();
-    
-    // Notificar o Coordenador do Setor (Mock: enviamos para o admin do setor conforme configuração)
-    const config = AREAS_CONFIGURACAO[sectorId as AreasAtuacao];
-    const targetUserId = config?.responsavelAmministrativo || '1';
-
-    this._createNotification(targetUserId, {
-        titulo: "Orientação da Coordenação Executiva",
-        descricao: `A coordenação executiva solicita atenção imediata à atividade: ${task?.title}`,
-        tipo: 'responsabilidade_modificada',
-        origemUsuarioId: user?.id || 'sistema',
-        origemUsuarioNome: user?.name || 'Sistema Executivo'
-    });
-
-    safeToast({
-        title: "Orientação Enviada",
-        description: `O coordenador do setor ${sectorId.toUpperCase()} foi notificado.`,
-    });
-  },
 
   getExecutiveBriefing(): ExecutiveBriefing {
     const pma = this.getStrategicMetrics();
@@ -4402,5 +4381,27 @@ export const dataService = {
             createdAt: new Date().toISOString()
         });
     }
+  },
+
+  async orientarSetor(sectorId: string, taskId: string): Promise<void> {
+    const task = projectTasks.find(t => t.id === taskId);
+    const user = this.getCurrentUser();
+    
+    // Notificar o Coordenador do Setor
+    const targetUserId = this.getSectorCoordinatorId(sectorId) || '1';
+
+    this._createNotification(targetUserId, {
+        titulo: "Orientação da Coordenação Executiva",
+        descricao: `A coordenação executiva solicita atenção imediata à atividade${task ? `: ${task.title}` : ''}`,
+        tipo: 'responsabilidade_modificada',
+        origemUsuarioId: user?.id || 'sistema',
+        origemUsuarioNome: user?.name || 'Sistema Executivo',
+        taskId: taskId
+    });
+
+    safeToast({
+        title: "Orientação Enviada",
+        description: `O coordenador do setor ${this.getSectorSigla(sectorId)} foi notificado.`,
+    });
   }
 };

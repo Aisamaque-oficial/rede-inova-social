@@ -19,10 +19,10 @@ export default function SplashScreen() {
 
   return (
     <div className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-background transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`}>
-        <div className="animate-pulse-slow">
-            <Image src={logo} alt="RedeInovaSocial" width={96} height={96} className="animate-fade-in-scale" />
+        <div>
+            <Image src={logo} alt="RedeInovaSocial" width={96} height={96} />
         </div>
-        <h1 className="mt-4 text-2xl font-bold tracking-wider text-foreground animate-fade-in-delay">
+        <h1 className="mt-4 text-2xl font-bold tracking-wider text-foreground">
             RedeInovaSocial
         </h1>
     </div>
