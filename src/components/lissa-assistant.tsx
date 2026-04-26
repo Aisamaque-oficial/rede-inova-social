@@ -5,32 +5,26 @@ import { useState, useEffect } from "react";
 import { MessageSquare, X, Sparkles, Lightbulb } from "lucide-react";
 
 const tips = [
-  "🔷 BLOCO 1: BASES REAIS DE ALIMENTAÇÃO SAUDÁVEL",
   "1. Priorize alimentos in natura ou minimamente processados: Alimentos frescos mantêm melhor perfil nutricional e menor carga de aditivos químicos.",
   "2. Reduza o consumo de ultraprocessados: Produtos industrializados com muitos ingredientes (corantes, conservantes, aromatizantes) estão associados a maior risco de doenças crônicas.",
   "3. Varie o prato: Diversidade alimentar aumenta a ingestão de micronutrientes e compostos bioativos.",
   "4. Não foque só em calorias: Qualidade nutricional importa mais que apenas o valor energético.",
-  "🔷 BLOCO 2: SEGURANÇA DE ALIMENTOS (Diferencial do seu projeto)",
   "5. Higienize alimentos corretamente: Frutas, verduras e utensílios devem ser limpos para evitar contaminação microbiológica.",
   "6. Evite contaminação cruzada: Não use a mesma faca ou tábua para alimentos crus e prontos sem higienização.",
   "7. Armazene corretamente os alimentos: Temperatura inadequada favorece crescimento de microrganismos.",
   "8. Respeite o prazo de validade: Mesmo que o alimento pareça 'bom', pode estar contaminado.",
-  "🔷 BLOCO 3: EQUILÍBRIO NUTRICIONAL",
   "9. Inclua proteínas de qualidade: Carnes, ovos, leguminosas e laticínios são importantes para manutenção muscular.",
   "10. Consuma fibras diariamente: Presentes em frutas, verduras e grãos integrais — ajudam no funcionamento intestinal.",
   "11. Controle o consumo de açúcar: Excesso está ligado a obesidade e doenças metabólicas.",
   "12. Reduza o consumo de sal: Altas quantidades estão associadas à hipertensão.",
-  "🔷 BLOCO 4: SAÚDE DIGESTIVA E FUNCIONAL",
-  "13. Mastigue bem os alimentos: A digestão começa na boca, isso impacta absorção de nutrientes.",
+  "13. Mastigue bem os alimentos: A digestão começa na boca — isso impacta absorção de nutrientes.",
   "14. Beba água regularmente: Essencial para metabolismo e transporte de nutrientes.",
   "15. Observe reações do seu corpo: Desconfortos podem indicar intolerâncias ou alergias.",
-  "🔷 BLOCO 5: CONSCIÊNCIA ALIMENTAR",
   "16. Leia rótulos com atenção: Entender ingredientes ajuda a evitar riscos (ex: alergênicos).",
   "17. Evite dietas extremas: Restrições severas podem causar deficiências nutricionais.",
   "18. Prefira preparações caseiras: Você controla ingredientes e qualidade sanitária.",
-  "🔷 BLOCO 6: CONTEXTO SOCIAL E REAL (Importante para seu projeto)",
   "19. Valorize alimentos locais: Fortalece economia e reduz impacto ambiental.",
-  "20. Respeite sua cultura alimentar: Alimentação saudável não é padronizada, depende do contexto."
+  "20. Respeite sua cultura alimentar: Alimentação saudável não é padronizada — depende do contexto."
 ];
 
 export function LISSAAssistant() {
