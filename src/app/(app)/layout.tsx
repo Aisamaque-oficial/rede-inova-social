@@ -47,6 +47,41 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     }
   }, [user, loading, router]);
 
+  // 🕒 MONITOR DE ATIVIDADE DE MEMBROS
+  React.useEffect(() => {
+    const userId = dataService.getCurrentUserId();
+    if (!userId || !user) return;
+
+    // Registrar entrada
+    dataService.registerUserPresence(userId);
+
+    const startTime = Date.now();
+
+    const handleUpdateSession = () => {
+        const currentTime = Date.now();
+        const duration = Math.floor((currentTime - startTime) / 1000 / 60); // em minutos
+        if (duration >= 0) {
+            dataService.updateUserSessionDuration(userId, duration);
+        }
+    };
+
+    // Atualizar periodicamente a cada 5 min para garantir dados se o browser crashar
+    const interval = setInterval(handleUpdateSession, 1000 * 60 * 5);
+
+    // Tentar atualizar na saída
+    const handleUnload = () => {
+        handleUpdateSession();
+    };
+
+    window.addEventListener('beforeunload', handleUnload);
+
+    return () => {
+        clearInterval(interval);
+        handleUpdateSession();
+        window.removeEventListener('beforeunload', handleUnload);
+    };
+  }, [user]);
+
   // 🔔 SISTEMA DE NOTIFICAÇÃO GLOBAL (DEMANDAS DO SITE)
   React.useEffect(() => {
     let isInitialLoad = true;

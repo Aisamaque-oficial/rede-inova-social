@@ -50,6 +50,10 @@ export type StoredUser = {
   bio?: string;       // Biografia/Mini-currículo (NOVO)
   lattesUrl?: string; // Link para o Currículo Lattes (NOVO)
   department?: Sector; // Legado (setor primário)
+  
+  // MONITOR DE ATIVIDADE
+  last_online?: any;      // Timestamp do último acesso
+  session_duration?: number; // Duração da última sessão em minutos
 };
 
 export type AuthSession = {
@@ -66,6 +70,8 @@ export type AuthSession = {
   cargo?: string;
   bio?: string;
   lattesUrl?: string;
+  last_online?: any;
+  session_duration?: number;
 };
 
 export type AuthResponse = {
