@@ -4404,7 +4404,7 @@ export const dataService = {
         title: "Orientação Enviada",
         description: `O coordenador do setor ${this.getSectorSigla(sectorId)} foi notificado.`,
     });
-  }
+  },
 
   // 🕒 MONITOR DE ATIVIDADE DE MEMBROS
   async registerUserPresence(userId: string): Promise<void> {
