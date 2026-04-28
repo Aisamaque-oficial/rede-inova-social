@@ -93,7 +93,7 @@ export function CMSPageRenderer({
 
     return (
         <div className={cn(
-            "transition-all duration-500 ease-in-out pb-32",
+            "transition-all duration-0 ease-in-out pb-32",
             isStudio ? deviceWidths[device] : "w-full",
             className
         )}>
@@ -157,9 +157,9 @@ function StaticRenderer({ block, mode, isStudio }: { block: CMSBlock, mode: stri
             )}
             
             {block.type === 'text' && (
-                <p className="text-lg text-slate-500 font-medium italic leading-relaxed">
+                <div className="text-lg text-slate-500 font-medium italic leading-relaxed">
                     {textSource}
-                </p>
+                </div>
             )}
 
             {block.type === 'image' && (

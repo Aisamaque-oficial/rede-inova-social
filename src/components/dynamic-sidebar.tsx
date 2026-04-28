@@ -170,8 +170,18 @@ export default function DynamicSidebar() {
   if (!userConfig.isLoaded) {
     return (
       <Sidebar className="bg-slate-950 border-r-0 shadow-2xl">
-        <div className="flex h-full items-center justify-center opacity-20">
-          <ActivityIcon className="h-8 w-8 animate-pulse text-primary" />
+        <div className="flex h-full flex-col">
+          <div className="flex-1 flex items-center justify-center opacity-20">
+            <ActivityIcon className="h-8 w-8 animate-pulse text-primary" />
+          </div>
+          <div className="p-6 border-t border-white/5 bg-slate-950/40">
+            <div className="flex items-center gap-3">
+              <Image src={logo} alt="Logo" width={20} height={20} className="grayscale brightness-110 opacity-70 animate-heartbeat" />
+              <span className="text-[7.5px] font-black text-slate-400 uppercase tracking-[0.2em] leading-tight">
+                REDE DE INOVAÇÃO SOCIAL <br /> Lab Lissa v1.1
+              </span>
+            </div>
+          </div>
         </div>
       </Sidebar>
     );
@@ -505,7 +515,7 @@ export default function DynamicSidebar() {
                   </span>
               </div>
               <div className="flex items-center gap-3">
-                  <Image src={logo} alt="Logo" width={20} height={20} className="grayscale brightness-110 opacity-70 group-hover:opacity-100 transition-opacity" />
+                  <Image src={logo} alt="Logo" width={20} height={20} className="grayscale brightness-110 opacity-70 group-hover:opacity-100 transition-opacity animate-heartbeat" />
                   <span className="text-[7.5px] font-black text-slate-400 uppercase tracking-[0.2em] leading-tight">
                       REDE DE INOVAÇÃO SOCIAL <br /> Lab Lissa v1.1
                   </span>

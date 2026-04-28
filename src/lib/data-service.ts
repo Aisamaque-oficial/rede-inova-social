@@ -4446,15 +4446,26 @@ export const dataService = {
 
   async getUserActivityReport(): Promise<any[]> {
     try {
-      const usersCol = collection(db, "users");
-      const snapshot = await getDocs(query(usersCol, orderBy("last_online", "desc")));
-      return snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      // 🚀 INTEGRATION: Agora buscando do Supabase em vez do Firestore
+      const { supabaseActivity } = await import("./supabase-activity");
+      const logs = await supabaseActivity.getActivityLogs();
+      
+      if (logs && logs.length > 0) {
+        return logs.map(log => ({
+            id: log.id,
+            user_id: log.user_id,
+            nomeCompleto: log.user_name,
+            sector: log.user_sector,
+            last_online: log.last_online,
+            session_duration: log.session_duration
+        }));
+      }
+
+      // Fallback para lista de usuários se o Supabase estiver vazio ou falhar
+      const users = await this.listarMembrosEquipe();
+      return users;
     } catch (e) {
-       console.error("Erro ao carregar relatório de acessos:", e);
-       // Fallback para lista de usuários se as permissões falharem no modo público
+       console.error("Erro ao carregar relatório de acessos do Supabase:", e);
        const users = await this.listarMembrosEquipe();
        return users;
     }

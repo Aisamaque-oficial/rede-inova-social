@@ -759,13 +759,122 @@ export const projectUpdates: ProjectUpdate[] = [
   }
 ];
 
-export const authoralMaterials: AuthoralMaterial[] = [];
+export const authoralMaterials: AuthoralMaterial[] = [
+  {
+    id: 'GUIA-01',
+    title: 'Guia Prático de Segurança Alimentar no Campo',
+    type: 'cartilha',
+    description: 'Um manual detalhado sobre boas práticas de higiene e manipulação de alimentos voltado para agricultores familiares.',
+    content: 'Este guia apresenta as normas básicas de higiene... (Conteúdo completo para leitura acessível)',
+    url: '#',
+    thumbnail: '/materials/guia-seguranca.jpg',
+    author: 'Equipe LISSA - Curadoria Científica',
+    imagePlaceholderId: '2',
+    createdAt: '2026-04-20T10:00:00Z'
+  },
+  {
+    id: 'INFO-02',
+    title: 'Infográfico: O Ciclo da Soberania Alimentar',
+    type: 'infográfico',
+    description: 'Visualização esquemática dos pilares da soberania alimentar e seu impacto no território do Médio Sudoeste.',
+    content: 'Infográfico visual descrevendo o fluxo da produção local até o consumo consciente.',
+    url: '#',
+    thumbnail: '/materials/info-soberania.jpg',
+    author: 'Equipe LISSA - Inovação Social',
+    imagePlaceholderId: '1',
+    createdAt: '2026-04-22T14:30:00Z'
+  },
+  {
+    id: 'BOOK-03',
+    title: 'E-book: Inovação Social e Redes Territoriais',
+    type: 'artigo',
+    description: 'Um mergulho teórico e prático sobre como a tecnologia pode fortalecer as redes de solidariedade no campo.',
+    content: 'O presente artigo discute a interseção entre tecnologia e soberania...',
+    url: '#',
+    thumbnail: '/materials/ebook-inovacao.jpg',
+    author: 'Rede Inova Social',
+    imagePlaceholderId: '3',
+    createdAt: '2026-04-25T09:00:00Z'
+  }
+];
 export const bastidoresItems: any[] = [];
 export const teamEvents: any[] = [];
 export const librasOriginals: any[] = [];
 export const librasShorts: any[] = [];
 export const librasDocs: any[] = [];
-export const librasGlossary: any[] = [];
+
+export const librasGlossary: any[] = [
+  {
+    id: 'fundamentacao',
+    title: 'Fundamentação',
+    emoji: '🤟',
+    description: 'Bases da mediação e tradução em Libras no contexto científico.',
+    terms: [
+      {
+        term: 'Classificador',
+        description: 'Mecanismo gramatical da Libras que descreve propriedades físicas ou movimento.',
+        videoUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
+        context: 'Usado para descrever a textura de alimentos ou fluxo de substâncias.',
+        related: ['Gramática', 'Visual-Espacial']
+      }
+    ]
+  },
+  {
+    id: 'imunologico-digestivo',
+    title: 'Imunológico-Digestivo',
+    emoji: '🧬',
+    description: 'Termos técnicos sobre o sistema imunológico e digestivo.',
+    terms: []
+  },
+  {
+    id: 'rotulagem-tecnica',
+    title: 'Rotulagem Técnica',
+    emoji: '🏷️',
+    description: 'A ciência por trás dos rótulos e normas alimentares.',
+    terms: []
+  },
+  {
+    id: 'analise-critica',
+    title: 'Análise Crítica',
+    emoji: '⚖️',
+    description: 'Reflexões sobre soberania e direitos alimentares.',
+    terms: []
+  },
+  {
+    id: 'soberania-alimentar',
+    title: 'Soberania Alimentar',
+    emoji: '🌾',
+    description: 'O direito dos povos à alimentação saudável e sustentável.',
+    terms: []
+  }
+];
+
+export const librasPills: any[] = [
+  {
+    id: 'pill-1',
+    title: 'O que é SAN?',
+    videoUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
+    practicalApp: 'Identificar a segurança alimentar na merenda escolar.',
+    category: 'Segurança Alimentar'
+  }
+];
+
+export const librasTracks: any[] = [
+  {
+    id: 'track-1',
+    title: 'Introdução à Mediação Científica',
+    description: 'Aprenda as bases da tradução de conceitos complexos.',
+    videoUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
+    questions: [
+      {
+        question: 'O que é um classificador na Libras?',
+        options: ['Um tipo de sinal icônico', 'Um recurso de dactilologia', 'Uma marca de plural'],
+        correct: 0
+      }
+    ]
+  }
+];
+
 // ScientificFragment interface moved/consolidated below
 
 export interface GlossaryTerm {

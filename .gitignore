@@ -53,3 +53,4 @@ secrets/
 .auth-secrets.json
 auth-backup.json
 .vercel
+.env*.local

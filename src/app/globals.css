@@ -91,7 +91,7 @@
         animation: fade-in-scale 1s ease-out forwards;
     }
     .animate-fade-in-delay {
-        animation: fade-in 1s ease-out 0.5s forwards;
+        animation: fade-in 0.3s ease-out forwards;
         opacity: 0;
     }
     .animate-scroll {
@@ -199,7 +199,7 @@
     }
 
     .animate-reveal-up {
-        animation: reveal-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: reveal-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 }
 
