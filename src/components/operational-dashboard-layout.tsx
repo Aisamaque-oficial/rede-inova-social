@@ -5,6 +5,8 @@ import { dataService } from "@/lib/data-service";
 import { Card, CardContent } from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SyncIndicator } from "./sync-indicator";
+import { useEffect } from "react";
 
 interface DashboardStat {
   label: string;
@@ -30,19 +32,41 @@ export function OperationalDashboardLayout({
 }: OperationalDashboardLayoutProps) {
   const user = dataService.getCurrentUser();
   const role = dataService.getUserRole();
+  const userId = dataService.getCurrentUserId();
+
+  useEffect(() => {
+    if (!userId) return;
+
+    // 🔄 Sincronização Inicial
+    dataService.syncAssignmentsFromServer();
+
+    // 📡 Inscrição Realtime para Atribuições
+    const unsubscribeAssignments = dataService.subscribeToAssignments();
+
+    // 📡 Inscrição Realtime para Comentários nas Tarefas (Estilo Trello)
+    const unsubscribeComments = dataService.subscribeToComments();
+
+    return () => {
+      unsubscribeAssignments();
+      unsubscribeComments();
+    };
+  }, [userId]);
 
   return (
     <div className="space-y-10 pb-20">
       {/* Header Estilo Premium */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-4xl font-black tracking-tighter text-primary italic uppercase leading-none">
-            {title}
-          </h1>
-          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-3 flex items-center gap-2">
-             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-             {subtitle}
-          </p>
+        <div className="flex flex-col gap-4">
+          <SyncIndicator />
+          <div>
+            <h1 className="text-4xl font-black tracking-tighter text-primary italic uppercase leading-none">
+              {title}
+            </h1>
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-3 flex items-center gap-2">
+               <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+               {subtitle}
+            </p>
+          </div>
         </div>
         
         <div className="flex items-center gap-3 bg-white p-2.5 rounded-[1.5rem] shadow-sm ring-1 ring-slate-100">

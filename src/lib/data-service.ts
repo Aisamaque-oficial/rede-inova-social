@@ -56,9 +56,10 @@ import {
   UserSectorRole,
   sectors,
   SocialPost,
-  socialPosts as mockSocialPosts
+  socialPosts as mockSocialPosts,
+  ProjectIntervention
 } from "./mock-data";
-import type { Flow, FlowStep, ProjectBottleneck } from "./schema/models";
+import type { Flow, FlowStep, ProjectBottleneck, SectorDefinition } from "./schema/models";
 import type { StoredUser, AuthResponse, AuthSession } from "./auth";
 import { hashPassword, verifyPassword, validarCPF, formatarCPF, validarForcaSenha } from "./auth";
 import { CMSBlock, CMSBlockStatus, CMSAuditLog, INSTITUTIONAL_PALETTE } from './cms-schema';
@@ -79,6 +80,9 @@ import {
   listarTodosUsuarios
 } from "./auth-credentials";
 import { sectorObjectives as staticSectorObjectives } from "./sector-objectives";
+import { supabaseExtraActivity } from "./supabase-extra-activity";
+import { supabaseAtribuicoes } from "./supabase-atribuicoes";
+import { supabaseChat } from "./supabase-chat";
 
 // ────────────────────────────────────
 // STORAGE EM MEMÓRIA - RESPONSABILIDADES
@@ -497,9 +501,6 @@ export const dataService = {
     return standardFlows.find(f => f.sectorId === sectorId) || null;
   },
 
-  getWorkflowSteps(flowId: string) {
-    return standardFlowSteps.filter(s => s.flowId === flowId).sort((a,b) => a.order - b.order);
-  },
 
   async assignTask(taskData: any): Promise<string> {
     const newId = `t-${Date.now()}`;
@@ -508,17 +509,63 @@ export const dataService = {
       id: newId,
     };
     projectTasks.unshift(newTask);
-    saveToStorage('tasks', projectTasks);
+    notifyTaskListeners();
     
-    // Tentar sincronização com Firestore imediatamente
+    // Sincronização centralizada com Supabase
     try {
-      await this._syncTaskToFirestore(newTask);
+      await this._syncTaskToSupabase(newTask);
     } catch (e) {
-      console.warn("Firestore sync failed, keeping local copy:", e);
+      console.warn("Supabase sync failed, keeping local copy:", e);
     }
 
-    try { notifyTaskListeners(); } catch (e) {}
     return newId;
+  },
+
+  async updateTask(taskId: string, updates: Partial<ProjectTask>): Promise<void> {
+    const task = projectTasks.find(t => t.id === taskId);
+    if (!task) throw new Error("Tarefa não encontrada.");
+
+    Object.assign(task, updates);
+    notifyTaskListeners();
+
+    try {
+      await supabaseAtribuicoes.updateAssignmentStatus(task.id, updates);
+      await this._syncTaskToSupabase(task);
+    } catch (e) {
+      console.warn("Supabase sync failed:", e);
+    }
+  },
+
+  async addCommentToTask(taskId: string, comment: string, type: string = 'comment'): Promise<void> {
+    const task = projectTasks.find(t => t.id === taskId);
+    if (!task) throw new Error("Tarefa não encontrada.");
+
+    const user = this.getCurrentUser();
+    
+    if (!task.history) task.history = [];
+    task.history.push({
+      timestamp: new Date().toISOString(),
+      userId: user?.id || 'sistema',
+      userName: user?.name || 'Sistema',
+      action: type === 'analysis' ? 'ANÁLISE TÉCNICA' : 'COMENTÁRIO',
+      comment: comment,
+      status: task.status,
+      type: type as any
+    });
+
+    notifyTaskListeners();
+
+    try {
+      await supabaseAtribuicoes.addComment(
+        task.id, 
+        user?.id || 'sistema', 
+        user?.name || 'Sistema', 
+        comment, 
+        type
+      );
+    } catch (e) {
+      console.error("Supabase sync failed for comment:", e);
+    }
   },
 
   async addExtraActivity(taskData: Partial<ProjectTask>): Promise<string> {
@@ -541,41 +588,29 @@ export const dataService = {
       visibility: 'Público',
     } as ProjectTask;
 
-    // Persistência
+    // 1. Persistência Local Imediata (Reflete a "verdade" instantaneamente na UI)
     projectTasks.unshift(newTask);
     saveToStorage('tasks', projectTasks);
     
-    try {
-      await this._syncTaskToFirestore(newTask);
-    } catch (e) {
-      console.warn("Firestore sync for extra activity failed:", e);
-    }
+    // 2. Sincronização em Segundo Plano com Supabase (Não bloqueia a UI)
+    // Garantimos que os dados reflitam a verdade no backend de forma resiliente
+    supabaseExtraActivity.saveActivity(newTask)
+      .then(() => console.log(`[Sync] Atividade ${newId} sincronizada com Supabase.`))
+      .catch(e => {
+        console.error(`[Sync] Falha ao sincronizar ${newId}:`, e);
+      });
 
+    // 3. Notificar ouvintes para atualização em tempo real na interface
     try { notifyTaskListeners(); } catch (e) {}
     
-    safeToast({ title: "Atividade Extra Registrada", description: "Impacto adicionado com sucesso às métricas do mês." });
+    safeToast({ 
+      title: "Atividade Extra Registrada ✅", 
+      description: "O impacto foi contabilizado e os dados estão sendo sincronizados." 
+    });
+
     return newId;
   },
 
-  async confirmWorkflow(taskId: string, flowId: string) {
-    const task = projectTasks.find(t => t.id === taskId);
-    if (task) {
-      task.flowId = flowId;
-      const initialStep = standardFlowSteps.find(s => s.flowId === flowId && s.order === 1);
-      if (initialStep) task.currentStepId = initialStep.id;
-      saveToStorage('tasks', projectTasks);
-    }
-  },
-
-  async requestWorkflowAdjustment(taskId: string, notes: string) {
-    const task = projectTasks.find(t => t.id === taskId);
-    if (task) {
-      task.isFlowFrozen = true;
-      task.flowAdjustmentNotes = notes;
-      saveToStorage('tasks', projectTasks);
-      saveToStorage('tasks', projectTasks);
-    }
-  },
 
   _handleAutomationTriggers(task: any) {
     // Mapeamento básico para gatilhos
@@ -1964,32 +1999,123 @@ export const dataService = {
 
 
   /**
-   * 🔥 HELPER: Sincroniza uma tarefa individual com o Firestore
-   * Usa upsert: se já existe (por _firestoreDocId), atualiza. Senão, cria.
+   * 🔥 CENTRALIZADOR: Sincroniza uma tarefa com o Supabase (Tabela: Atribuições)
+   * Garante que os dados apareçam em tempo real em todas as máquinas.
    */
-  async _syncTaskToFirestore(task: ProjectTask): Promise<void> {
+  async _syncTaskToSupabase(task: ProjectTask): Promise<void> {
     try {
-      const docId = (task as any)._firestoreDocId;
-      const { _firestoreDocId, ...rawTaskData } = task as any;
-      // Remove campos 'undefined' para evitar crashes locais do cache do Firestore
-      const taskData = JSON.parse(JSON.stringify(rawTaskData, (k, v) => v === undefined ? null : v));
+      const senderId = task.assignedById || this.getCurrentUserId() || 'sistema';
+      const receiverId = task.assignedToId || 'sistema';
 
-      if (docId) {
-        // Atualizar documento existente
-        const docRef = doc(db, TASKS_COLLECTION, docId);
-        await updateDoc(docRef, { ...taskData, updatedAt: new Date().toISOString() });
-      } else {
-        // Criar novo documento
-        const docRef = await addDoc(collection(db, TASKS_COLLECTION), { 
-          ...taskData, 
-          updatedAt: new Date().toISOString() 
-        });
-        (task as any)._firestoreDocId = docRef.id;
-      }
+      await supabaseAtribuicoes.saveAssignment(task, senderId, receiverId);
+      console.log(`[Supabase] Tarefa ${task.id} sincronizada com sucesso.`);
     } catch (e: any) {
-      console.warn(`⚠️ Firestore sync falhou para tarefa ${task.id}:`, e.message);
-      // Fallback: dados continuam em memória + localStorage
+      console.warn(`⚠️ Supabase sync falhou para tarefa ${task.id}:`, e.message);
+      // Fallback: Mantém local no localStorage (saveToStorage já foi chamado pelo caller)
     }
+  },
+
+  /**
+   * 🔄 SINCRONIZADOR GLOBAL: Baixa todas as atribuições do servidor
+   * Substitui o isolamento do localStorage pela verdade do banco de dados.
+   */
+  async syncAssignmentsFromServer(): Promise<void> {
+    const userId = this.getCurrentUserId();
+    if (!userId) return;
+
+    try {
+      const serverTasks = await supabaseAtribuicoes.getAssignments(userId);
+      
+      if (serverTasks && serverTasks.length > 0) {
+        serverTasks.forEach(st => {
+          const taskData = st.metadata as ProjectTask;
+          const index = projectTasks.findIndex(t => t.id === taskData.id);
+          
+          if (index !== -1) {
+            projectTasks[index] = taskData;
+          } else {
+            projectTasks.push(taskData);
+          }
+        });
+
+        notifyTaskListeners();
+      }
+    } catch (e) {
+      console.error("Falha na sincronização inicial:", e);
+    }
+  },
+
+  /**
+   * 📡 REALTIME: Inscreve o sistema para ouvir mudanças do servidor
+   */
+  subscribeToAssignments(): (() => void) {
+    const userId = this.getCurrentUserId();
+    if (!userId) return () => {};
+
+    return supabaseAtribuicoes.subscribeToAssignments(userId, (payload) => {
+      console.log("[Realtime] Mudança detectada nas atribuições:", payload);
+      this.syncAssignmentsFromServer();
+    });
+  },
+
+  /**
+   * 📡 REALTIME: Ouvir novos comentários nas tarefas
+   */
+  subscribeToComments(): (() => void) {
+    return supabaseAtribuicoes.subscribeToComments((payload) => {
+      console.log("[Realtime] Novo Comentário Recebido:", payload);
+      if (payload.new) {
+         const newComment = payload.new;
+         const { projectTasks } = require('./mock-data'); // just in case
+         const task = projectTasks.find((t: any) => t.id === newComment.external_task_id);
+         if (task) {
+           if (!task.history) task.history = [];
+           // Evita duplicatas se for a mesma sessão
+           const exists = task.history.some((h: any) => h.comment === newComment.mensagem && h.userId === newComment.autor_id);
+           if (!exists) {
+             task.history.push({
+               timestamp: newComment.created_at,
+               userId: newComment.autor_id,
+               userName: newComment.autor_nome,
+               action: newComment.tipo === 'analysis' ? 'ANÁLISE TÉCNICA' : 'COMENTÁRIO',
+               comment: newComment.mensagem,
+               status: task.status,
+               type: newComment.tipo
+             });
+             notifyTaskListeners();
+             safeToast({ title: "Nova Mensagem", description: `Comentário recebido em: ${task.title.substring(0, 20)}...` });
+           }
+         }
+      }
+    });
+  },
+
+  /**
+   * 💬 ENVIAR COMUNICAÇÃO: Registra mensagem no Supabase
+   */
+  async enviarMensagemInterna(receiverId: string, message: string): Promise<void> {
+    const senderId = this.getCurrentUserId();
+    if (!senderId) return;
+
+    try {
+      await supabaseChat.sendMessage(senderId, receiverId, message);
+    } catch (e) {
+      console.error("Erro ao enviar mensagem:", e);
+    }
+  },
+
+  /**
+   * 📡 REALTIME CHAT: Inscreve para receber novas mensagens
+   */
+  subscribeToMessages(callback: (payload: any) => void): (() => void) {
+    const userId = this.getCurrentUserId();
+    if (!userId) return () => {};
+
+    return supabaseChat.subscribeToMessages(userId, callback);
+  },
+
+  safeToast(props: any) {
+    safeToast(props);
   },
 
   /** Obtém impacto estratégico detalhado de atrasos operacionais */
@@ -2199,8 +2325,8 @@ export const dataService = {
     task.assignedToId = user?.id || '';
     task.assignedToName = user?.name || 'Membro do Setor';
 
-    // 🔥 Sincronizar com Firestore e notificar listeners
-    await this._syncTaskToFirestore(task);
+    // 🔥 Sincronizar com Supabase e notificar listeners
+    await this._syncTaskToSupabase(task);
     notifyTaskListeners();
 
     safeToast({ title: "Demanda Recebida", description: "Você agora é o responsável por esta tarefa." });
@@ -4244,7 +4370,7 @@ export const dataService = {
 
     saveToStorage('tasks', projectTasks);
     try {
-        await this._syncTaskToFirestore(task);
+        await this._syncTaskToSupabase(task);
     } catch (e) {}
     
     notifyTaskListeners();
