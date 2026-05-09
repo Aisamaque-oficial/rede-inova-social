@@ -2021,10 +2021,11 @@ export const dataService = {
    */
   async syncAssignmentsFromServer(): Promise<void> {
     const userId = this.getCurrentUserId();
+    const user = this.getCurrentUser();
     if (!userId) return;
 
     try {
-      const serverTasks = await supabaseAtribuicoes.getAssignments(userId);
+      const serverTasks = await supabaseAtribuicoes.getAssignments(userId, user?.department);
       
       if (serverTasks && serverTasks.length > 0) {
         serverTasks.forEach(st => {
@@ -2050,9 +2051,10 @@ export const dataService = {
    */
   subscribeToAssignments(): (() => void) {
     const userId = this.getCurrentUserId();
+    const user = this.getCurrentUser();
     if (!userId) return () => {};
 
-    return supabaseAtribuicoes.subscribeToAssignments(userId, (payload) => {
+    return supabaseAtribuicoes.subscribeToAssignments(userId, user?.department, (payload) => {
       console.log("[Realtime] Mudança detectada nas atribuições:", payload);
       this.syncAssignmentsFromServer();
     });

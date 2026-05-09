@@ -9,15 +9,19 @@ export const supabaseAtribuicoes = {
   /**
    * Fetches all assignments relevant to the current user (sent or received).
    */
-  async getAssignments(userId: string) {
+  async getAssignments(userId: string, userSector?: string) {
     if (!supabase) return [];
 
     try {
-      const { data, error } = await supabase
-        .from('atribuicoes')
-        .select('*')
-        .or(`assigned_to_user_id.eq.${userId},assigned_by_user_id.eq.${userId}`)
-        .order('updated_at', { ascending: false });
+      let query = supabase.from('atribuicoes').select('*');
+      
+      if (userSector) {
+        query = query.or(`assigned_to_user_id.eq.${userId},assigned_by_user_id.eq.${userId},setor.eq.${userSector}`);
+      } else {
+        query = query.or(`assigned_to_user_id.eq.${userId},assigned_by_user_id.eq.${userId}`);
+      }
+
+      const { data, error } = await query.order('updated_at', { ascending: false });
 
       if (error) throw error;
       return data || [];
@@ -130,7 +134,7 @@ export const supabaseAtribuicoes = {
   /**
    * Subscribes to real-time changes in assignments.
    */
-  subscribeToAssignments(userId: string, callback: (payload: any) => void) {
+  subscribeToAssignments(userId: string, userSector: string | undefined, callback: (payload: any) => void) {
     if (!supabase) return () => {};
 
     const channel = supabase
@@ -140,22 +144,18 @@ export const supabaseAtribuicoes = {
         {
           event: '*',
           schema: 'public',
-          table: 'atribuicoes',
-          // Temporariamente sem filtro direto no DB se as políticas exigirem, 
-          // ou filtramos no cliente. Se a policy estiver aberta, podemos filtrar aqui:
-          filter: `assigned_to_user_id=eq.${userId}`
+          table: 'atribuicoes'
         },
-        callback
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'atribuicoes',
-          filter: `assigned_by_user_id=eq.${userId}`
-        },
-        callback
+        (payload) => {
+          const record = payload.new || payload.old;
+          if (record) {
+             const isForMe = record.assigned_to_user_id === userId || record.assigned_by_user_id === userId;
+             const isForMySector = userSector && record.setor === userSector;
+             if (isForMe || isForMySector) {
+                callback(payload);
+             }
+          }
+        }
       )
       .subscribe();
 
