@@ -107,11 +107,10 @@ const USUARIOS_INICIAIS: StoredUser[] = [
     nomeCompleto: 'Aisamaque Gomes de Souza',
     role: 'ADMIN',
     assignments: [
-      { sector: 'tech', role: 'ADMIN' },
-      { sector: 'acessibilidade', role: 'ADMIN' },
-      { sector: 'cgp', role: 'ADMIN' }
+      { sector: 'cgp', role: 'ADMIN' },
+      { sector: 'tech', role: 'ADMIN' }
     ],
-    activeSector: 'tech',
+    activeSector: 'cgp',
     passwordHash: SENHA_ADMIN,
     ativo: true,
     department: 'CGP',
@@ -145,10 +144,11 @@ const USUARIOS_INICIAIS: StoredUser[] = [
     role: 'COORDENADOR',
     passwordHash: SENHA_PADRAO,
     ativo: true,
-    department: 'CURADORIA',
+    department: 'CGP',
+    activeSector: 'cgp',
     assignments: [
-        { sector: 'curadoria', role: 'COORDENADOR' },
-        { sector: 'cgp', role: 'COORDENADOR' }
+        { sector: 'cgp', role: 'COORDENADOR' },
+        { sector: 'curadoria', role: 'COORDENADOR' }
     ],
     dataCriacao: new Date('2026-01-01').toISOString(),
     criadoPor: 'admin',
@@ -234,9 +234,9 @@ const USUARIOS_INICIAIS: StoredUser[] = [
     nomeCompleto: 'Thaissa Carvalho',
     role: 'COLABORADOR',
     assignments: [
-       { sector: 'ascom', role: 'COLABORADOR' },
-       { sector: 'cgp', role: 'COLABORADOR' } // Coord. Extensão mapeada via CGP ou outro setor técnico
+       { sector: 'ascom', role: 'COLABORADOR' }
     ],
+    activeSector: 'ascom',
     passwordHash: SENHA_PADRAO,
     ativo: true,
     department: 'ASCOM',
@@ -279,9 +279,9 @@ const USUARIOS_INICIAIS: StoredUser[] = [
     nomeCompleto: 'Ilana Anunciação',
     role: 'COLABORADOR',
     assignments: [
-      { sector: 'acessibilidade', role: 'COLABORADOR' },
-      { sector: 'cgp', role: 'COLABORADOR' } // Coord. Extensão
+      { sector: 'acessibilidade', role: 'COLABORADOR' }
     ],
+    activeSector: 'acessibilidade',
     passwordHash: SENHA_PADRAO,
     ativo: true,
     department: 'ACESSIBILIDADE',
@@ -298,9 +298,9 @@ const USUARIOS_INICIAIS: StoredUser[] = [
     nomeCompleto: 'Bêide Hayalla',
     role: 'COLABORADOR',
     assignments: [
-      { sector: 'acessibilidade', role: 'COLABORADOR' },
-      { sector: 'cgp', role: 'COLABORADOR' } // Coord. Extensão
+      { sector: 'acessibilidade', role: 'COLABORADOR' }
     ],
+    activeSector: 'acessibilidade',
     passwordHash: SENHA_PADRAO,
     ativo: true,
     department: 'ACESSIBILIDADE',

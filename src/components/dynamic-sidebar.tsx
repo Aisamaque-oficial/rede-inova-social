@@ -451,18 +451,7 @@ export default function DynamicSidebar() {
                 >
                   <Link href="/atividades/coordenacao" className="flex items-center gap-3">
                     <ShieldCheck className="h-4 w-4 shrink-0" />
-                    <span className="font-black text-[13px] uppercase tracking-widest leading-snug whitespace-normal">Coordenação Institucional</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  className="h-auto min-h-[2.75rem] py-2.5 rounded-2xl hover:bg-white/5 text-slate-400 hover:text-white transition-all group px-4"
-                >
-                  <Link href="/atividades/coordenacao-executiva" className="flex items-center gap-3">
-                    <UserCheck className="h-4 w-4 shrink-0" />
-                    <span className="font-black text-[13px] uppercase tracking-widest leading-snug whitespace-normal">Coordenação Executiva</span>
+                    <span className="font-black text-[13px] uppercase tracking-widest leading-snug whitespace-normal">Coordenação Geral do Projeto (CGP)</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
