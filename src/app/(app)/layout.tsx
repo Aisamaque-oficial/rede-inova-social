@@ -114,6 +114,24 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     return () => unsubscribe();
   }, []);
 
+  // 🔄 SINCRONIZAÇÃO GLOBAL DE ATRIBUIÇÕES (SUPABASE)
+  React.useEffect(() => {
+    const userId = dataService.getCurrentUserId();
+    if (!userId) return;
+
+    // Sincronização Inicial
+    dataService.syncAssignmentsFromServer();
+
+    // Inscrição Realtime para Atribuições e Comentários
+    const unsubscribeAssignments = dataService.subscribeToAssignments();
+    const unsubscribeComments = dataService.subscribeToComments();
+
+    return () => {
+      unsubscribeAssignments();
+      unsubscribeComments();
+    };
+  }, [user]);
+
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-slate-950 text-primary">

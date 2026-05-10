@@ -41,6 +41,12 @@ export default function MinhasTarefasPage() {
       setIsLoading(false);
     };
     fetchTasks();
+
+    const unsubscribe = dataService.subscribeToTasks((updatedTasks) => {
+      setTasks(updatedTasks);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const refreshTasks = async () => {

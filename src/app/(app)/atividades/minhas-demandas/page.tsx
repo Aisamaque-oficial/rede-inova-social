@@ -46,6 +46,12 @@ export default function MinhasDemandasPage() {
 
   useEffect(() => {
     fetchData();
+
+    const unsubscribe = dataService.subscribeToTasks(() => {
+      fetchData(); // Recarrega os dados quando houver sincronização do Supabase
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const filteredTasks = tasks.filter(t => 

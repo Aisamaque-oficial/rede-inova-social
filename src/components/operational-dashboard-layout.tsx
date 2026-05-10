@@ -37,19 +37,8 @@ export function OperationalDashboardLayout({
   useEffect(() => {
     if (!userId) return;
 
-    // 🔄 Sincronização Inicial
-    dataService.syncAssignmentsFromServer();
-
-    // 📡 Inscrição Realtime para Atribuições
-    const unsubscribeAssignments = dataService.subscribeToAssignments();
-
-    // 📡 Inscrição Realtime para Comentários nas Tarefas (Estilo Trello)
-    const unsubscribeComments = dataService.subscribeToComments();
-
-    return () => {
-      unsubscribeAssignments();
-      unsubscribeComments();
-    };
+    // A sincronização de atribuições e comentários agora é tratada globalmente no AppLayout
+    // para garantir que páginas como 'Minhas Tarefas' também recebam os dados em tempo real.
   }, [userId]);
 
   return (
