@@ -228,9 +228,9 @@ export function TaskCreationModal({
   };
 
   const handleRequestAdjustment = async () => {
-    if (!adjustmentNotes) {
-      toast({ title: "Observação Necessária", description: "Explique o ajuste necessário para a coordenação.", variant: "destructive" });
-      return;
+    let finalNotes = adjustmentNotes;
+    if (!finalNotes) {
+      finalNotes = "Ajuste de fluxo solicitado pelo setor (sem observações adicionais).";
     }
 
     setIsSubmitting(true);
@@ -258,8 +258,7 @@ export function TaskCreationModal({
         workflowStage: 'gestao',
         attachments: []
       } as any);
-
-      await dataService.requestWorkflowAdjustment(newTaskId, adjustmentNotes);
+      await dataService.requestWorkflowAdjustment(newTaskId, finalNotes);
 
       toast({ title: "Solicitação Enviada", description: "O processo ficará congelado até aprovação do fluxo." });
       onTaskCreated(newTaskId);
