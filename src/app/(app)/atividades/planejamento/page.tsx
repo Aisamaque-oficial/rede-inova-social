@@ -19,9 +19,21 @@ import { PlanningBoard } from "@/components/planning-board";
 import ImpactGoals from "@/components/impact-goals";
 import { SectorHealthHeatmap } from "@/components/sector-health-heatmap";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { SectorSignageHeader } from "@/components/sector-operational-components";
+import { dataService } from "@/lib/data-service";
 
 export default function PlanejamentoPage() {
+  const planSector = {
+    id: 'plan',
+    name: 'Núcleo Estratégico',
+    sigla: 'PMA',
+    color: 'indigo',
+    icon: 'BarChart3',
+    description: 'Monitoramento de Desempenho, Avaliação de Impacto e Planejamento Global'
+  };
+
+  const members = dataService.getMembersBySector('PLAN');
+
   const stats = [
     { label: "Progresso Global", value: "84%", icon: Target, color: "text-primary" },
     { label: "Setores Estáveis", value: "08/10", icon: ShieldCheck, color: "text-emerald-500" },
@@ -30,12 +42,19 @@ export default function PlanejamentoPage() {
   ];
 
   return (
-    <OperationalDashboardLayout
-      title="Núcleo Estratégico (PMA)"
-      subtitle="Monitoramento de Desempenho, Avaliação de Impacto e Planejamento Global"
-      sector="PLANEJAMENTO / PMA"
-      stats={stats}
-    >
+    <div className="space-y-10">
+      <SectorSignageHeader 
+        sector={planSector}
+        members={members}
+      />
+      
+      <OperationalDashboardLayout
+        title="Núcleo Estratégico (PMA)"
+        subtitle="Monitoramento de Desempenho, Avaliação de Impacto e Planejamento Global"
+        sector="PLANEJAMENTO / PMA"
+        stats={stats}
+        showHeader={false}
+      >
       <Tabs defaultValue="radar" className="w-full space-y-10">
         <TabsList className="bg-transparent h-auto p-0 gap-8 border-b border-slate-100 w-full rounded-none justify-start overflow-x-auto no-scrollbar">
           <TabsTrigger 
@@ -145,5 +164,6 @@ export default function PlanejamentoPage() {
         </TabsContent>
       </Tabs>
     </OperationalDashboardLayout>
+    </div>
   );
 }

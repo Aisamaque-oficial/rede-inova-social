@@ -28,6 +28,7 @@ import { BottleneckRegistrationModal } from "@/components/bottleneck-registratio
 import CoordinationBoard from '@/components/coordination-board';
 import { TaskCreationModal } from "@/components/task-creation-modal";
 import { Button } from "@/components/ui/button";
+import { SectorSignageHeader } from "@/components/sector-operational-components";
 
 export default function CoordenacaoGeralPage() {
   const [briefing, setBriefing] = React.useState<ExecutiveBriefing | null>(null);
@@ -37,6 +38,18 @@ export default function CoordenacaoGeralPage() {
 
   const role = dataService.getUserRole();
   const isAuthorized = dataService.isCoordinator() || role === 'admin';
+
+  // Dados para o cabeçalho padronizado
+  const cgpSector = {
+    id: 'cgp',
+    name: 'Coordenação Geral e Administração',
+    sigla: 'CGP',
+    color: 'slate',
+    icon: 'ShieldCheck',
+    description: 'Gestão estratégica, governança de recursos e contratos'
+  };
+
+  const members = dataService.getMembersBySector('CGP');
 
   const loadBriefing = () => {
     setBriefing(dataService.getExecutiveBriefing());
@@ -91,21 +104,28 @@ export default function CoordenacaoGeralPage() {
   ];
 
   return (
-    <OperationalDashboardLayout
-      title="Coordenação Geral (CGP)"
-      subtitle="Governança Estratégica, Avaliação e Monitoramento em Tempo Real"
-      sector="COORD. GERAL"
-      stats={stats}
-    >
-      <div className="flex justify-end mb-8 px-2">
-        <Button 
-          className="rounded-full shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 text-white px-8 h-12 font-black uppercase tracking-widest text-[11px] transition-all hover:scale-105"
-          onClick={() => setIsCreateModalOpen(true)}
-        >
-          <PlusCircle className="mr-3 h-5 w-5" />
-          Nova Demanda Intersetorial
-        </Button>
-      </div>
+    <div className="space-y-10">
+      <SectorSignageHeader 
+        sector={cgpSector}
+        members={members}
+      />
+      
+      <OperationalDashboardLayout
+        title="Coordenação Geral (CGP)"
+        subtitle="Governança Estratégica, Avaliação e Monitoramento em Tempo Real"
+        sector="COORD. GERAL"
+        stats={stats}
+        showHeader={false}
+      >
+        <div className="flex justify-end mb-8 px-2">
+          <Button 
+            className="rounded-full shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 text-white px-8 h-12 font-black uppercase tracking-widest text-[11px] transition-all hover:scale-105"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            <PlusCircle className="mr-3 h-5 w-5" />
+            Nova Demanda Intersetorial
+          </Button>
+        </div>
 
       <Tabs defaultValue="governanca" className="w-full space-y-12">
         <TabsList className="bg-transparent h-auto p-0 gap-10 border-b border-slate-100 w-full rounded-none justify-start overflow-x-auto no-scrollbar">
@@ -281,5 +301,6 @@ export default function CoordenacaoGeralPage() {
         initialSector="CGP"
       />
     </OperationalDashboardLayout>
+    </div>
   );
 }
