@@ -92,6 +92,7 @@ const membrosResponsabilidades: Map<string, MembroResponsabilidades> = new Map()
 const arquivosRastreados: Map<string, ArquivoRastreado> = new Map();
 const logsAuditoria: LogAuditoria[] = [];
 const notificacoes: Map<string, any[]> = new Map(); // usuarioId -> Array de notificações
+let activeStrategicPlanning: StrategicPlanMonth[] = []; // Inicializado no final para garantir que helpers existam
 
 const NEWS_COLLECTION = "news";
 const TASKS_COLLECTION = "tasks";
@@ -2473,7 +2474,12 @@ export const dataService = {
    * Métodos: Planejamento Estratégico (Roadmap)
    */
   async getPlanningBySector(sector: string): Promise<StrategicPlanMonth[]> {
-    if (sector === 'ALL') return strategicPlanning;
+    // Garantir que carregamos do storage se disponível
+    if (activeStrategicPlanning.length === 0) {
+      activeStrategicPlanning = loadFromStorage('strategic_planning', strategicPlanning);
+    }
+
+    if (sector === 'ALL') return activeStrategicPlanning;
     
     // Mapeamento interno de Sigla -> ID de Setor
     const sectorMap: Record<string, string> = {
@@ -2491,7 +2497,7 @@ export const dataService = {
     const targetSectorId = sectorMap[sector];
 
     // Filtra tarefas dentro dos meses e remove meses que ficarem vazios
-    return strategicPlanning
+    return activeStrategicPlanning
       .map(month => ({
         ...month,
         tasks: month.tasks.filter(t => t.sectorId === targetSectorId)
@@ -2500,7 +2506,7 @@ export const dataService = {
   },
 
   async togglePlanningTask(monthId: string, taskId: string): Promise<void> {
-    const month = strategicPlanning.find(m => m.id === monthId);
+    const month = activeStrategicPlanning.find(m => m.id === monthId);
     if (!month) throw new Error("Mês de planejamento não encontrado.");
     
     const task = month.tasks.find(t => t.id === taskId);
@@ -2513,6 +2519,8 @@ export const dataService = {
       task.subtasks.forEach(s => s.completed = true);
     }
     
+    saveToStorage('strategic_planning', activeStrategicPlanning);
+
     safeToast({ 
       title: task.completed ? "Meta Batida!" : "Meta Reaberta", 
       description: `O item "${task.label.substring(0, 30)}..." foi atualizado.` 
@@ -2520,7 +2528,7 @@ export const dataService = {
   },
 
   async togglePlanningSubtask(monthId: string, taskId: string, subtaskId: string): Promise<void> {
-    const month = strategicPlanning.find(m => m.id === monthId);
+    const month = activeStrategicPlanning.find(m => m.id === monthId);
     if (!month) throw new Error("Mês de planejamento não encontrado.");
     
     const task = month.tasks.find(t => t.id === taskId);
@@ -2537,14 +2545,32 @@ export const dataService = {
     const allSubtasksDone = task.subtasks.every(s => s.completed);
     if (allSubtasksDone && !task.completed) {
       task.completed = true;
-      safeToast({ title: "Atividade Concluída!", description: "Todas as subtarefas foram entregues." });
     } else if (!allSubtasksDone && task.completed) {
       task.completed = false;
     }
     
+    saveToStorage('strategic_planning', activeStrategicPlanning);
+
     safeToast({ 
       title: subtask.completed ? "Item Concluído" : "Item Reaberto", 
       description: subtask.label 
+    });
+  },
+
+  async updatePlanningMonth(monthId: string, updatedMonth: StrategicPlanMonth): Promise<void> {
+    const index = activeStrategicPlanning.findIndex(m => m.id === monthId);
+    if (index === -1) {
+      // Se for um mês novo (ex: adicionado dinamicamente), podemos dar push
+      activeStrategicPlanning.push(updatedMonth);
+    } else {
+      activeStrategicPlanning[index] = updatedMonth;
+    }
+    
+    saveToStorage('strategic_planning', activeStrategicPlanning);
+    
+    safeToast({
+      title: "Planejamento Atualizado",
+      description: `As alterações em "${updatedMonth.monthName.substring(0, 20)}..." foram salvas.`
     });
   },
 

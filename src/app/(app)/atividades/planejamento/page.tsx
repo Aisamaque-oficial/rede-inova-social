@@ -15,6 +15,7 @@ import {
   Award
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { PlanningBoard } from "@/components/planning-board";
 import ImpactGoals from "@/components/impact-goals";
 import { SectorHealthHeatmap } from "@/components/sector-health-heatmap";

@@ -27,8 +27,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { useSearchParams } from "next/navigation";
-import { MonthDetailSheet } from "@/components/month-detail-sheet";
+import { useSearchParams, useRouter } from "next/navigation";
 import { ProjectReportModal } from "@/components/project-report-modal";
 
 const SECTORS: { id: Department; label: string }[] = [
@@ -44,12 +43,12 @@ const SECTORS: { id: Department; label: string }[] = [
 
 export default function PlanejamentoPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const sectorParam = searchParams.get('sector') as Department;
 
   const [activeSector, setActiveSector] = useState<Department>('ALL');
   const [plans, setPlans] = useState<StrategicPlanMonth[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedMonth, setSelectedMonth] = useState<StrategicPlanMonth | null>(null);
   const [reportOpen, setReportOpen] = useState(false);
   const user = dataService.getCurrentUser();
 
@@ -59,6 +58,8 @@ export default function PlanejamentoPage() {
   const getIsMonthEditable = (month: StrategicPlanMonth | null) => {
     if (isCoordinator) return true;
     if (!user || !month) return false;
+    // Se o mês for global (ALL), qualquer coordenador setorial pode editar/adicionar metas
+    if (month.sector === 'ALL') return !!user.department;
     return user.department === month.sector;
   };
 
@@ -128,6 +129,17 @@ export default function PlanejamentoPage() {
         }
         return m;
       }));
+    } catch (error) {
+       console.error(error);
+    }
+  };
+
+  const handleUpdateMonth = async (monthId: string, updatedMonth: StrategicPlanMonth) => {
+    if (!getIsMonthEditable(updatedMonth)) return;
+    try {
+      await dataService.updatePlanningMonth(monthId, updatedMonth);
+      setPlans(prev => prev.map(m => m.id === monthId ? updatedMonth : m));
+      if (selectedMonth?.id === monthId) setSelectedMonth(updatedMonth);
     } catch (error) {
        console.error(error);
     }
@@ -255,7 +267,7 @@ export default function PlanejamentoPage() {
                      return (
                         <div 
                           key={month.id}
-                          onClick={() => setSelectedMonth(month)}
+                          onClick={() => router.push(`/planejamento/${month.id}`)}
                           className={cn(
                             "group relative h-80 rounded-[3.5rem] bg-white border border-slate-100 p-8 flex flex-col justify-between cursor-pointer transition-all duration-500 hover:shadow-2xl hover:scale-[1.03] hover:border-primary/20",
                             isDone && "ring-2 ring-emerald-100 bg-emerald-50/30"
@@ -371,16 +383,6 @@ export default function PlanejamentoPage() {
              Suporte Integrado
           </Button>
       </div>
-
-      {/* Detail Drawer */}
-      <MonthDetailSheet 
-        month={selectedMonth}
-        isOpen={!!selectedMonth}
-        isEditable={getIsMonthEditable(selectedMonth)}
-        onClose={() => setSelectedMonth(null)}
-        onToggleTask={handleToggle}
-        onToggleSubtask={handleToggleSubtask}
-      />
 
       {/* Report Modal */}
       <ProjectReportModal 

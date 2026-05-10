@@ -13,7 +13,12 @@ import {
   ChevronRight,
   Printer,
   X,
-  Calendar
+  Calendar,
+  Edit2,
+  Save,
+  Trash2,
+  PlusCircle,
+  AlertTriangle
 } from "lucide-react";
 import { 
   Sheet, 
@@ -27,6 +32,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { StrategicPlanMonth } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
@@ -37,10 +44,29 @@ interface MonthDetailSheetProps {
   onClose: () => void;
   onToggleTask: (monthId: string, taskId: string) => void;
   onToggleSubtask: (monthId: string, taskId: string, subtaskId: string) => void;
+  onUpdateMonth: (monthId: string, updatedMonth: StrategicPlanMonth) => void;
 }
 
-export function MonthDetailSheet({ month, isOpen, isEditable, onClose, onToggleTask, onToggleSubtask }: MonthDetailSheetProps) {
-  if (!month) return null;
+export function MonthDetailSheet({ 
+  month, 
+  isOpen, 
+  isEditable, 
+  onClose, 
+  onToggleTask, 
+  onToggleSubtask,
+  onUpdateMonth 
+}: MonthDetailSheetProps) {
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [tempMonth, setTempMonth] = React.useState<StrategicPlanMonth | null>(null);
+
+  React.useEffect(() => {
+    if (isOpen && month) {
+      setTempMonth(JSON.parse(JSON.stringify(month)));
+      setIsEditing(false);
+    }
+  }, [isOpen, month]);
+
+  if (!month || !tempMonth) return null;
 
   const pendingTasks = month.tasks.filter(t => !t.completed);
   const completedTasks = month.tasks.filter(t => t.completed);
@@ -58,14 +84,61 @@ export function MonthDetailSheet({ month, isOpen, isEditable, onClose, onToggleT
                    <Badge className="bg-white/10 text-white/50 border-white/5 hover:bg-white/20 text-[10px] font-black uppercase tracking-widest px-4 py-1.5 h-auto">
                       RELATÓRIO MENSAL - {month.sector}
                    </Badge>
-                   <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full hover:bg-white/10 text-white/50">
-                      <X className="h-4 w-4" />
-                   </Button>
+                   <div className="flex items-center gap-2">
+                     {isEditable && (
+                       <Button 
+                         variant={isEditing ? "destructive" : "outline"} 
+                         size="sm" 
+                         onClick={() => setIsEditing(!isEditing)}
+                         className={cn(
+                           "rounded-full px-4 h-8 text-[9px] font-black uppercase tracking-widest transition-all",
+                           isEditing ? "bg-red-500/10 text-red-400 border-red-500/20" : "bg-white/10 text-white border-white/10 hover:bg-white/20"
+                         )}
+                       >
+                           {isEditing ? <X className="h-3 w-3 mr-2" /> : <Edit2 className="h-3 w-3 mr-2" />}
+                           {isEditing ? "Cancelar Edição" : "Editar Planejamento"}
+                       </Button>
+                     )}
+                     {isEditable && !isEditing && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => {
+                            setIsEditing(true);
+                            const newTask = {
+                              id: `task-${Date.now()}`,
+                              label: "",
+                              responsible: month.sector,
+                              status: "pendente",
+                              evidence: "",
+                              completed: false,
+                              sectorId: month.sector.toLowerCase()
+                            };
+                            setTempMonth({ ...tempMonth, tasks: [...tempMonth.tasks, newTask] });
+                          }}
+                          className="rounded-full px-4 h-8 text-[9px] font-black uppercase tracking-widest transition-all bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20"
+                        >
+                            <Plus className="h-3 w-3 mr-2" />
+                            Adicionar Meta
+                        </Button>
+                      )}
+                     <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full hover:bg-white/10 text-white/50">
+                        <X className="h-4 w-4" />
+                     </Button>
+                   </div>
                 </div>
                 <div className="space-y-2">
-                   <SheetTitle className="text-4xl font-headline uppercase italic tracking-tighter leading-none text-white border-none p-0">
-                      {month.monthName}
-                   </SheetTitle>
+                   {isEditing ? (
+                     <Input 
+                       value={tempMonth.monthName}
+                       onChange={(e) => setTempMonth({ ...tempMonth, monthName: e.target.value })}
+                       className="text-2xl font-headline uppercase italic tracking-tighter bg-white/5 border-white/10 text-white h-auto py-2 focus-visible:ring-primary"
+                     />
+                   ) : (
+                     <SheetTitle className="text-4xl font-headline uppercase italic tracking-tighter leading-none text-white border-none p-0">
+                        {month.monthName}
+                     </SheetTitle>
+                   )}
                    <SheetDescription className="text-xs font-medium text-white/40 italic flex items-center gap-2">
                       <Calendar size={12} /> Acompanhamento de metas e entregas estratégicas
                       {!isEditable && (
@@ -107,6 +180,28 @@ export function MonthDetailSheet({ month, isOpen, isEditable, onClose, onToggleT
                       </Badge>
                    </div>
 
+                   {isEditing && (
+                      <Button 
+                        variant="outline" 
+                        className="w-full h-16 rounded-[2rem] border-dashed border-slate-200 text-slate-400 hover:text-primary hover:border-primary/50 transition-all group mb-6"
+                        onClick={() => {
+                          const newTask = {
+                            id: `task-${Date.now()}`,
+                            label: "",
+                            responsible: month.sector,
+                            status: "pendente",
+                            evidence: "",
+                            completed: false,
+                            sectorId: month.sector.toLowerCase()
+                          };
+                          setTempMonth({ ...tempMonth, tasks: [...tempMonth.tasks, newTask] });
+                        }}
+                      >
+                         <PlusCircle className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
+                         Adicionar Nova Meta
+                      </Button>
+                   )}
+
                    {pendingTasks.length > 0 ? (
                       <div className="space-y-4">
                          {pendingTasks.map((task) => (
@@ -116,8 +211,8 @@ export function MonthDetailSheet({ month, isOpen, isEditable, onClose, onToggleT
                                      <Checkbox 
                                         id={task.id} 
                                         checked={task.completed} 
-                                        disabled={!isEditable}
-                                        onCheckedChange={() => isEditable && onToggleTask(month.id, task.id)}
+                                        disabled={!isEditable || isEditing}
+                                        onCheckedChange={() => !isEditing && isEditable && onToggleTask(month.id, task.id)}
                                         className="h-6 w-6 rounded-lg border-2 border-slate-200 transition-all data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                                      />
                                   </div>
@@ -143,16 +238,54 @@ export function MonthDetailSheet({ month, isOpen, isEditable, onClose, onToggleT
                                              </Badge>
                                            )}
                                         </div>
-                                        <label htmlFor={task.id} className={cn(
-                                           "text-[15px] font-bold leading-snug text-slate-800 tracking-tight transition-all",
-                                           isEditable ? "cursor-pointer group-hover:text-primary" : "cursor-default",
-                                           task.completed && "line-through opacity-50"
-                                        )}>
-                                           {task.label}
-                                        </label>
+                                        {isEditing ? (
+                                           <div className="space-y-3">
+                                              <div className="flex gap-2">
+                                                 <Input 
+                                                   value={task.label}
+                                                   onChange={(e) => {
+                                                     const newTasks = tempMonth.tasks.map(t => t.id === task.id ? { ...t, label: e.target.value } : t);
+                                                     setTempMonth({ ...tempMonth, tasks: newTasks });
+                                                   }}
+                                                   className="text-[14px] font-bold h-10 rounded-xl focus-visible:ring-primary"
+                                                   placeholder="Nome da meta..."
+                                                 />
+                                                 <Button 
+                                                   variant="ghost" 
+                                                   size="icon" 
+                                                   onClick={() => {
+                                                     const newTasks = tempMonth.tasks.filter(t => t.id !== task.id);
+                                                     setTempMonth({ ...tempMonth, tasks: newTasks });
+                                                   }}
+                                                   className="h-10 w-10 rounded-xl text-red-500 hover:bg-red-50"
+                                                 >
+                                                    <Trash2 size={18} />
+                                                 </Button>
+                                              </div>
+                                              <Input 
+                                                value={task.evidence || ""}
+                                                onChange={(e) => {
+                                                  const newTasks = tempMonth.tasks.map(t => t.id === task.id ? { ...t, evidence: e.target.value } : t);
+                                                  setTempMonth({ ...tempMonth, tasks: newTasks });
+                                                }}
+                                                className="text-[11px] h-8 rounded-lg bg-slate-50 focus-visible:ring-primary"
+                                                placeholder="Evidência obrigatória..."
+                                              />
+                                           </div>
+                                         ) : (
+                                           <>
+                                             <label htmlFor={task.id} className={cn(
+                                                "text-[15px] font-bold leading-snug text-slate-800 tracking-tight transition-all",
+                                                isEditable ? "cursor-pointer group-hover:text-primary" : "cursor-default",
+                                                task.completed && "line-through opacity-50"
+                                             )}>
+                                                {task.label}
+                                             </label>
+                                           </>
+                                         )}
 
                                         {/* Evidence Section */}
-                                        {task.evidence && (
+                                        {!isEditing && task.evidence && (
                                           <div className="flex items-center gap-2 p-3 rounded-2xl bg-slate-50 border border-slate-100">
                                              <FileText size={14} className="text-slate-400" />
                                              <div className="space-y-0.5">
@@ -171,7 +304,7 @@ export function MonthDetailSheet({ month, isOpen, isEditable, onClose, onToggleT
                                                  <Checkbox 
                                                     id={sub.id} 
                                                     checked={sub.completed}
-                                                    disabled={!isEditable}
+                                                    disabled={!isEditable || isEditing}
                                                     onCheckedChange={() => isEditable && onToggleSubtask(month.id, task.id, sub.id)}
                                                     className="h-4 w-4 rounded-md border-slate-200 data-[state=checked]:bg-indigo-500 data-[state=checked]:border-indigo-500"
                                                  />
@@ -223,8 +356,8 @@ export function MonthDetailSheet({ month, isOpen, isEditable, onClose, onToggleT
                                   <Checkbox 
                                      id={task.id} 
                                      checked={true} 
-                                     disabled={!isEditable}
-                                     onCheckedChange={() => isEditable && onToggleTask(month.id, task.id)}
+                                     disabled={!isEditable || isEditing}
+                                     onCheckedChange={() => !isEditing && isEditable && onToggleTask(month.id, task.id)}
                                      className="h-6 w-6 rounded-lg border-emerald-500 bg-emerald-500 text-white"
                                   />
                                </div>
@@ -258,12 +391,37 @@ export function MonthDetailSheet({ month, isOpen, isEditable, onClose, onToggleT
 
           {/* Footer with Report Button */}
           <footer className="p-8 bg-white border-t border-slate-100 flex gap-4">
-             <Button variant="outline" className="flex-1 h-14 rounded-2xl border-slate-200 text-slate-700 text-[11px] font-black uppercase tracking-widest hover:bg-slate-50">
-                <Printer size={18} className="mr-3" /> Imprimir Mês
-             </Button>
-             <Button className="flex-[2] h-14 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-black uppercase tracking-widest shadow-xl shadow-indigo-500/20">
-                <FileText size={18} className="mr-3" /> Gerar Relatório de Execução
-             </Button>
+             {isEditing ? (
+               <>
+                 <Button 
+                   variant="outline" 
+                   onClick={() => setIsEditing(false)}
+                   className="flex-1 h-14 rounded-2xl border-slate-200 text-slate-700 text-[11px] font-black uppercase tracking-widest"
+                 >
+                    Descartar
+                 </Button>
+                 <Button 
+                   onClick={() => {
+                     if (tempMonth) {
+                       onUpdateMonth(month.id, tempMonth);
+                       setIsEditing(false);
+                     }
+                   }}
+                   className="flex-[2] h-14 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-black uppercase tracking-widest shadow-xl shadow-emerald-500/20"
+                 >
+                    <Save size={18} className="mr-3" /> Salvar Planejamento
+                 </Button>
+               </>
+             ) : (
+               <>
+                 <Button variant="outline" className="flex-1 h-14 rounded-2xl border-slate-200 text-slate-700 text-[11px] font-black uppercase tracking-widest hover:bg-slate-50">
+                    <Printer size={18} className="mr-3" /> Imprimir Mês
+                 </Button>
+                 <Button className="flex-[2] h-14 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-black uppercase tracking-widest shadow-xl shadow-indigo-500/20">
+                    <FileText size={18} className="mr-3" /> Gerar Relatório de Execução
+                 </Button>
+               </>
+             )}
           </footer>
         </div>
       </SheetContent>
