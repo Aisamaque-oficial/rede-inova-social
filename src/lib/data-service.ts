@@ -4635,5 +4635,109 @@ export const dataService = {
        const users = await this.listarMembrosEquipe();
        return users;
     }
+  },
+
+  // ═══════════════════════════════════════════════
+  // 📋 SISTEMA DE RELATÓRIOS SETORIAIS
+  // ═══════════════════════════════════════════════
+
+  /**
+   * Salva um relatório setorial assinado
+   */
+  saveReport(report: SectorReport): string {
+    const reports: SectorReport[] = loadFromStorage('sector_reports', []);
+    reports.unshift(report);
+    saveToStorage('sector_reports', reports);
+    notifyTaskListeners();
+
+    safeToast({
+      title: "Relatório Assinado ✅",
+      description: `Relatório ${report.periodType} do setor ${report.sectorSigla} registrado com sucesso.`
+    });
+
+    return report.id;
+  },
+
+  /**
+   * Obtém todos os relatórios (para a CGP)
+   */
+  getAllReports(): SectorReport[] {
+    return loadFromStorage('sector_reports', []);
+  },
+
+  /**
+   * Obtém relatórios de um setor específico
+   */
+  getReportsBySector(sectorId: string): SectorReport[] {
+    const all: SectorReport[] = loadFromStorage('sector_reports', []);
+    return all.filter(r => r.sectorId === sectorId || r.sectorSigla?.toLowerCase() === sectorId?.toLowerCase());
+  },
+
+  /**
+   * Arquiva um relatório (marca como arquivado pela CGP)
+   */
+  archiveReport(reportId: string): void {
+    const reports: SectorReport[] = loadFromStorage('sector_reports', []);
+    const report = reports.find(r => r.id === reportId);
+    if (report) {
+      report.status = 'arquivado';
+      report.archivedAt = new Date().toISOString();
+      report.archivedBy = this.getCurrentUser()?.name || 'CGP';
+      saveToStorage('sector_reports', reports);
+      notifyTaskListeners();
+
+      safeToast({
+        title: "Relatório Arquivado 📁",
+        description: `Relatório movido para a pasta de arquivos institucionais.`
+      });
+    }
+  },
+
+  /**
+   * Envia relatório para a CGP (marca como enviado)
+   */
+  sendReportToCGP(reportId: string): void {
+    const reports: SectorReport[] = loadFromStorage('sector_reports', []);
+    const report = reports.find(r => r.id === reportId);
+    if (report) {
+      report.status = 'enviado';
+      report.sentAt = new Date().toISOString();
+      saveToStorage('sector_reports', reports);
+      notifyTaskListeners();
+
+      safeToast({
+        title: "Relatório Enviado 📤",
+        description: `Relatório encaminhado à Coordenação Geral do Projeto para análise.`
+      });
+    }
   }
 };
+
+// ═══════════════════════════════════════════════
+// 📋 TIPOS: RELATÓRIOS SETORIAIS
+// ═══════════════════════════════════════════════
+export interface SectorReport {
+  id: string;
+  sectorId: string;
+  sectorSigla: string;
+  sectorName: string;
+  periodType: 'semanal' | 'quinzenal' | 'mensal';
+  periodStart: string;
+  periodEnd: string;
+  content: string; // Corpo do relatório
+  memberActivities: MemberActivityEntry[]; // Participação de cada membro
+  signedBy: string;
+  signedByCargo: string;
+  signedAt: string;
+  signatureSeal: string;
+  status: 'rascunho' | 'assinado' | 'enviado' | 'arquivado';
+  sentAt?: string;
+  archivedAt?: string;
+  archivedBy?: string;
+  createdAt: string;
+}
+
+export interface MemberActivityEntry {
+  memberName: string;
+  description: string;
+}

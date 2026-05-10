@@ -35,7 +35,9 @@ import {
   Sparkles,
   Construction,
   Layout,
-  X
+  X,
+  FileText,
+  FolderArchive
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -369,6 +371,11 @@ export default function DynamicSidebar() {
                             href: `/atividades/objetivos/${sector.id}`, 
                             icon: Compass 
                           },
+                          { 
+                            label: "Relatório", 
+                            href: `/atividades/setor/${sector.id}/relatorio`, 
+                            icon: FileText 
+                          },
                         ] as any[]).map((sub, idx) => {
                           const subItems = [...[sub]];
                           
@@ -485,6 +492,17 @@ export default function DynamicSidebar() {
                   <Link href="/planejamento/relatorio-acessos" className="flex items-center gap-3">
                     <ActivityIcon className="h-4 w-4 shrink-0" />
                     <span className="font-black text-[13px] uppercase tracking-widest leading-snug whitespace-normal">Relatório de Acessos</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  className="h-auto min-h-[2.75rem] py-2.5 rounded-2xl hover:bg-white/5 text-slate-400 hover:text-white transition-all group px-4"
+                >
+                  <Link href="/atividades/coordenacao/relatorios" className="flex items-center gap-3">
+                    <FolderArchive className="h-4 w-4 shrink-0 group-hover:text-primary transition-colors" />
+                    <span className="font-black text-[13px] uppercase tracking-widest leading-snug whitespace-normal">Arquivo de Relatórios</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
