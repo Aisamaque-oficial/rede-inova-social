@@ -8,6 +8,7 @@ export interface UserActivity {
   sector_name?: string; // New field for LISSA specific sectors
   last_online: string;
   session_duration: number;
+  last_action?: string; // Última ação realizada (ex: página visitada)
 }
 
 // Helper to ensure compatibility with Supabase UUID type
@@ -45,7 +46,8 @@ export const supabaseActivity = {
           user_sector: activity.user_sector,
           sector_name: activity.sector_name, // Support for specific sector naming
           last_online: activity.last_online,
-          session_duration: activity.session_duration
+          session_duration: activity.session_duration,
+          last_action: activity.last_action
         }, { onConflict: 'user_id' });
 
       if (error) console.error("Supabase Log Error (Activity):", error.message || error);

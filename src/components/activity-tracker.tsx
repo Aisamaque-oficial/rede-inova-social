@@ -20,14 +20,24 @@ export function ActivityTracker() {
       const elapsedSeconds = Math.floor((currentTime - sessionStartTime.current) / 1000);
       const elapsedMinutes = Math.max(1, Math.floor(elapsedSeconds / 60));
 
-      console.log(`[ActivityTracker] Logging activity for ${session.nomeCompleto} (${elapsedMinutes} min)`);
+      // Mapeamento de rotas para descrições amigáveis
+      let lastAction = "Navegando no Sistema";
+      if (pathname.includes('/atividades/setor/')) lastAction = "Gerindo Setor";
+      else if (pathname.includes('/perfil')) lastAction = "Editando Perfil";
+      else if (pathname.includes('/inicio')) lastAction = "No Início";
+      else if (pathname.includes('/painel')) lastAction = "No Painel Adm";
+      else if (pathname.includes('/studio')) lastAction = "No Estúdio de Criação";
+      else if (pathname === '/') lastAction = "Página Inicial Pública";
+
+      console.log(`[ActivityTracker] Logging activity for ${session.nomeCompleto} (${elapsedMinutes} min) - ${lastAction}`);
       
       await supabaseActivity.logActivity({
         user_id: session.userId,
         user_name: session.nomeCompleto,
         user_sector: session.activeSector || session.department || "N/A",
         last_online: new Date().toISOString(),
-        session_duration: elapsedMinutes
+        session_duration: elapsedMinutes,
+        last_action: lastAction
       });
     };
 

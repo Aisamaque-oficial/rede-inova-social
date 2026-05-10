@@ -47,13 +47,13 @@ export default function RelatorioAcessosPage() {
 
     init();
 
-    // Atualizar logs a cada 30 segundos para refletir dados em tempo real
+    // Atualizar logs a cada 5 segundos para refletir dados em tempo real
     const interval = setInterval(async () => {
       try {
         const data = await supabaseActivity.getActivityLogs();
         setLogs(data);
       } catch (e) {}
-    }, 30000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [router]);
@@ -176,6 +176,7 @@ export default function RelatorioAcessosPage() {
                 <tr>
                   <th className="px-6 py-4">Nome do Membro</th>
                   <th className="px-6 py-4">Setor</th>
+                  <th className="px-6 py-4">Última Ação</th>
                   <th className="px-6 py-4">Último Acesso</th>
                   <th className="px-6 py-4">Tempo na Sessão</th>
                   <th className="px-6 py-4 text-right">Status</th>
@@ -194,6 +195,11 @@ export default function RelatorioAcessosPage() {
                        </span>
                     </td>
                     <td className="px-6 py-4">
+                      <span className="text-xs font-medium text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
+                        {log.last_action || "Acessando Sistema"}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
                       <div className="flex flex-col">
                         <span>{new Date(log.last_online).toLocaleDateString('pt-BR')}</span>
                         <span className="text-xs text-muted-foreground">{new Date(log.last_online).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
@@ -206,8 +212,24 @@ export default function RelatorioAcessosPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex justify-end">
-                        <div className="h-2.5 w-2.5 rounded-full bg-green-500 animate-pulse ring-4 ring-green-500/20" title="Recentemente Online"></div>
+                      <div className="flex justify-end items-center gap-2">
+                        {(() => {
+                          const lastOnline = new Date(log.last_online).getTime();
+                          const diff = Date.now() - lastOnline;
+                          const isOnline = diff < 60000; // Online se atualizado no último minuto
+                          
+                          return isOnline ? (
+                            <>
+                              <span className="text-[10px] font-bold text-green-600 uppercase">Ao Vivo</span>
+                              <div className="h-3 w-3 rounded-full bg-green-500 animate-pulse ring-4 ring-green-500/20" title="Ativo Agora"></div>
+                            </>
+                          ) : (
+                            <>
+                              <span className="text-[10px] font-bold text-slate-400 uppercase">Offline</span>
+                              <div className="h-3 w-3 rounded-full bg-slate-300" title="Inativo"></div>
+                            </>
+                          );
+                        })()}
                       </div>
                     </td>
                   </tr>

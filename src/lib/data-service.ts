@@ -1367,8 +1367,9 @@ export const dataService = {
 
     const userId = this.getCurrentUserId();
     
-    // 🛡️ SOBERANIA ABSOLUTA (Fail-Fast): Coordenação Geral e Extensão
-    if (userId === '1' || userId === '5') return true; 
+    // 🛡️ SOBERANIA ABSOLUTA (Fail-Fast): Coordenação Geral e Executiva
+    // IDs: Aisamaque (1), Danielle (5), Dayane (4), Bruna (3), Amanda (15), Andréa (2)
+    if (['1', '2', '3', '4', '5', '15'].includes(userId)) return true; 
 
     const user = this.getCurrentUser();
     if (!user) return false;
@@ -1394,8 +1395,8 @@ export const dataService = {
     // 🔍 Nova verificação granular
     if (user.permissoes?.MANAGE_MEMBERS) return true;
     
-    // IDs Mestres: Aisamaque (1), Danielle (5), Dayane (4 - Executiva)
-    if (user.id === '1' || user.id === '5' || user.id === '4') return true;
+    // IDs Mestres: Aisamaque (1), Danielle (5), Dayane (4), Bruna (3), Amanda (15)
+    if (['1', '2', '3', '4', '5', '15'].includes(user.id)) return true;
 
     // Setores de Coordenação
     if (user.department === 'CGP' || user.department === 'EXTENSÃO') return true;
