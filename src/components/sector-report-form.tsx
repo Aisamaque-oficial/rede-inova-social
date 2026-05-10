@@ -101,121 +101,12 @@ export function SectorReportForm({ sectorId, sectorSigla, sectorName, onReportSa
     setIsGeneratingPdf(true);
 
     try {
-      const { jsPDF } = await import('jspdf');
-      const doc = new jsPDF();
-
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const margin = 20;
-      const usableWidth = pageWidth - margin * 2;
-      let y = 25;
-
-      // Header
-      doc.setFontSize(10);
-      doc.setTextColor(100, 100, 100);
-      doc.text("PROJETO REDE INOVA SOCIAL", pageWidth / 2, y, { align: "center" });
-      y += 6;
-      doc.setFontSize(8);
-      doc.text("Universidade Estadual do Sudoeste da Bahia — UESB", pageWidth / 2, y, { align: "center" });
-      y += 12;
-
-      // Title
-      doc.setFontSize(16);
-      doc.setTextColor(30, 30, 30);
-      doc.setFont("helvetica", "bold");
-      const typeLabel = periodType === 'semanal' ? 'SEMANAL' : periodType === 'quinzenal' ? 'QUINZENAL' : 'MENSAL';
-      doc.text(`RELATÓRIO ${typeLabel}`, pageWidth / 2, y, { align: "center" });
-      y += 8;
-
-      doc.setFontSize(11);
-      doc.setFont("helvetica", "normal");
-      doc.text(`Setor: ${sectorName} (${sectorSigla})`, pageWidth / 2, y, { align: "center" });
-      y += 6;
-      doc.text(`Período: ${periodLabel}`, pageWidth / 2, y, { align: "center" });
-      y += 12;
-
-      // Divider
-      doc.setDrawColor(200, 200, 200);
-      doc.line(margin, y, pageWidth - margin, y);
-      y += 10;
-
-      // Content
-      doc.setFontSize(12);
-      doc.setFont("helvetica", "bold");
-      doc.text("ATIVIDADES REALIZADAS NO PERÍODO", margin, y);
-      y += 8;
-
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      const contentLines = doc.splitTextToSize(content, usableWidth);
-      for (const line of contentLines) {
-        if (y > 270) { doc.addPage(); y = 25; }
-        doc.text(line, margin, y);
-        y += 5.5;
+      const { generateReportPdf } = await import('@/lib/pdf-generator');
+      const reports = dataService.getReportsBySector(sectorId);
+      const report = reports.find(r => r.id === savedReportId);
+      if (report) {
+        await generateReportPdf(report);
       }
-      y += 8;
-
-      // Member Activities
-      const validMembers = members.filter(m => m.memberName.trim());
-      if (validMembers.length > 0) {
-        if (y > 240) { doc.addPage(); y = 25; }
-        doc.setFontSize(12);
-        doc.setFont("helvetica", "bold");
-        doc.text("PARTICIPAÇÃO DOS MEMBROS", margin, y);
-        y += 8;
-
-        for (const member of validMembers) {
-          if (y > 260) { doc.addPage(); y = 25; }
-          doc.setFontSize(10);
-          doc.setFont("helvetica", "bold");
-          doc.text(`• ${member.memberName}`, margin + 4, y);
-          y += 5.5;
-          doc.setFont("helvetica", "normal");
-          const memberLines = doc.splitTextToSize(member.description, usableWidth - 10);
-          for (const line of memberLines) {
-            if (y > 270) { doc.addPage(); y = 25; }
-            doc.text(line, margin + 8, y);
-            y += 5.5;
-          }
-          y += 4;
-        }
-      }
-
-      // Signature Block
-      y += 10;
-      if (y > 230) { doc.addPage(); y = 25; }
-
-      doc.setDrawColor(60, 130, 80);
-      doc.setFillColor(245, 250, 245);
-      doc.roundedRect(margin, y, usableWidth, 40, 3, 3, 'FD');
-      y += 10;
-
-      doc.setFontSize(9);
-      doc.setTextColor(60, 130, 80);
-      doc.setFont("helvetica", "bold");
-      doc.text("ASSINATURA ELETRÔNICA", pageWidth / 2, y, { align: "center" });
-      y += 7;
-
-      doc.setFontSize(8);
-      doc.setTextColor(80, 80, 80);
-      doc.setFont("helvetica", "normal");
-      const sealText = `Documento assinado eletronicamente por ${user?.name || 'Coordenador'}, ${user?.cargo || 'Coordenador de Setor'}, em ${format(new Date(), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })}, no sistema do projeto Rede Inova Social.`;
-      const sealLines = doc.splitTextToSize(sealText, usableWidth - 16);
-      for (const line of sealLines) {
-        doc.text(line, pageWidth / 2, y, { align: "center" });
-        y += 4.5;
-      }
-
-      // Footer
-      const totalPages = doc.getNumberOfPages();
-      for (let i = 1; i <= totalPages; i++) {
-        doc.setPage(i);
-        doc.setFontSize(7);
-        doc.setTextColor(180, 180, 180);
-        doc.text(`Rede Inova Social — Relatório ${typeLabel} — ${sectorSigla} — Página ${i}/${totalPages}`, pageWidth / 2, 290, { align: "center" });
-      }
-
-      const fileName = `Relatorio_${typeLabel}_${sectorSigla}_${format(new Date(), 'yyyy-MM-dd')}.pdf`;
-      doc.save(fileName);
     } catch (e) {
       console.error("Erro ao gerar PDF:", e);
     } finally {
