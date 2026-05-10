@@ -536,6 +536,44 @@ export const dataService = {
     }
   },
 
+  /**
+   * ✅ CONCLUSÃO DE TAREFA: Marca a tarefa como concluída com relato obrigatório.
+   * Sincroniza o status e o relato de conclusão com o Supabase.
+   */
+  async completarTarefa(taskId: string, dados: { report: string }): Promise<void> {
+    const task = projectTasks.find(t => t.id === taskId);
+    if (!task) throw new Error("Tarefa não encontrada.");
+
+    const user = this.getCurrentUser();
+
+    // Atualizar dados locais
+    task.status = 'concluida';
+    task.completionReport = dados.report;
+    task.completedAt = new Date().toISOString();
+
+    // Registrar no histórico
+    if (!task.history) task.history = [];
+    task.history.push({
+      timestamp: new Date().toISOString(),
+      userId: user?.id || 'sistema',
+      userName: user?.name || 'Sistema',
+      action: 'TAREFA CONCLUÍDA',
+      comment: dados.report,
+      status: 'concluida',
+      type: 'status_change' as any
+    });
+
+    notifyTaskListeners();
+    saveToStorage('tasks', projectTasks);
+
+    // Sincronizar com Supabase
+    try {
+      await this._syncTaskToSupabase(task);
+    } catch (e) {
+      console.warn("Supabase sync failed on completion:", e);
+    }
+  },
+
   async addCommentToTask(taskId: string, comment: string, type: string = 'comment'): Promise<void> {
     const task = projectTasks.find(t => t.id === taskId);
     if (!task) throw new Error("Tarefa não encontrada.");
