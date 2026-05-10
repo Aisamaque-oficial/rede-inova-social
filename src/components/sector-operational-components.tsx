@@ -32,17 +32,38 @@ import { LayoutDashboard } from "lucide-react";
 /**
  * 1. HEADER SETORIAL GENÉRICO
  */
-export function SectorSignageHeader({ sector }: { sector: Models.SectorDefinition }) {
+export function SectorSignageHeader({ 
+  sector, 
+  members = [] 
+}: { 
+  sector: Models.SectorDefinition, 
+  members?: Models.User[] 
+}) {
   if (!sector) return null;
   const Icon = (LucideIcons as any)[sector.icon || "Activity"] || Activity;
   
+  // Encontrar o coordenador principal do setor
+  const coordinator = members.find(m => 
+    m.assignments?.some(a => 
+      (a.sector.toUpperCase() === sector.sigla.toUpperCase() || a.sector.toLowerCase() === sector.id.toLowerCase()) && 
+      (a.role === 'COORDENADOR' || a.role === 'ADMIN')
+    )
+  );
+
+  // Demais membros do setor (excluindo o coordenador se ele foi encontrado)
+  const otherMembers = members.filter(m => m.id !== coordinator?.id);
+
+  const getAvatarSrc = (user: Models.User) => {
+    return user.avatarUrl || `https://i.pravatar.cc/150?u=${user.id}`;
+  };
+
   return (
     <div className="relative group">
        <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-transparent rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition-all" />
        <div className="relative bg-white/60 backdrop-blur-xl border border-white/40 p-10 rounded-[2.5rem] shadow-2xl shadow-slate-200/50">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+            <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-8">
                 <div className="flex items-center gap-8">
-                    <div className="w-24 h-24 rounded-3xl bg-slate-900 flex items-center justify-center text-white shadow-2xl shadow-slate-900/20 group-hover:scale-110 transition-transform relative">
+                    <div className="w-24 h-24 rounded-3xl bg-slate-900 flex items-center justify-center text-white shadow-2xl shadow-slate-900/20 group-hover:scale-110 transition-transform relative shrink-0">
                         <Icon className="w-10 h-10 group-hover:animate-bounce" />
                         <div className="absolute -bottom-2 -right-2 bg-primary text-white p-2 rounded-xl shadow-lg border-4 border-white">
                             <LucideIcons.ShieldCheck size={16} />
@@ -53,7 +74,7 @@ export function SectorSignageHeader({ sector }: { sector: Models.SectorDefinitio
                             <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px] uppercase font-black tracking-widest">NÚCLEO OPERACIONAL</Badge>
                             <span className="text-[10px] font-black text-slate-300 tracking-[0.3em] uppercase italic">REDE INOVA SOCIAL</span>
                         </div>
-                        <h1 className="text-5xl font-black text-slate-900 tracking-tighter uppercase italic leading-none mt-2">
+                        <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter uppercase italic leading-none mt-2">
                             {sector.name} <span className="text-primary">[{sector.sigla}]</span>
                         </h1>
                         <p className="text-slate-500 font-bold text-sm mt-3 uppercase tracking-widest opacity-70">
@@ -62,38 +83,72 @@ export function SectorSignageHeader({ sector }: { sector: Models.SectorDefinitio
                     </div>
                 </div>
 
-                {/* 👑 DESTAQUE DE LIDERANÇA (Dynamic) */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                    <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 flex items-center gap-4 hover:shadow-xl transition-all">
-                        <div className="relative">
-                            <img 
-                                src={sector.sigla === 'ASCOM' ? "https://i.pravatar.cc/150?u=amanda" : "https://i.pravatar.cc/150?u=inova"} 
-                                alt="Coordenador" 
-                                className="w-12 h-12 rounded-2xl object-cover ring-2 ring-primary/20"
-                            />
-                            <div className="absolute -top-1 -right-1 bg-primary text-white rounded-full p-0.5 border-2 border-white">
-                                <LucideIcons.Crown size={10} />
-                            </div>
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Liderança do Núcleo</span>
-                            <span className="text-sm font-black text-slate-800 uppercase italic">
-                                {sector.sigla === 'ASCOM' ? "Amanda Milly" : "Coordenação Geral"}
-                            </span>
-                            <span className="text-[9px] font-bold text-primary uppercase tracking-tight">
-                                {sector.sigla === 'ASCOM' ? "Coordenação Geral da ASCOM" : "Supervisão Técnica"}
-                            </span>
-                        </div>
-                    </div>
+                <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-6">
+                    {/* 👑 DESTAQUE DE LIDERANÇA (Dynamic) */}
+                    {coordinator && (
+                      <div className="bg-white/80 p-6 rounded-[2rem] border border-slate-100 flex items-center gap-4 hover:shadow-xl transition-all shadow-sm">
+                          <div className="relative">
+                              <img 
+                                  src={getAvatarSrc(coordinator)} 
+                                  alt={coordinator.name} 
+                                  className="w-14 h-14 rounded-2xl object-cover ring-2 ring-primary/20"
+                              />
+                              <div className="absolute -top-1 -right-1 bg-primary text-white rounded-full p-0.5 border-2 border-white">
+                                  <LucideIcons.Crown size={10} />
+                              </div>
+                          </div>
+                          <div className="flex flex-col">
+                              <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Liderança do Núcleo</span>
+                              <span className="text-sm font-black text-slate-800 uppercase italic leading-tight">
+                                  {coordinator.name}
+                              </span>
+                              <span className="text-[9px] font-bold text-primary uppercase tracking-tight mt-1">
+                                  Coordenador(a) do Setor
+                              </span>
+                          </div>
+                      </div>
+                    )}
 
-                    <Link href={`/setores/${sector.id}/painel`} className="block group/btn h-full">
-                        <div className="h-full bg-slate-900 text-white p-6 rounded-[2rem] border border-slate-800 flex items-center gap-4 hover:bg-primary transition-all shadow-xl shadow-slate-900/20 group-hover/btn:-translate-y-1">
-                            <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center group-hover/btn:scale-110 transition-transform">
+                    {/* 👥 MEMBROS DO SETOR */}
+                    {otherMembers.length > 0 && (
+                      <div className="bg-slate-50/50 p-4 rounded-[1.5rem] border border-slate-100 flex flex-col gap-2">
+                        <span className="text-[8px] font-black uppercase text-slate-400 tracking-[0.2em] mb-1">Equipe Técnica</span>
+                        <div className="flex items-center gap-3">
+                          <div className="flex -space-x-2">
+                            {otherMembers.slice(0, 5).map((member) => (
+                              <div key={member.id} className="relative group/member">
+                                <img 
+                                  src={getAvatarSrc(member)} 
+                                  alt={member.name}
+                                  className="w-8 h-8 rounded-full border-2 border-white object-cover shadow-sm transition-transform group-hover/member:scale-110 group-hover/member:z-10"
+                                />
+                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-900 text-white text-[8px] font-bold rounded opacity-0 group-hover/member:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-20">
+                                  {member.name}
+                                </div>
+                              </div>
+                            ))}
+                            {otherMembers.length > 5 && (
+                              <div className="w-8 h-8 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-[8px] font-black text-slate-600 shadow-sm">
+                                +{otherMembers.length - 5}
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-[10px] font-black text-slate-700 uppercase italic leading-none">Membros do Setor</span>
+                            <span className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">{otherMembers.length} integrante(s) ativos</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <Link href={`/setores/${sector.id}/painel`} className="block group/btn">
+                        <div className="bg-slate-900 text-white p-6 rounded-[2rem] border border-slate-800 flex items-center gap-4 hover:bg-primary transition-all shadow-xl shadow-slate-900/20 group-hover/btn:-translate-y-1">
+                            <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center group-hover/btn:scale-110 transition-transform shrink-0">
                                 <LayoutDashboard size={20} className="text-white" />
                             </div>
                             <div className="flex flex-col">
                                 <span className="text-[9px] font-black uppercase text-white/50 tracking-widest">Painel de Controle</span>
-                                <span className="text-sm font-black uppercase italic tracking-tighter">Centro de Operações</span>
+                                <span className="text-sm font-black uppercase italic tracking-tighter">Operações</span>
                             </div>
                             <LucideIcons.ArrowRight className="ml-2 w-4 h-4 opacity-0 group-hover/btn:opacity-100 group-hover/btn:translate-x-1 transition-all" />
                         </div>

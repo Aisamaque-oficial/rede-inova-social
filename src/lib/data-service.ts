@@ -1360,6 +1360,16 @@ export const dataService = {
     return getTeamMembers().find(u => u.id === userId) || null;
   },
 
+  /** Obtém todos os membros vinculados a um setor específico */
+  getMembersBySector(sectorIdOrSigla: string): User[] {
+    const members = getTeamMembers();
+    return members.filter(member => 
+      member.assignments?.some((a: any) => 
+        a.sector?.toLowerCase() === sectorIdOrSigla.toLowerCase()
+      )
+    );
+  },
+
   /** Verifica se usuário é coordenador ou admin (setor ativo ou global) */
   isCoordinator(): boolean {
     // 🛡️ No site externo, ninguém é coordenador (apenas leitura)

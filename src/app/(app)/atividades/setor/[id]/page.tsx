@@ -28,6 +28,7 @@ export default function SectorDynamicPage({ params: paramsPromise, searchParams:
   
   const sectorId = forcedId || params?.id || "ascom";
   const [sector, setSector] = useState<any>(null);
+  const [sectorMembers, setSectorMembers] = useState<any[]>([]);
   const [tasks, setTasks] = useState<ProjectTask[]>([]);
   const [metrics, setMetrics] = useState<any>({ publishedMonth: 0, inProduction: 0, overdue: 0, waiting: 0, blocked: 0, avgDeliveryTime: '...' });
   const [activeFilter, setActiveFilter] = useState('all');
@@ -70,6 +71,8 @@ export default function SectorDynamicPage({ params: paramsPromise, searchParams:
       const found = allSectors.find(s => s.id === sectorId || s.sigla.toLowerCase() === sectorId?.toLowerCase());
       setSector(found);
       if (found) {
+        const members = dataService.getMembersBySector(found.sigla);
+        setSectorMembers(members);
         await fetchTasksAndMetrics(found);
       }
       setIsLoading(false);
@@ -105,6 +108,7 @@ export default function SectorDynamicPage({ params: paramsPromise, searchParams:
     <div className="space-y-8 pb-12">
       <SectorSignageHeader 
         sector={sector}
+        members={sectorMembers}
       />
 
       <div className="flex justify-between items-center px-2">
