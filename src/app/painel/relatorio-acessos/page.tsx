@@ -30,28 +30,37 @@ export default function RelatorioAcessosPage() {
         return;
       }
 
-      // Verificação de permissão (Coordenadores)
-      const allowedRoles = ["Coordenação Geral", "Coordenação Executiva", "Coordenação de Extensão", "Admin"];
-      const userRole = session.role || "Membro";
+      // Verificação de permissão (Coordenadores e Admins)
+      const isAuthorized = dataService.isCoordinator() || dataService.getUserRole() === 'admin';
       
-      if (!allowedRoles.includes(userRole)) {
+      if (!isAuthorized) {
         setLoading(false);
         setUser(session);
         return;
       }
 
-      setUser(session);
+      setUser({ ...session, _authorized: true });
       const data = await supabaseActivity.getActivityLogs();
       setLogs(data);
       setLoading(false);
     };
 
     init();
+
+    // Atualizar logs a cada 30 segundos para refletir dados em tempo real
+    const interval = setInterval(async () => {
+      try {
+        const data = await supabaseActivity.getActivityLogs();
+        setLogs(data);
+      } catch (e) {}
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, [router]);
 
   const filteredLogs = logs.filter(log => 
-    log.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    log.user_sector.toLowerCase().includes(searchTerm.toLowerCase())
+    log.user_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    log.user_sector?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading) {
@@ -62,7 +71,7 @@ export default function RelatorioAcessosPage() {
     );
   }
 
-  if (user && !["Coordenação Geral", "Coordenação Executiva", "Coordenação de Extensão", "Admin"].includes(user.role)) {
+  if (user && !user._authorized) {
     return (
       <div className="flex h-screen flex-col items-center justify-center bg-background p-4 text-center">
         <ShieldAlert className="h-16 w-16 text-destructive mb-4" />
