@@ -46,6 +46,17 @@ async function ensureLogosLoaded() {
   }
 }
 
+function safeFormatDate(dateStr: string | undefined | null, fmt: string = "dd/MM/yyyy", localeObj?: any): string {
+  if (!dateStr) return "";
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return "";
+    return format(d, fmt, localeObj ? { locale: localeObj } : undefined);
+  } catch (e) {
+    return "";
+  }
+}
+
 export async function generateReportPdf(report: SectorReport) {
   const { jsPDF } = await import("jspdf");
   const doc = new jsPDF();
@@ -118,13 +129,15 @@ export async function generateReportPdf(report: SectorReport) {
 
   doc.setFontSize(11);
   doc.setFont("helvetica", "normal");
-  doc.text(`Setor: ${report.sectorName} (${report.sectorSigla})`, pageWidth / 2, y, { align: "center" });
+  doc.text(`Setor: ${report.sectorName || "N/A"} (${report.sectorSigla || "N/A"})`, pageWidth / 2, y, { align: "center" });
   y += 6;
 
-  const periodStart = format(new Date(report.periodStart), "dd/MM/yyyy");
-  const periodEnd = format(new Date(report.periodEnd), "dd/MM/yyyy");
-  doc.text(`Período: ${periodStart} a ${periodEnd}`, pageWidth / 2, y, { align: "center" });
-  y += 10;
+  const periodStart = safeFormatDate(report.periodStart);
+  const periodEnd = safeFormatDate(report.periodEnd);
+  if (periodStart && periodEnd) {
+    doc.text(`Período: ${periodStart} a ${periodEnd}`, pageWidth / 2, y, { align: "center" });
+    y += 10;
+  }
 
   // Divider
   doc.setDrawColor(200, 200, 200);
@@ -143,7 +156,8 @@ export async function generateReportPdf(report: SectorReport) {
 
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
-  const contentLines = doc.splitTextToSize(report.content, usableWidth);
+  const contentText = report.content || "Nenhuma atividade relatada.";
+  const contentLines = doc.splitTextToSize(contentText, usableWidth);
   for (const line of contentLines) {
     if (y > 270) { doc.addPage(); y = 25; }
     doc.text(line, margin, y);
@@ -169,7 +183,8 @@ export async function generateReportPdf(report: SectorReport) {
       doc.text(`• ${member.memberName}`, margin + 4, y);
       y += 5.5;
       doc.setFont("helvetica", "normal");
-      const memberLines = doc.splitTextToSize(member.description, usableWidth - 10);
+      const memberDesc = member.description || "";
+      const memberLines = doc.splitTextToSize(memberDesc, usableWidth - 10);
       for (const line of memberLines) {
         if (y > 270) { doc.addPage(); y = 25; }
         doc.text(line, margin + 8, y);
@@ -200,8 +215,10 @@ export async function generateReportPdf(report: SectorReport) {
   doc.setFontSize(8);
   doc.setTextColor(80, 80, 80);
   doc.setFont("helvetica", "normal");
+  
+  const signedAtFmt = safeFormatDate(report.signedAt || new Date().toISOString(), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", ptBR);
   const sealText = report.signatureSeal || 
-    `Documento assinado eletronicamente por ${report.signedBy}, ${report.signedByCargo}, em ${format(new Date(report.signedAt), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })}, no sistema do projeto Rede Inova Social.`;
+    `Documento assinado eletronicamente por ${report.signedBy || 'Coordenador'}, ${report.signedByCargo || 'Membro'}, em ${signedAtFmt}, no sistema do projeto Rede Inova Social.`;
   const sealLines = doc.splitTextToSize(sealText, usableWidth - 16);
   for (const line of sealLines) {
     doc.text(line, pageWidth / 2, y, { align: "center" });
@@ -217,7 +234,7 @@ export async function generateReportPdf(report: SectorReport) {
     doc.setFontSize(7);
     doc.setTextColor(180, 180, 180);
     doc.text(
-      `Rede Inova Social — CNPq PAS/Nordeste — Relatório ${typeLabel} — ${report.sectorSigla} — Página ${i}/${totalPages}`,
+      `Rede Inova Social — CNPq PAS/Nordeste — Relatório ${typeLabel} — ${report.sectorSigla || 'Setor'} — Página ${i}/${totalPages}`,
       pageWidth / 2,
       290,
       { align: "center" }
@@ -225,6 +242,7 @@ export async function generateReportPdf(report: SectorReport) {
   }
 
   // Salvar
-  const fileName = `Relatorio_${typeLabel}_${report.sectorSigla}_${format(new Date(report.createdAt), "yyyy-MM-dd")}.pdf`;
+  const safeDate = safeFormatDate(report.createdAt || new Date().toISOString(), "yyyy-MM-dd") || "SemData";
+  const fileName = `Relatorio_${typeLabel}_${report.sectorSigla || 'Setor'}_${safeDate}.pdf`;
   doc.save(fileName);
 }
