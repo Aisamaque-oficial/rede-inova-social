@@ -86,24 +86,24 @@ export function SectorSignageHeader({
                 <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-6">
                     {/* 👑 DESTAQUE DE LIDERANÇA (Dynamic) */}
                     {coordinator && (
-                      <div className="bg-white/80 p-8 rounded-[2.5rem] border border-slate-100 flex items-center gap-6 hover:shadow-xl transition-all shadow-sm">
-                          <div className="relative">
+                      <div className="bg-white/80 p-8 rounded-[2.5rem] border border-slate-100 flex items-center gap-6 hover:shadow-xl transition-all shadow-sm shrink-0">
+                          <div className="relative w-20 h-20 shrink-0">
                               <img 
                                   src={getAvatarSrc(coordinator)} 
                                   alt={coordinator.name} 
-                                  className="w-20 h-20 rounded-[1.5rem] object-cover ring-4 ring-primary/10"
+                                  className="w-full h-full rounded-[1.5rem] object-cover ring-4 ring-primary/10 shadow-inner"
                               />
-                              <div className="absolute -top-2 -right-2 bg-primary text-white rounded-full p-1 border-2 border-white shadow-lg">
+                              <div className="absolute -top-2 -right-2 bg-primary text-white rounded-full p-1 border-2 border-white shadow-lg z-10">
                                   <LucideIcons.Crown size={14} />
                               </div>
                           </div>
-                          <div className="flex flex-col">
+                          <div className="flex flex-col min-w-[120px]">
                               <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Liderança do Núcleo</span>
-                              <span className="text-lg font-black text-slate-800 uppercase italic leading-none">
-                                  {coordinator.name}
+                              <span className="text-lg font-black text-slate-800 uppercase italic leading-none truncate">
+                                  {coordinator.name.split(' ')[0]} {coordinator.name.split(' ').slice(-1)}
                               </span>
-                              <span className="text-[10px] font-bold text-primary uppercase tracking-tight mt-2 bg-primary/5 px-2 py-1 rounded-lg self-start">
-                                  Coordenador(a) do Setor
+                              <span className="text-[10px] font-bold text-primary uppercase tracking-tight mt-2 bg-primary/5 px-2 py-1 rounded-lg self-start whitespace-nowrap">
+                                  Coordenador(a)
                               </span>
                           </div>
                       </div>
@@ -111,16 +111,16 @@ export function SectorSignageHeader({
 
                     {/* 👥 MEMBROS DO SETOR */}
                     {otherMembers.length > 0 && (
-                      <div className="bg-slate-50/50 p-6 rounded-[2rem] border border-slate-100 flex flex-col gap-3">
+                      <div className="bg-slate-50/50 p-6 rounded-[2rem] border border-slate-100 flex flex-col gap-3 shrink-0">
                         <span className="text-[9px] font-black uppercase text-slate-400 tracking-[0.2em] mb-1">Equipe Técnica</span>
                         <div className="flex items-center gap-4">
-                          <div className="flex -space-x-3">
+                          <div className="flex -space-x-3 shrink-0">
                             {otherMembers.slice(0, 5).map((member) => (
-                              <div key={member.id} className="relative group/member">
+                              <div key={member.id} className="relative group/member w-12 h-12 shrink-0">
                                 <img 
                                   src={getAvatarSrc(member)} 
                                   alt={member.name}
-                                  className="w-12 h-12 rounded-2xl border-2 border-white object-cover shadow-md transition-transform group-hover/member:scale-110 group-hover/member:z-10"
+                                  className="w-full h-full rounded-2xl border-2 border-white object-cover shadow-md transition-transform group-hover/member:scale-110 group-hover/member:z-10"
                                 />
                                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-3 py-1.5 bg-slate-900 text-white text-[10px] font-bold rounded-lg opacity-0 group-hover/member:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-20 shadow-xl">
                                   {member.name}
@@ -128,14 +128,14 @@ export function SectorSignageHeader({
                               </div>
                             ))}
                             {otherMembers.length > 5 && (
-                              <div className="w-12 h-12 rounded-2xl border-2 border-white bg-slate-200 flex items-center justify-center text-[10px] font-black text-slate-600 shadow-sm">
+                              <div className="w-12 h-12 rounded-2xl border-2 border-white bg-slate-200 flex items-center justify-center text-[10px] font-black text-slate-600 shadow-sm shrink-0">
                                 +{otherMembers.length - 5}
                               </div>
                             )}
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-[12px] font-black text-slate-700 uppercase italic leading-none">Membros do Setor</span>
-                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-1">{otherMembers.length} integrante(s) ativos</span>
+                            <span className="text-[12px] font-black text-slate-700 uppercase italic leading-none">Membros</span>
+                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-1">{otherMembers.length} ativos</span>
                           </div>
                         </div>
                       </div>
