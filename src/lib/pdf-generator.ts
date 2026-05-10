@@ -119,18 +119,26 @@ export async function generateReportPdf(report: SectorReport) {
   // ═══════════════════════════════════════
   // TÍTULO DO RELATÓRIO
   // ═══════════════════════════════════════
-  const typeLabel = report.periodType === "semanal" ? "SEMANAL" : report.periodType === "quinzenal" ? "QUINZENAL" : "MENSAL";
+  const typeLabel = report.periodType === "diaria" ? "DIÁRIO" : report.periodType === "semanal" ? "SEMANAL" : report.periodType === "quinzenal" ? "QUINZENAL" : "MENSAL";
+  const scopeLabel = report.reportScope === "individual" ? "INDIVIDUAL " : "";
 
   doc.setFontSize(16);
   doc.setTextColor(30, 30, 30);
   doc.setFont("helvetica", "bold");
-  doc.text(`RELATÓRIO ${typeLabel}`, pageWidth / 2, y, { align: "center" });
+  doc.text(`RELATÓRIO ${scopeLabel}${typeLabel}`, pageWidth / 2, y, { align: "center" });
   y += 8;
 
   doc.setFontSize(11);
   doc.setFont("helvetica", "normal");
   doc.text(`Setor: ${report.sectorName || "N/A"} (${report.sectorSigla || "N/A"})`, pageWidth / 2, y, { align: "center" });
   y += 6;
+
+  if (report.reportScope === "individual") {
+    doc.setFont("helvetica", "bold");
+    doc.text(`Membro: ${report.signedBy || "N/A"}`, pageWidth / 2, y, { align: "center" });
+    doc.setFont("helvetica", "normal");
+    y += 6;
+  }
 
   const periodStart = safeFormatDate(report.periodStart);
   const periodEnd = safeFormatDate(report.periodEnd);
@@ -166,31 +174,33 @@ export async function generateReportPdf(report: SectorReport) {
   y += 8;
 
   // ═══════════════════════════════════════
-  // PARTICIPAÇÃO DOS MEMBROS
+  // PARTICIPAÇÃO DOS MEMBROS (Apenas Global)
   // ═══════════════════════════════════════
-  const validMembers = (report.memberActivities || []).filter(m => m.memberName?.trim());
-  if (validMembers.length > 0) {
-    if (y > 240) { doc.addPage(); y = 25; }
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.text("PARTICIPAÇÃO DOS MEMBROS", margin, y);
-    y += 8;
-
-    for (const member of validMembers) {
-      if (y > 260) { doc.addPage(); y = 25; }
-      doc.setFontSize(10);
+  if (report.reportScope !== 'individual') {
+    const validMembers = (report.memberActivities || []).filter(m => m.memberName?.trim());
+    if (validMembers.length > 0) {
+      if (y > 240) { doc.addPage(); y = 25; }
+      doc.setFontSize(12);
       doc.setFont("helvetica", "bold");
-      doc.text(`• ${member.memberName}`, margin + 4, y);
-      y += 5.5;
-      doc.setFont("helvetica", "normal");
-      const memberDesc = member.description || "";
-      const memberLines = doc.splitTextToSize(memberDesc, usableWidth - 10);
-      for (const line of memberLines) {
-        if (y > 270) { doc.addPage(); y = 25; }
-        doc.text(line, margin + 8, y);
+      doc.text("PARTICIPAÇÃO DOS MEMBROS", margin, y);
+      y += 8;
+
+      for (const member of validMembers) {
+        if (y > 260) { doc.addPage(); y = 25; }
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.text(`• ${member.memberName}`, margin + 4, y);
         y += 5.5;
+        doc.setFont("helvetica", "normal");
+        const memberDesc = member.description || "";
+        const memberLines = doc.splitTextToSize(memberDesc, usableWidth - 10);
+        for (const line of memberLines) {
+          if (y > 270) { doc.addPage(); y = 25; }
+          doc.text(line, margin + 8, y);
+          y += 5.5;
+        }
+        y += 4;
       }
-      y += 4;
     }
   }
 

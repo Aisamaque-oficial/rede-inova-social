@@ -154,10 +154,15 @@ export function ReportsArchive() {
                     </div>
 
                     <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-xs text-slate-500">
-                        <Calendar className="w-3.5 h-3.5" />
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                        {report.reportScope === 'individual' ? (
+                          <Badge variant="outline" className="text-[8px] font-black uppercase text-purple-600 border-purple-200 bg-purple-50">Individual</Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-[8px] font-black uppercase text-blue-600 border-blue-200 bg-blue-50">Global</Badge>
+                        )}
+                        <Calendar className="w-3.5 h-3.5 ml-1" />
                         <span className="font-bold">
-                          {report.periodType === 'semanal' ? 'Semanal' : report.periodType === 'quinzenal' ? 'Quinzenal' : 'Mensal'}
+                          {report.periodType === 'diaria' ? 'Diário' : report.periodType === 'semanal' ? 'Semanal' : report.periodType === 'quinzenal' ? 'Quinzenal' : 'Mensal'}
                         </span>
                         <span className="text-slate-300">|</span>
                         <span>{format(new Date(report.periodStart), "dd/MM")} — {format(new Date(report.periodEnd), "dd/MM/yy")}</span>
@@ -211,14 +216,20 @@ export function ReportsArchive() {
             >
               <div className="p-8 border-b border-slate-100 flex justify-between items-start">
                 <div className="space-y-2">
-                  <Badge className="bg-primary/10 text-primary text-[9px] font-black uppercase tracking-widest border-primary/20">
-                    <FileText className="w-3 h-3 mr-1" />
-                    Relatório {viewingReport.periodType}
-                  </Badge>
+                  <div className="flex gap-2">
+                    {viewingReport.reportScope === 'individual' && (
+                      <Badge className="bg-purple-100 text-purple-700 text-[9px] font-black uppercase tracking-widest border-purple-200">Individual</Badge>
+                    )}
+                    <Badge className="bg-primary/10 text-primary text-[9px] font-black uppercase tracking-widest border-primary/20">
+                      <FileText className="w-3 h-3 mr-1" />
+                      Relatório {viewingReport.periodType === 'diaria' ? 'Diário' : viewingReport.periodType}
+                    </Badge>
+                  </div>
                   <h2 className="text-2xl font-black italic uppercase tracking-tighter text-slate-800">
                     {viewingReport.sectorName}
                   </h2>
                   <p className="text-xs text-slate-400">
+                    {viewingReport.reportScope === 'individual' ? `Membro: ${viewingReport.signedBy} | ` : ''}
                     {format(new Date(viewingReport.periodStart), "dd/MM/yyyy")} — {format(new Date(viewingReport.periodEnd), "dd/MM/yyyy")}
                   </p>
                 </div>

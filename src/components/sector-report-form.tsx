@@ -25,7 +25,13 @@ interface SectorReportFormProps {
 }
 
 export function SectorReportForm({ sectorId, sectorSigla, sectorName, onReportSaved }: SectorReportFormProps) {
-  const [periodType, setPeriodType] = useState<'semanal' | 'quinzenal' | 'mensal'>('semanal');
+  const user = dataService.getCurrentUser();
+  const isCoordinator = user?.cargo?.toLowerCase().includes('coordenador') || 
+                        user?.name?.toLowerCase().includes('aisamaque') || 
+                        user?.cargo?.toLowerCase().includes('cgp');
+
+  const [reportScope, setReportScope] = useState<'global' | 'individual'>(isCoordinator ? 'global' : 'individual');
+  const [periodType, setPeriodType] = useState<'diaria' | 'semanal' | 'quinzenal' | 'mensal'>(isCoordinator ? 'semanal' : 'diaria');
   const [content, setContent] = useState("");
   const [members, setMembers] = useState<MemberActivityEntry[]>([{ memberName: "", description: "" }]);
   const [isSigned, setIsSigned] = useState(false);
@@ -33,11 +39,10 @@ export function SectorReportForm({ sectorId, sectorSigla, sectorName, onReportSa
   const [savedReportId, setSavedReportId] = useState<string | null>(null);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
-  const user = dataService.getCurrentUser();
-
   const getPeriodDates = () => {
     const now = new Date();
     switch (periodType) {
+      case 'diaria': return { start: now, end: now };
       case 'semanal': return { start: startOfWeek(now, { weekStartsOn: 1 }), end: endOfWeek(now, { weekStartsOn: 1 }) };
       case 'quinzenal': return { start: subDays(now, 14), end: now };
       case 'mensal': return { start: startOfMonth(now), end: endOfMonth(now) };
@@ -64,20 +69,21 @@ export function SectorReportForm({ sectorId, sectorSigla, sectorName, onReportSa
     if (!isSigned || !content.trim()) return;
     setIsSaving(true);
 
-    const sealText = `Documento assinado eletronicamente por ${user?.name || 'Coordenador'}, ${user?.cargo || 'Coordenador de Setor'}, em ${format(new Date(), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })}, no sistema do projeto Rede Inova Social.`;
+    const sealText = `Documento assinado eletronicamente por ${user?.name || 'Membro'}, ${user?.cargo || 'Membro de Setor'}, em ${format(new Date(), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })}, no sistema do projeto Rede Inova Social.`;
 
     const report: SectorReport = {
       id: `report-${Date.now()}`,
       sectorId,
       sectorSigla,
       sectorName,
+      reportScope,
       periodType,
       periodStart: period.start.toISOString(),
       periodEnd: period.end.toISOString(),
       content,
-      memberActivities: members.filter(m => m.memberName.trim()),
-      signedBy: user?.name || 'Coordenador',
-      signedByCargo: user?.cargo || 'Coordenador de Setor',
+      memberActivities: reportScope === 'global' ? members.filter(m => m.memberName.trim()) : [],
+      signedBy: user?.name || 'Membro',
+      signedByCargo: user?.cargo || 'Membro do Setor',
       signedAt: new Date().toISOString(),
       signatureSeal: sealText,
       status: 'assinado',
@@ -116,32 +122,53 @@ export function SectorReportForm({ sectorId, sectorSigla, sectorName, onReportSa
 
   return (
     <div className="max-w-4xl mx-auto space-y-10">
+      {/* Scope Selection */}
+      {isCoordinator && !isSigned && (
+        <div className="space-y-4">
+          <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+            <User className="w-3.5 h-3.5" />
+            Escopo do Relatório
+          </h3>
+          <div className="flex gap-4">
+            <button
+              onClick={() => { setReportScope('global'); setPeriodType('semanal'); }}
+              className={cn("flex-1 p-4 rounded-2xl border-2 transition-all text-center", reportScope === 'global' ? "border-primary bg-primary/5 shadow-md shadow-primary/10" : "border-slate-100 bg-white hover:border-slate-200")}
+            >
+              <span className="text-sm font-black uppercase">Relatório Global do Setor</span>
+            </button>
+            <button
+              onClick={() => { setReportScope('individual'); setPeriodType('diaria'); }}
+              className={cn("flex-1 p-4 rounded-2xl border-2 transition-all text-center", reportScope === 'individual' ? "border-primary bg-primary/5 shadow-md shadow-primary/10" : "border-slate-100 bg-white hover:border-slate-200")}
+            >
+              <span className="text-sm font-black uppercase">Relatório Individual</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Period Selection */}
       <div className="space-y-4">
         <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
           <Calendar className="w-3.5 h-3.5" />
-          Tipo de Relatório
+          Período do Relatório
         </h3>
-        <div className="grid grid-cols-3 gap-4">
-          {(['semanal', 'quinzenal', 'mensal'] as const).map(type => (
+        <div className={cn("grid gap-4", reportScope === 'individual' ? "grid-cols-4" : "grid-cols-3")}>
+          {(reportScope === 'individual' ? ['diaria', 'semanal', 'quinzenal', 'mensal'] : ['semanal', 'quinzenal', 'mensal']).map(type => (
             <button
               key={type}
-              onClick={() => { if (!isSigned) setPeriodType(type); }}
+              onClick={() => { if (!isSigned) setPeriodType(type as any); }}
               disabled={isSigned}
               className={cn(
-                "p-5 rounded-2xl border-2 transition-all text-center",
+                "p-4 rounded-2xl border-2 transition-all text-center flex flex-col items-center justify-center",
                 periodType === type
                   ? "border-primary bg-primary/5 shadow-lg shadow-primary/10"
                   : "border-slate-100 hover:border-slate-200 bg-white",
                 isSigned && "opacity-60 cursor-not-allowed"
               )}
             >
-              <span className="text-lg font-black italic uppercase tracking-tighter text-slate-800">
-                {type === 'semanal' ? 'Semanal' : type === 'quinzenal' ? 'Quinzenal' : 'Mensal'}
+              <span className="text-sm sm:text-base font-black italic uppercase tracking-tighter text-slate-800">
+                {type === 'diaria' ? 'Diário' : type === 'semanal' ? 'Semanal' : type === 'quinzenal' ? 'Quinzenal' : 'Mensal'}
               </span>
-              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">
-                {type === 'semanal' ? '7 dias' : type === 'quinzenal' ? '15 dias' : '30 dias'}
-              </p>
             </button>
           ))}
         </div>
@@ -167,7 +194,8 @@ export function SectorReportForm({ sectorId, sectorSigla, sectorName, onReportSa
       </div>
 
       {/* Member Activities */}
-      <div className="space-y-4">
+      {reportScope === 'global' && (
+        <div className="space-y-4">
         <div className="flex items-center justify-between">
           <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
             <User className="w-3.5 h-3.5" />
@@ -213,6 +241,7 @@ export function SectorReportForm({ sectorId, sectorSigla, sectorName, onReportSa
           ))}
         </div>
       </div>
+      )}
 
       {/* Signature Block */}
       <AnimatePresence>

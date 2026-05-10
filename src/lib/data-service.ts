@@ -4721,7 +4721,8 @@ export interface SectorReport {
   sectorId: string;
   sectorSigla: string;
   sectorName: string;
-  periodType: 'semanal' | 'quinzenal' | 'mensal';
+  reportScope?: 'global' | 'individual'; // Escopo do relatório (Global do setor ou individual de um membro)
+  periodType: 'diaria' | 'semanal' | 'quinzenal' | 'mensal';
   periodStart: string;
   periodEnd: string;
   content: string; // Corpo do relatório

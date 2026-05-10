@@ -150,8 +150,13 @@ export default function SectorReportPage({ params: paramsPromise }: any) {
                       </div>
                       <div className="space-y-1">
                         <div className="flex items-center gap-3">
+                          {report.reportScope === 'individual' ? (
+                            <Badge variant="outline" className="text-[8px] font-black uppercase text-purple-600 border-purple-200 bg-purple-50">Individual</Badge>
+                          ) : (
+                            <Badge variant="outline" className="text-[8px] font-black uppercase text-blue-600 border-blue-200 bg-blue-50">Global</Badge>
+                          )}
                           <span className="font-black italic uppercase tracking-tighter text-slate-800">
-                            {report.periodType === 'semanal' ? 'Semanal' : report.periodType === 'quinzenal' ? 'Quinzenal' : 'Mensal'}
+                            {report.periodType === 'diaria' ? 'Diário' : report.periodType === 'semanal' ? 'Semanal' : report.periodType === 'quinzenal' ? 'Quinzenal' : 'Mensal'}
                           </span>
                           {getStatusBadge(report.status)}
                         </div>
