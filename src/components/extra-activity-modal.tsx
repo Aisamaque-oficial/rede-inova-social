@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { 
   Dialog, 
   DialogContent, 
@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { dataService } from "@/lib/data-service";
-import { Sparkles, Calendar, Target, FileText } from "lucide-react";
+import { Sparkles, Calendar, Target, FileText, ImagePlus, X, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ExtraActivityModalProps {
@@ -33,12 +33,55 @@ export function ExtraActivityModal({ open, onOpenChange, sectorId, onSuccess }: 
     extraQuantity: 1,
     extraImpact: ""
   });
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    // Limit to 5 files
+    const newFiles = [...selectedFiles, ...files].slice(0, 5);
+    setSelectedFiles(newFiles);
+
+    // Generate preview URLs
+    const urls = newFiles.map(f => URL.createObjectURL(f));
+    setPreviewUrls(urls);
+  };
+
+  const removeFile = (index: number) => {
+    const newFiles = selectedFiles.filter((_, i) => i !== index);
+    setSelectedFiles(newFiles);
+    
+    // Revoke old URL and regenerate
+    URL.revokeObjectURL(previewUrls[index]);
+    const newUrls = newFiles.map(f => URL.createObjectURL(f));
+    setPreviewUrls(newUrls);
+  };
+
+  const convertFilesToBase64 = async (files: File[]): Promise<string[]> => {
+    return Promise.all(
+      files.map(file => new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      }))
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      // Convert files to base64 for storage
+      let attachmentUrls: string[] = [];
+      if (selectedFiles.length > 0) {
+        attachmentUrls = await convertFilesToBase64(selectedFiles);
+      }
+
       await dataService.addExtraActivity({
         title: formData.title,
         description: formData.description,
@@ -50,16 +93,11 @@ export function ExtraActivityModal({ open, onOpenChange, sectorId, onSuccess }: 
         assignedToName: dataService.getCurrentUser()?.name || "Membro",
         type: "Atividade Extra",
         typeId: "tt-atividade",
+        attachmentUrls: attachmentUrls,
       } as any);
 
       onOpenChange(false);
-      setFormData({
-        title: "",
-        description: "",
-        deadline: new Date().toISOString().split('T')[0],
-        extraQuantity: 1,
-        extraImpact: ""
-      });
+      resetForm();
       if (onSuccess) onSuccess();
     } catch (error) {
       console.error("Erro ao registrar atividade extra:", error);
@@ -68,9 +106,23 @@ export function ExtraActivityModal({ open, onOpenChange, sectorId, onSuccess }: 
     }
   };
 
+  const resetForm = () => {
+    setFormData({
+      title: "",
+      description: "",
+      deadline: new Date().toISOString().split('T')[0],
+      extraQuantity: 1,
+      extraImpact: ""
+    });
+    // Cleanup preview URLs
+    previewUrls.forEach(url => URL.revokeObjectURL(url));
+    setSelectedFiles([]);
+    setPreviewUrls([]);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[550px] rounded-[2.5rem] border-none bg-white p-0 overflow-hidden shadow-2xl">
+    <Dialog open={open} onOpenChange={(val) => { if (!val) resetForm(); onOpenChange(val); }}>
+      <DialogContent className="sm:max-w-[600px] rounded-[2.5rem] border-none bg-white p-0 overflow-hidden shadow-2xl max-h-[90vh] overflow-y-auto">
         <div className="bg-slate-900 p-8 text-white relative overflow-hidden">
           <div className="relative z-10">
             <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary mb-4 border border-white/10 backdrop-blur-sm">
@@ -144,13 +196,68 @@ export function ExtraActivityModal({ open, onOpenChange, sectorId, onSuccess }: 
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
               />
             </div>
+
+            {/* Photo Upload Section */}
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest px-1 flex items-center gap-2">
+                <ImagePlus className="w-3.5 h-3.5" />
+                Registro Fotográfico (Opcional — máx. 5 fotos)
+              </Label>
+
+              <input 
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleFileChange}
+                className="hidden"
+              />
+
+              {/* Preview Grid */}
+              {previewUrls.length > 0 && (
+                <div className="grid grid-cols-3 gap-3">
+                  {previewUrls.map((url, i) => (
+                    <div key={i} className="relative aspect-square rounded-2xl overflow-hidden bg-slate-100 group">
+                      <img 
+                        src={url} 
+                        alt={`Preview ${i + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeFile(i)}
+                        className="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {selectedFiles.length < 5 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full h-20 rounded-2xl border-dashed border-2 border-slate-200 hover:border-primary/40 hover:bg-primary/5 transition-all group"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <div className="flex flex-col items-center gap-1.5 text-slate-400 group-hover:text-primary transition-colors">
+                    <ImagePlus className="w-6 h-6" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">
+                      {selectedFiles.length === 0 ? "Adicionar Fotos" : `Adicionar Mais (${selectedFiles.length}/5)`}
+                    </span>
+                  </div>
+                </Button>
+              )}
+            </div>
           </div>
 
           <DialogFooter className="pt-4 gap-3">
             <Button 
               type="button" 
               variant="ghost" 
-              onClick={() => onOpenChange(false)}
+              onClick={() => { resetForm(); onOpenChange(false); }}
               className="rounded-xl font-black uppercase text-[10px] tracking-widest h-11"
             >
               Cancelar
@@ -160,7 +267,12 @@ export function ExtraActivityModal({ open, onOpenChange, sectorId, onSuccess }: 
               disabled={loading}
               className="rounded-xl font-black uppercase text-[10px] tracking-widest h-11 px-8 bg-slate-900 hover:bg-primary shadow-xl shadow-slate-900/10"
             >
-              {loading ? "Registrando..." : "Confirmar Registro Extra"}
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Registrando...
+                </span>
+              ) : "Confirmar Registro Extra"}
             </Button>
           </DialogFooter>
         </form>

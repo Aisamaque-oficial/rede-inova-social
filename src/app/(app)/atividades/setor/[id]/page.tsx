@@ -14,9 +14,11 @@ import {
 import { ASCOMTaskTable } from "@/components/ascom-task-table";
 import { Button } from "@/components/ui/button";
 import { ExtraActivityModal } from "@/components/extra-activity-modal";
+import { ExtraActivitiesBoard } from "@/components/extra-activities-board";
 import { PlusCircle, Accessibility, BarChart3, ChevronRight, AlertTriangle, Lock, Sparkles } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { TaskCreationModal } from "@/components/task-creation-modal";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 
@@ -136,35 +138,59 @@ export default function SectorDynamicPage({ params: paramsPromise, searchParams:
         </div>
       </div>
 
-      <SectorQuickIndicators 
-        metrics={metrics} 
-        activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
-      />
+      <Tabs defaultValue="operacional" className="w-full space-y-8">
+        <TabsList className="bg-transparent h-auto p-0 gap-8 border-b border-slate-100 w-full rounded-none justify-start overflow-x-auto no-scrollbar">
+          <TabsTrigger 
+            value="operacional" 
+            className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-4 data-[state=active]:border-primary rounded-none px-2 pb-4 h-auto text-sm font-black uppercase tracking-[0.2em] text-slate-400 data-[state=active]:text-slate-800 transition-all"
+          >
+            Fluxo de Trabalho
+          </TabsTrigger>
+          <TabsTrigger 
+            value="extras" 
+            className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-4 data-[state=active]:border-primary rounded-none px-2 pb-4 h-auto text-sm font-black uppercase tracking-[0.2em] text-slate-400 data-[state=active]:text-slate-800 transition-all flex items-center gap-2"
+          >
+            <Sparkles className="w-4 h-4" />
+            Atividades Extras
+          </TabsTrigger>
+        </TabsList>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
-              <h3 className="font-bold text-slate-800">Fila de Produção</h3>
-              <div className="flex gap-2">
-                <Badge variant="outline" className="cursor-pointer hover:bg-white">Todos</Badge>
-                <Badge variant="outline" className="cursor-pointer hover:bg-white text-slate-400 border-none">Pendentes</Badge>
+        <TabsContent value="operacional" className="mt-0 outline-none space-y-8">
+          <SectorQuickIndicators 
+            metrics={metrics} 
+            activeFilter={activeFilter}
+            onFilterChange={setActiveFilter}
+          />
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+                <div className="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
+                  <h3 className="font-bold text-slate-800">Fila de Produção</h3>
+                  <div className="flex gap-2">
+                    <Badge variant="outline" className="cursor-pointer hover:bg-white">Todos</Badge>
+                    <Badge variant="outline" className="cursor-pointer hover:bg-white text-slate-400 border-none">Pendentes</Badge>
+                  </div>
+                </div>
+                <div className="p-0">
+                   <ASCOMTaskTable 
+                      forcedSectorId={sectorId}
+                    />
+                </div>
               </div>
             </div>
-            <div className="p-0">
-               <ASCOMTaskTable 
-                  forcedSectorId={sectorId}
-                />
+            
+            <div className="space-y-8">
+              <SectorPipelineTracker sectorId={sectorId} tasks={tasks} />
+              <SectorContentLibrary sectorId={sectorId} />
             </div>
           </div>
-        </div>
-        
-        <div className="space-y-8">
-          <SectorPipelineTracker sectorId={sectorId} tasks={tasks} />
-          <SectorContentLibrary sectorId={sectorId} />
-        </div>
-      </div>
+        </TabsContent>
+
+        <TabsContent value="extras" className="mt-0 outline-none">
+          <ExtraActivitiesBoard sectorId={sectorId} />
+        </TabsContent>
+      </Tabs>
 
       {lastError && (
         <div className="p-4 bg-red-50 border border-red-100 rounded-2xl flex items-start gap-3">
