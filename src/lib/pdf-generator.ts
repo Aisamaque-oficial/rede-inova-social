@@ -60,34 +60,44 @@ export async function generateReportPdf(report: SectorReport) {
   // ═══════════════════════════════════════
   // CABEÇALHO COM LOGOS
   // ═══════════════════════════════════════
-  const logoHeight = 20;
+  // Configuração para centralizar as duas logos lado a lado
+  const redeInovaWidth = 22;
+  const redeInovaHeight = 22;
+  const cnpqWidth = 55;
+  const cnpqHeight = 14;
+  const spacing = 15; // Espaço entre as logos
 
-  // Logo Rede Inova (esquerda)
-  if (logoRedeInovaBase64) {
-    try {
-      doc.addImage(logoRedeInovaBase64, "PNG", margin, y - 2, 22, 22);
-    } catch (e) {}
-  }
+  const totalLogosWidth = redeInovaWidth + spacing + cnpqWidth;
+  const startX = (pageWidth - totalLogosWidth) / 2;
 
-  // Logo CNPq (direita)
-  if (logoCnpqBase64) {
+  if (logoRedeInovaBase64 && logoCnpqBase64) {
     try {
-      // CNPq logo é larga (proporção ~4:1), ajustar
-      doc.addImage(logoCnpqBase64, "PNG", pageWidth - margin - 55, y, 55, 14);
+      doc.addImage(logoRedeInovaBase64, "PNG", startX, y, redeInovaWidth, redeInovaHeight);
+      // Alinhamento vertical centralizado aproximado para a logo do CNPq
+      doc.addImage(logoCnpqBase64, "PNG", startX + redeInovaWidth + spacing, y + 4, cnpqWidth, cnpqHeight);
+      y += Math.max(redeInovaHeight, cnpqHeight) + 8;
     } catch (e) {}
+  } else if (logoRedeInovaBase64) {
+    try {
+      doc.addImage(logoRedeInovaBase64, "PNG", (pageWidth - redeInovaWidth) / 2, y, redeInovaWidth, redeInovaHeight);
+      y += redeInovaHeight + 8;
+    } catch (e) {}
+  } else if (logoCnpqBase64) {
+    try {
+      doc.addImage(logoCnpqBase64, "PNG", (pageWidth - cnpqWidth) / 2, y, cnpqWidth, cnpqHeight);
+      y += cnpqHeight + 8;
+    } catch (e) {}
+  } else {
+    y += 10;
   }
 
   // Texto centralizado do cabeçalho
-  doc.setFontSize(11);
+  doc.setFontSize(12);
   doc.setTextColor(30, 30, 30);
   doc.setFont("helvetica", "bold");
-  doc.text("PROJETO REDE INOVA SOCIAL", pageWidth / 2, y + 6, { align: "center" });
-  doc.setFontSize(8);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(80, 80, 80);
-  doc.text("CNPq — PAS/NORDESTE", pageWidth / 2, y + 12, { align: "center" });
-
-  y += logoHeight + 8;
+  doc.text("PROJETO REDE INOVA SOCIAL - CNPq PAS/NORDESTE", pageWidth / 2, y, { align: "center" });
+  
+  y += 8;
 
   // Linha divisória do cabeçalho
   doc.setDrawColor(60, 130, 80);
