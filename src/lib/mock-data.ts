@@ -203,6 +203,7 @@ export const getTeamMembers = (): User[] => usuariosCadastrados.map(u => ({
   department: u.department,
   bio: u.bio || "",
   avatarId: u.avatarUrl ? u.avatarUrl : (u.nomeCompleto.toLowerCase().includes('a') ? 'placeholder_female_1' : 'placeholder_male_1'),
+  avatarUrl: u.avatarUrl,
   lattesUrl: u.lattesUrl || "#",
   createdAt: u.dataCriacao,
   permissions: u.permissoes
