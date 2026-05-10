@@ -12,7 +12,8 @@ import {
   Zap,
   CheckCircle,
   BarChart,
-  Lock
+  Lock,
+  PlusCircle
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -25,11 +26,14 @@ import { RiskMonitor } from "@/components/risk-monitor";
 import { BottleneckHistoryView } from "@/components/bottleneck-history-view";
 import { BottleneckRegistrationModal } from "@/components/bottleneck-registration-modal";
 import CoordinationBoard from '@/components/coordination-board';
+import { TaskCreationModal } from "@/components/task-creation-modal";
+import { Button } from "@/components/ui/button";
 
 export default function CoordenacaoGeralPage() {
   const [briefing, setBriefing] = React.useState<ExecutiveBriefing | null>(null);
   const [isBottleneckModalOpen, setIsBottleneckModalOpen] = React.useState(false);
   const [bottleneckInitialData, setBottleneckInitialData] = React.useState<any>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
 
   const role = dataService.getUserRole();
   const isAuthorized = dataService.isCoordinator() || role === 'admin';
@@ -93,6 +97,16 @@ export default function CoordenacaoGeralPage() {
       sector="COORD. GERAL"
       stats={stats}
     >
+      <div className="flex justify-end mb-8 px-2">
+        <Button 
+          className="rounded-full shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 text-white px-8 h-12 font-black uppercase tracking-widest text-[11px] transition-all hover:scale-105"
+          onClick={() => setIsCreateModalOpen(true)}
+        >
+          <PlusCircle className="mr-3 h-5 w-5" />
+          Nova Demanda Intersetorial
+        </Button>
+      </div>
+
       <Tabs defaultValue="governanca" className="w-full space-y-12">
         <TabsList className="bg-transparent h-auto p-0 gap-10 border-b border-slate-100 w-full rounded-none justify-start overflow-x-auto no-scrollbar">
           <TabsTrigger 
@@ -256,6 +270,15 @@ export default function CoordenacaoGeralPage() {
             setBottleneckInitialData(null);
         }}
         initialData={bottleneckInitialData}
+      />
+
+      <TaskCreationModal 
+        open={isCreateModalOpen} 
+        onOpenChange={setIsCreateModalOpen}
+        onTaskCreated={() => {}}
+        mode="assignment"
+        isCGP={true}
+        initialSector="CGP"
       />
     </OperationalDashboardLayout>
   );
