@@ -16,7 +16,8 @@ export const supabaseAtribuicoes = {
       let query = supabase.from('atribuicoes').select('*');
       
       if (userSector) {
-        query = query.or(`assigned_to_user_id.eq.${userId},assigned_by_user_id.eq.${userId},setor.eq.${userSector}`);
+        // Usa .ilike para garantir que a busca seja case-insensitive (ex: 'CGP' == 'cgp')
+        query = query.or(`assigned_to_user_id.eq.${userId},assigned_by_user_id.eq.${userId},setor.ilike.${userSector}`);
       } else {
         query = query.or(`assigned_to_user_id.eq.${userId},assigned_by_user_id.eq.${userId}`);
       }
