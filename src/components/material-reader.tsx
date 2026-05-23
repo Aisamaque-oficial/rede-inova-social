@@ -25,6 +25,7 @@ interface MaterialReaderProps {
 export function MaterialReader({ material, onClose }: MaterialReaderProps) {
   const [showLibras, setShowLibras] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [viewPdfInline, setViewPdfInline] = useState(false);
   const audioRef = React.useRef<HTMLAudioElement>(null);
 
   const toggleAudio = () => {
@@ -115,16 +116,38 @@ export function MaterialReader({ material, onClose }: MaterialReaderProps) {
 
       {/* Conteúdo do Leitor */}
       <div className="flex-1 flex overflow-hidden bg-white/40">
-        {/* Lado do Texto (HTML5) */}
+        {/* Lado do Texto (HTML5) ou PDF */}
         <div className={cn(
-          "flex-1 overflow-y-auto p-8 md:p-20 transition-all duration-700 custom-scrollbar",
-          showLibras ? "md:max-w-[70%]" : "w-full"
+          "flex-1 overflow-y-auto transition-all duration-700 custom-scrollbar flex flex-col",
+          showLibras ? "md:max-w-[70%]" : "w-full",
+          viewPdfInline ? "p-0" : "p-8 md:p-20"
         )}>
-           <motion.div 
-             initial={{ opacity: 0, y: 20 }}
-             animate={{ opacity: 1, y: 0 }}
-             className="max-w-4xl mx-auto"
-           >
+          {viewPdfInline ? (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="relative w-full h-full flex flex-col bg-slate-900"
+            >
+               <div className="p-4 bg-slate-800 text-white flex justify-between items-center shadow-lg z-10">
+                 <div className="flex items-center gap-2">
+                   <Maximize2 className="h-5 w-5 text-primary" />
+                   <span className="font-black text-sm uppercase tracking-widest">Documento Original em PDF</span>
+                 </div>
+                 <Button 
+                   onClick={() => setViewPdfInline(false)} 
+                   className="rounded-full bg-primary hover:bg-primary/80 text-white font-bold uppercase tracking-widest text-xs px-6"
+                 >
+                    Voltar ao Texto Acessível
+                 </Button>
+               </div>
+               <iframe src={material.url} className="w-full flex-1 border-none" title="PDF Viewer" />
+            </motion.div>
+          ) : (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="max-w-4xl mx-auto w-full"
+            >
               <div 
                 className="prose prose-slate prose-lg max-w-none font-medium italic text-slate-700 leading-loose"
                 dangerouslySetInnerHTML={{ __html: material.content }}
@@ -133,18 +156,16 @@ export function MaterialReader({ material, onClose }: MaterialReaderProps) {
               <div className="mt-20 p-12 bg-primary/5 rounded-[3rem] border-2 border-primary/10 flex flex-col md:flex-row items-center gap-8 justify-between">
                 <div>
                   <h3 className="text-3xl font-black text-primary tracking-tighter uppercase italic mb-2">Gostou deste material?</h3>
-                  <p className="text-slate-500 font-bold italic">Você pode baixar a versão completa em PDF para imprimir.</p>
+                  <p className="text-slate-500 font-bold italic">Você pode visualizar o PDF original ou baixá-lo para imprimir.</p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0">
                   <Button 
-                    asChild
+                    onClick={() => setViewPdfInline(true)}
                     variant="outline"
                     className="rounded-full h-16 px-8 font-black uppercase tracking-tighter text-base gap-3 border-2 border-primary/20 text-primary hover:bg-primary/5"
                   >
-                    <a href={material.url} target="_blank" rel="noopener noreferrer">
-                      <Maximize2 className="h-5 w-5" />
-                      Visualizar na Tela
-                    </a>
+                    <Maximize2 className="h-5 w-5" />
+                    Visualizar na Tela
                   </Button>
                   <Button 
                     asChild
@@ -157,7 +178,8 @@ export function MaterialReader({ material, onClose }: MaterialReaderProps) {
                   </Button>
                 </div>
               </div>
-           </motion.div>
+            </motion.div>
+          )}
         </div>
 
         {/* Lado de Mídia (Libras) */}
