@@ -47,7 +47,7 @@ export const librasService = {
     return (data || []).map(t => ({
       ...t,
       description: t.definition,
-      videoUrl: t.term.toLowerCase() === 'alergia alimentar' ? 'https://youtu.be/avcv3vQBGwA' : t.video_url,
+      videoUrl: 'https://youtu.be/avcv3vQBGwA',
       signStrategy: t.sign_strategy,
       tags: t.tags || [],
       eixoTitle: t.axis_id === 1 ? 'Fundamentação' :
