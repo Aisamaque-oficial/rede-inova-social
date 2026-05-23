@@ -802,8 +802,36 @@ export const authoralMaterials: AuthoralMaterial[] = [
     title: 'Material instrutivo das diferenças de alimentos',
     type: 'cartilha',
     description: 'Material complementar do glossário para consulta e leitura na íntegra.',
-    content: 'Arquivo PDF completo do Glossário BEIDE para leitura e download.',
+    content: `
+      <h2>Classificação dos Alimentos</h2>
+      <p>Este material instrutivo detalha as principais diferenças entre as categorias de alimentos, conforme o Guia Alimentar para a População Brasileira. O objetivo é facilitar o entendimento para escolhas mais saudáveis, conscientes e promotoras da Soberania Alimentar.</p>
+      
+      <h3>1. Alimentos In Natura ou Minimamente Processados</h3>
+      <p>São a base para uma alimentação nutricionalmente balanceada. <strong>In natura</strong> são obtidos diretamente da natureza (frutas, folhas, ovos). <strong>Minimamente processados</strong> passaram por limpeza, secagem ou pasteurização, sem adição de sal ou açúcar.</p>
+      <ul>
+        <li><strong>Exemplos:</strong> Feijão, arroz, legumes, verduras e carnes frescas.</li>
+      </ul>
+
+      <h3>2. Ingredientes Culinários Processados</h3>
+      <p>Substâncias extraídas da natureza usadas para temperar e cozinhar, criando preparações culinárias variadas.</p>
+      <ul>
+        <li><strong>Exemplos:</strong> Óleos, gorduras, sal e açúcar.</li>
+      </ul>
+
+      <h3>3. Alimentos Processados</h3>
+      <p>Produtos fabricados com a adição de sal ou açúcar a alimentos in natura para torná-los mais duráveis. Devem ser consumidos com moderação.</p>
+      <ul>
+        <li><strong>Exemplos:</strong> Legumes em conserva, queijos e pães tradicionais.</li>
+      </ul>
+
+      <h3>4. Alimentos Ultraprocessados</h3>
+      <p>Formulações industriais com muitos aditivos químicos (corantes, aromatizantes). São pobres em nutrientes e <strong>devem ser evitados</strong>.</p>
+      <ul>
+        <li><strong>Exemplos:</strong> Biscoitos recheados, refrigerantes e macarrão instantâneo.</li>
+      </ul>
+    `,
     url: '/materiais/beide_glossario.pdf',
+    librasVideoUrl: 'https://www.youtube.com/embed/avcv3vQBGwA?autoplay=1&mute=1&loop=1',
     thumbnail: '/materials/guia-seguranca.jpg',
     author: 'Equipe LISSA',
     imagePlaceholderId: '4',
