@@ -767,7 +767,7 @@ export const authoralMaterials: AuthoralMaterial[] = [
     type: 'cartilha',
     description: 'Um manual detalhado sobre boas práticas de higiene e manipulação de alimentos voltado para agricultores familiares.',
     content: 'Este guia apresenta as normas básicas de higiene... (Conteúdo completo para leitura acessível)',
-    url: '#',
+    url: '/materiais/guia_minimo_viavel.pdf',
     thumbnail: '/materials/guia-seguranca.jpg',
     author: 'Equipe LISSA - Curadoria Científica',
     imagePlaceholderId: '2',
