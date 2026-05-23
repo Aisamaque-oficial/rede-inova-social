@@ -28,15 +28,43 @@ export function MaterialReader({ material, onClose }: MaterialReaderProps) {
   const audioRef = React.useRef<HTMLAudioElement>(null);
 
   const toggleAudio = () => {
-    if (audioRef.current) {
+    if (material.audioUrl && audioRef.current) {
       if (isPlayingAudio) {
         audioRef.current.pause();
       } else {
         audioRef.current.play();
       }
       setIsPlayingAudio(!isPlayingAudio);
+      return;
+    }
+
+    // Fallback para Text-to-Speech nativo do navegador
+    if ('speechSynthesis' in window) {
+      if (isPlayingAudio) {
+        window.speechSynthesis.cancel();
+        setIsPlayingAudio(false);
+      } else {
+        // Limpa as tags HTML para leitura
+        const plainText = material.title + ". " + material.content.replace(/<[^>]+>/g, '');
+        const utterance = new SpeechSynthesisUtterance(plainText);
+        utterance.lang = 'pt-BR';
+        
+        utterance.onend = () => setIsPlayingAudio(false);
+        utterance.onerror = () => setIsPlayingAudio(false);
+        
+        window.speechSynthesis.speak(utterance);
+        setIsPlayingAudio(true);
+      }
     }
   };
+
+  React.useEffect(() => {
+    return () => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
 
   return (
     <motion.div 
