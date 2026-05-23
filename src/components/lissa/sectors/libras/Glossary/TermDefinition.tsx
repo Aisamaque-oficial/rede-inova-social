@@ -23,7 +23,7 @@ export function TermDefinition() {
         <div className="space-y-3">
           <div className="flex items-center gap-3">
             <Badge className="bg-primary/10 text-primary border-none text-[9px] font-black tracking-[0.2em] px-4 py-1.5 uppercase">
-              {currentModule?.title || 'Conceito Técnico'}
+              {activeTermObj.eixoTitle || currentModule?.title || 'Conceito Técnico'}
             </Badge>
             <span className="h-px flex-1 bg-slate-100" />
           </div>

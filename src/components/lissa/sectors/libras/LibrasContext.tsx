@@ -88,7 +88,21 @@ export function LibrasProvider({ children }: { children: ReactNode }) {
 
   const currentModule = activeModuleId === 'todos' 
     ? { id: 'todos', title: 'Todos os Termos' }
-    : librasGlossary.find(m => m.id === activeModuleId);
+    : {
+        id: activeModuleId,
+        title: activeModuleId === '1' ? 'Fundamentação' :
+               activeModuleId === '2' ? 'Imunológico-Digestivo' :
+               activeModuleId === '3' ? 'Rotulagem Técnica' :
+               activeModuleId === '4' ? 'Análise Crítica' :
+               activeModuleId === '5' ? 'Soberania Alimentar' :
+               'Conceito Técnico',
+        emoji: activeModuleId === '1' ? '🤟' :
+               activeModuleId === '2' ? '🧬' :
+               activeModuleId === '3' ? '🏷️' :
+               activeModuleId === '4' ? '⚖️' :
+               activeModuleId === '5' ? '🌽' :
+               '🔖'
+      };
 
   const activeTermObj = glossaryTerms.find(t => t.term === activeTermKey) || null;
 

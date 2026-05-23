@@ -47,9 +47,21 @@ export const librasService = {
     return (data || []).map(t => ({
       ...t,
       description: t.definition,
-      videoUrl: t.video_url,
+      videoUrl: t.term.toLowerCase() === 'alergia alimentar' ? 'https://youtu.be/avcv3vQBGwA' : t.video_url,
       signStrategy: t.sign_strategy,
-      tags: t.tags || []
+      tags: t.tags || [],
+      eixoTitle: t.axis_id === 1 ? 'Fundamentação' :
+                 t.axis_id === 2 ? 'Imunológico-Digestivo' :
+                 t.axis_id === 3 ? 'Rotulagem Técnica' :
+                 t.axis_id === 4 ? 'Análise Crítica' :
+                 t.axis_id === 5 ? 'Soberania Alimentar' :
+                 'Conceito Técnico',
+      eixoEmoji: t.axis_id === 1 ? '🤟' :
+                 t.axis_id === 2 ? '🧬' :
+                 t.axis_id === 3 ? '🏷️' :
+                 t.axis_id === 4 ? '⚖️' :
+                 t.axis_id === 5 ? '🌽' :
+                 '🔖'
     })) as any[];
   },
 
