@@ -72,7 +72,12 @@ export function MaterialReader({ material, onClose }: MaterialReaderProps) {
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="fixed inset-4 z-[60] glass-morphism rounded-[4rem] shadow-4xl overflow-hidden flex flex-col border-4 border-primary/20"
+      className={cn(
+        "fixed z-[60] glass-morphism shadow-4xl overflow-hidden flex flex-col transition-all duration-700",
+        viewPdfInline 
+          ? "inset-0 rounded-none border-none bg-slate-900" 
+          : "inset-4 rounded-[4rem] border-4 border-primary/20"
+      )}
     >
       {/* Header do Leitor */}
       <header className="p-6 md:px-12 bg-white/80 backdrop-blur-md border-b flex items-center justify-between sticky top-0 z-10">
