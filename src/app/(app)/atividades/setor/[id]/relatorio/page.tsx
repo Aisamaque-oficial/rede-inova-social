@@ -33,17 +33,24 @@ export default function SectorReportPage({ params: paramsPromise }: any) {
       setSector(found);
 
       if (found) {
-        const sectorReports = dataService.getReportsBySector(found.id);
+        const sectorReports = await dataService.getReportsBySector(found.id);
         setReports(sectorReports);
       }
       setIsLoading(false);
     };
     init();
+
+    const unsubscribe = dataService.subscribeToReports(() => {
+      init();
+    });
+
+    return () => unsubscribe();
   }, [sectorId]);
 
-  const refreshReports = () => {
+  const refreshReports = async () => {
     if (sector) {
-      setReports(dataService.getReportsBySector(sector.id));
+      const updated = await dataService.getReportsBySector(sector.id);
+      setReports(updated);
       setActiveTab("historico");
     }
   };
@@ -172,7 +179,7 @@ export default function SectorReportPage({ params: paramsPromise }: any) {
                         <Download className="w-3 h-3 mr-1" /> PDF
                       </Button>
                       {report.status === 'assinado' && (
-                        <Button size="sm" className="rounded-xl text-[9px] font-black uppercase h-9 bg-primary text-white" onClick={() => { dataService.sendReportToCGP(report.id); refreshReports(); }}>
+                        <Button size="sm" className="rounded-xl text-[9px] font-black uppercase h-9 bg-primary text-white" onClick={async () => { await dataService.sendReportToCGP(report.id); refreshReports(); }}>
                           <Send className="w-3 h-3 mr-1" /> Enviar à CGP
                         </Button>
                       )}

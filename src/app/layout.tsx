@@ -11,7 +11,7 @@ import { AccessibilityToolbar } from '@/components/accessibility-toolbar';
 import { LibrasOverlay } from '@/components/libras-overlay';
 import { ReadingAids } from '@/components/reading-aids';
 import { ContentMagnifier } from '@/components/content-magnifier';
-import { LISSAAssistant } from '@/components/lissa-assistant';
+
 import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { ActivityTracker } from '@/components/activity-tracker';
@@ -72,7 +72,7 @@ export default function RootLayout({
                     <>
                         <LibrasOverlay />
                         <AccessibilityToolbar />
-                        <LISSAAssistant />
+
                         <ReadingAids />
                         <ContentMagnifier />
                     </>

@@ -1,6 +1,8 @@
 "use client"
 
 import React, { useRef } from "react"
+import Image from "next/image"
+import Link from "next/link"
 import { motion, useScroll, useSpring, useTransform } from "framer-motion"
 import { 
   Search, 
@@ -18,59 +20,69 @@ import { cn } from "@/lib/utils"
 const stages = [
   {
     id: 1,
-    title: "Semente",
-    subtitle: "O Início de Tudo",
-    desc: "Onde o compromisso com a mudança social nasce e se prepara para ganhar vida no território.",
+    title: "A Semente da Rede",
+    subtitle: "🌱 ETAPA 01",
+    desc: "A Rede Inova nasce da articulação entre instituições públicas, comunidades, pesquisadores e movimentos sociais comprometidos com a construção de soluções coletivas para o combate às desigualdades sociais por meio da alimentação saudável.",
+    quote: "Toda transformação social começa quando diferentes pessoas, saberes e territórios decidem caminhar juntos.",
     icon: Sprout,
-    color: "orange-500",
+    image: "/assets/sementeetapa01.JPG",
+    color: "#10b981", // emerald-500
     side: "right",
-    actions: ["Planejamento", "Pactuação", "Equipe"],
-    impact: "A base sólida para um projeto transformador."
+    actions: ["Pactuação", "Articulação", "Territórios"],
+    impact: "O início da construção coletiva da Rede de Inovação Social."
   },
   {
     id: 2,
-    title: "Conhecer o Chão",
-    subtitle: "Diagnóstico Participativo",
-    desc: "Mapeamos a realidade da produção e da alimentação em 13 municípios baianos, ouvindo as comunidades de perto.",
+    title: "Escuta e Diagnóstico Territorial",
+    subtitle: "🧭 ETAPA 02",
+    desc: "Nesta etapa, o projeto organiza processos de escuta, mapeamento social e levantamento de demandas relacionadas à alimentação, produção local, acessibilidade e desenvolvimento comunitário nos municípios envolvidos.",
+    quote: "Antes de propor soluções, precisamos compreender os territórios, ouvir as comunidades e reconhecer suas realidades.",
     icon: Search,
-    color: "amber-500",
+    image: "/images/jornada/listening.png",
+    color: "#b45309", // amber-700
     side: "left",
-    actions: ["Mapas de produção", "Entrevistas", "Relatórios"],
-    impact: "Entender de onde viemos para saber para onde ir."
+    actions: ["Mapeamento", "Escuta", "Território"],
+    impact: "Conhecer o território é o primeiro passo para transformar realidades."
   },
   {
     id: 3,
-    title: "Troca de Saberes",
-    subtitle: "Formação e Empoderamento",
-    desc: "Realizamos oficinas que unem o conhecimento das universidades com a sabedoria de quem lida com a terra.",
+    title: "Formação, Participação e Construção Coletiva",
+    subtitle: "🤝 ETAPA 03",
+    desc: "O projeto desenvolverá oficinas, rodas de conversa, ações educativas e processos formativos voltados ao fortalecimento da participação comunitária, da segurança alimentar e da circulação acessível do conhecimento.",
+    quote: "A transformação social acontece quando ciência e comunidade constroem conhecimento juntas.",
     icon: Users,
-    color: "emerald-500",
+    image: "/images/jornada/formation.png",
+    color: "#2563eb", // blue-600
     side: "right",
-    actions: ["Rodas de conversa", "Oficinas TI", "Cursos"],
-    impact: "Mais conhecimento para transformar a realidade."
+    actions: ["Oficinas", "Rodas de Conversa", "Autonomia"],
+    impact: "Formação como instrumento de autonomia, inclusão e fortalecimento territorial."
   },
   {
     id: 4,
-    title: "Motor LISSA",
-    subtitle: "Inovação Tecnológica",
-    desc: "Onde a mágica acontece: criamos aplicativos, jogos e materiais acessíveis (Libras e Voz).",
+    title: "Inovação Social e Tecnológica",
+    subtitle: "💡 ETAPA 04",
+    desc: "Nesta etapa, a Rede Inova estruturará o Laboratório de Inovação Social em Segurança Alimentar (LISSA), espaço voltado ao desenvolvimento de soluções acessíveis, materiais educativos, plataformas digitais e tecnologias sociais conectadas às demandas do território.",
+    quote: "Tecnologia, acessibilidade e inovação a serviço das pessoas e dos territórios.",
     icon: Cpu,
-    color: "primary",
+    image: "/images/jornada/lissa.png",
+    color: "#6366f1", // indigo-500
     isMotor: true,
     side: "left",
-    actions: ["Lab LISSA", "Apps/Web", "Jogos"],
-    impact: "Tecnologia a serviço da inclusão e da saúde."
+    actions: ["Lab LISSA", "Tecnologias Sociais", "Acessibilidade"],
+    impact: "Construindo tecnologias sociais conectadas à realidade das comunidades."
   },
   {
     id: 5,
-    title: "Colheita Social",
-    subtitle: "Resultados e Impacto",
-    desc: "Hora de mostrar o resultado nas feiras locais e compartilhar nossas vitórias com toda a sociedade.",
+    title: "Resultados Esperados e Transformação Social",
+    subtitle: "🌾 ETAPA 05",
+    desc: "O projeto busca fortalecer redes comunitárias, ampliar o acesso à informação, incentivar práticas alimentares saudáveis, promover inclusão social e consolidar ações sustentáveis de inovação social no Médio Sudoeste Baiano.",
+    quote: "O impacto social nasce quando conhecimento, participação e território geram mudanças reais na vida das pessoas.",
     icon: Share2,
-    color: "primary",
+    image: "/images/jornada/market.png",
+    color: "#064e3b", // green-900
     side: "right",
-    actions: ["Feiras", "Seminários", "Artigos"],
-    impact: "Impacto real que todo mundo pode participar."
+    actions: ["Inclusão", "Práticas Saudáveis", "Sustentabilidade"],
+    impact: "Resultados construídos coletivamente entre ciência, território e sociedade."
   }
 ]
 
@@ -89,7 +101,14 @@ export default function MethodologyRoadmap() {
   })
 
   return (
-    <section ref={containerRef} className="py-24 bg-slate-900 overflow-hidden relative min-h-[200vh]">
+    <section ref={containerRef} className="py-24 bg-[#0a0f0d] overflow-hidden relative min-h-[200vh]">
+      {/* Organic Grain Texture Overlay */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/p6.png')] z-0" />
+      
+      {/* Decorative Organic Blobs */}
+      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-emerald-900/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/4 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-amber-900/10 rounded-full blur-[100px] translate-y-1/4 -translate-x-1/4 pointer-events-none" />
+
       {/* Visual Header */}
       <div className="container px-4 md:px-6 relative z-20 mb-32">
         <div className="flex flex-col items-center text-center space-y-4">
@@ -97,16 +116,16 @@ export default function MethodologyRoadmap() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-400 text-[10px] font-black uppercase tracking-widest"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/5 border border-emerald-500/10 text-emerald-400/80 text-[10px] font-black uppercase tracking-widest"
           >
-            <Globe className="w-3 h-3 text-primary" />
-            Espinha Central do Crescimento
+            <Sprout className="w-3 h-3 text-emerald-500" />
+            Construção Coletiva e Articulação
           </motion.div>
           <h2 className="text-4xl md:text-6xl font-black italic tracking-tighter text-white font-headline leading-tight">
-            Metodologia <span className="text-primary not-italic underline decoration-white/20 decoration-dashed">PAP</span>
+            Nossa <span className="text-primary not-italic underline decoration-white/20 decoration-dashed">Jornada</span>
           </h2>
           <p className="max-w-2xl text-slate-400 text-lg font-medium leading-relaxed italic">
-            Veja como o projeto cresce e floresce, do diagnóstico ao impacto social final.
+            Conheça o caminho da construção coletiva da nossa Rede de Inovação Social.
           </p>
         </div>
       </div>
@@ -185,25 +204,51 @@ export default function MethodologyRoadmap() {
                           <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Etapa 0{stage.id}</span>
                         </div>
 
-                        <div className={cn(
+                         <div className={cn(
                           "flex flex-col mb-6",
                           isLeft ? "md:items-end" : "md:items-start"
                         )}>
                            <div className={cn(
                              "w-16 h-16 rounded-2xl flex items-center justify-center mb-6",
-                             stage.id <= 2 ? "bg-amber-500/10 text-amber-500" : "bg-primary/10 text-primary"
-                           )}>
+                             `bg-${stage.color}/10 text-${stage.color}`
+                           )}
+                           style={{ backgroundColor: `${stage.color}10`, color: stage.color }}
+                           >
                               {React.createElement(stage.icon, { className: "w-8 h-8" })}
                            </div>
                            <h3 className="text-3xl md:text-4xl font-black italic text-white font-headline leading-tight">
-                              {stage.subtitle}
+                               {stage.title}
                            </h3>
+                           <span className="text-[10px] font-black uppercase tracking-widest text-primary/60 mt-2">{stage.subtitle}</span>
                         </div>
 
+                         <div className="mb-8 overflow-hidden rounded-[2.5rem] border border-white/5 shadow-2xl relative group/img bg-black/20">
+                            <div className="absolute inset-0 transition-colors duration-500 z-10 bg-black/40 group-hover/img:bg-black/0" />
+                            <motion.div
+                                whileHover={{ scale: 1.05 }}
+                                transition={{ duration: 1.5 }}
+                            >
+                                <Image 
+                                    src={stage.image} 
+                                    alt={stage.title} 
+                                    width={800} 
+                                    height={450} 
+                                    className="w-full h-auto transition-transform duration-700 object-cover aspect-video"
+                                />
+                            </motion.div>
+                         </div>
+
                         <div className="space-y-6">
-                           <p className="text-lg md:text-xl text-slate-300 font-bold leading-relaxed italic">
-                             "{stage.title}: {stage.desc}"
+                           <p className="text-sm md:text-base text-slate-400 font-bold leading-relaxed">
+                             {stage.desc}
                            </p>
+
+                           <blockquote className={cn(
+                              "text-lg md:text-xl text-slate-200 font-black leading-tight italic border-l-4 pl-4 py-2",
+                              stage.id <= 2 ? "border-amber-500" : "border-emerald-500"
+                           )}>
+                              "{stage.quote}"
+                           </blockquote>
                            
                            <div className={cn(
                              "flex flex-wrap gap-2 pt-2",
@@ -221,7 +266,7 @@ export default function MethodologyRoadmap() {
                              isLeft ? "md:flex-row-reverse md:text-right" : "md:text-left"
                            )}>
                               <div className="p-3 rounded-2xl bg-white/5">
-                                 <TrendingUp className="w-5 h-5 text-slate-500" />
+                                 <TrendingUp className="w-5 h-5 text-emerald-500/50" />
                               </div>
                               <p className="text-xs font-bold text-slate-400 leading-relaxed">
                                 {stage.impact}
@@ -231,10 +276,10 @@ export default function MethodologyRoadmap() {
 
                         {stage.isMotor && (
                            <div className="mt-8">
-                              <button className="px-6 py-4 rounded-2xl bg-primary text-white font-black italic flex items-center gap-3 group/btn w-full justify-center">
-                                 Conhecer Motor LISSA
+                              <Link href="/laboratorio" className="px-6 py-4 rounded-2xl bg-emerald-600 text-white font-black italic flex items-center gap-3 group/btn w-full justify-center hover:scale-[1.02] transition-transform shadow-lg shadow-emerald-900/20">
+                                 Conhecer o LISSA
                                  <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
-                              </button>
+                              </Link>
                            </div>
                         )}
                      </motion.div>
@@ -250,15 +295,17 @@ export default function MethodologyRoadmap() {
 
       {/* Decorative End (The Fruit/Result) */}
       <motion.div 
-         initial={{ opacity: 0, scale: 0 }}
-         whileInView={{ opacity: 1, scale: 1 }}
-         className="mt-64 flex flex-col items-center text-center relative z-20"
+         initial={{ opacity: 0, y: 50 }}
+         whileInView={{ opacity: 1, y: 0 }}
+         className="mt-64 flex flex-col items-center text-center relative z-20 pb-32"
       >
-         <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-emerald-500 flex items-center justify-center shadow-2xl animate-bounce-slow">
+         <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-emerald-500 flex items-center justify-center shadow-2xl animate-pulse">
             <Zap className="w-12 h-12 text-white" />
          </div>
-         <h4 className="mt-8 text-2xl font-black italic text-white font-headline">Maturidade e Impacto</h4>
-         <p className="text-slate-500 font-bold max-w-sm">Onde a inovação se torna mudança social real no território.</p>
+         <h4 className="mt-8 text-4xl md:text-6xl font-black italic text-white font-headline uppercase tracking-tighter">Rede em Movimento</h4>
+         <p className="text-slate-400 font-bold max-w-2xl text-xl mt-6">
+            A inovação social não termina em um projeto. Ela continua nas comunidades, nas pessoas e nos territórios transformados coletivamente.
+         </p>
       </motion.div>
     </section>
   )

@@ -144,50 +144,7 @@ export default function InicioPage() {
         </div>
       </section>
 
-      {/* ────────────────────────────────────
-          PRODUTOS & ENTREGAS (LEGADO)
-          ──────────────────────────────────── */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        <div className="lg:col-span-4 space-y-6">
-          <Badge className="bg-primary/10 text-primary border-none text-[8px] font-black uppercase tracking-widest px-4 py-1.5">Impacto Sistêmico</Badge>
-          <h2 className="text-3xl md:text-5xl font-black italic tracking-tighter uppercase text-slate-800 leading-[0.9]">
-            O que <span className="text-primary italic">Construímos</span> no Projeto
-          </h2>
-          <p className="text-sm font-medium text-slate-500 italic leading-relaxed">
-            Consolidação das entregas técnicas e produtos gerados em cada eixo estratégico de atuação da Rede Inova.
-          </p>
-          <Button variant="ghost" className="text-xs font-black uppercase tracking-widest text-slate-400 p-0 hover:bg-transparent hover:text-primary transition-colors">
-            Ver portfólio completo <ChevronRight className="h-4 w-4 ml-1" />
-          </Button>
-        </div>
-
-        <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-          {projectObjectives.slice(0, 4).map((obj, i) => (
-            <Card key={i} className="border-none shadow-xl rounded-[2.5rem] bg-white overflow-hidden group">
-              <CardContent className="p-8 space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="p-3 bg-slate-50 rounded-xl group-hover:bg-primary/10 transition-colors">
-                    <Target className="h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />
-                  </div>
-                  <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.2em]">Eixo {i + 1}</span>
-                </div>
-                <h4 className="text-sm font-black italic uppercase text-slate-800">
-                  {obj.title}
-                </h4>
-                <div className="space-y-2">
-                   <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">Produtos Principais:</p>
-                   {obj.products.map((prod, j) => (
-                     <div key={j} className="flex items-center gap-2 text-[10px] font-medium text-slate-500 italic">
-                        <div className="w-1 h-1 rounded-full bg-slate-200" />
-                        {prod}
-                     </div>
-                   ))}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+      {/* Impact goals removed from internal Inicio page as per requirements */}
 
       {/* ────────────────────────────────────
           CTA FINAL: EQUIPE

@@ -83,6 +83,7 @@ import { sectorObjectives as staticSectorObjectives } from "./sector-objectives"
 import { supabaseExtraActivity } from "./supabase-extra-activity";
 import { supabaseAtribuicoes } from "./supabase-atribuicoes";
 import { supabaseChat } from "./supabase-chat";
+import { supabaseReports } from "./supabase-reports";
 
 // ────────────────────────────────────
 // STORAGE EM MEMÓRIA - RESPONSABILIDADES
@@ -4681,10 +4682,18 @@ export const dataService = {
   /**
    * Salva um relatório setorial assinado
    */
-  saveReport(report: SectorReport): string {
+  async saveReport(report: SectorReport): Promise<string> {
     const reports: SectorReport[] = loadFromStorage('sector_reports', []);
     reports.unshift(report);
     saveToStorage('sector_reports', reports);
+    
+    // 🚀 SYNC: Enviar para o Supabase para centralização
+    try {
+      await supabaseReports.saveReport(report);
+    } catch (e) {
+      console.warn("[Sync] Falha ao sincronizar relatório com Supabase, mantido apenas local.");
+    }
+
     notifyTaskListeners();
 
     safeToast({
@@ -4696,24 +4705,50 @@ export const dataService = {
   },
 
   /**
-   * Obtém todos os relatórios (para a CGP)
+   * Obtém todos os relatórios (Tenta Supabase, fallback Local)
    */
-  getAllReports(): SectorReport[] {
-    return loadFromStorage('sector_reports', []);
+  async getAllReports(): Promise<SectorReport[]> {
+    const localReports = loadFromStorage('sector_reports', []);
+    
+    try {
+      const dbReports = await supabaseReports.getReports();
+      const combined = dbReports ? [...dbReports] : [];
+      let needsSync = false;
+
+      // 🔍 Identificar relatórios locais que não estão no Supabase (Migração Automática)
+      for (const lr of localReports) {
+        if (!combined.find(cr => cr.id === lr.id)) {
+          combined.push(lr);
+          // 🚀 Sincronizar em background
+          supabaseReports.saveReport(lr).catch(err => console.error("Erro na migração automática:", err));
+          needsSync = true;
+        }
+      }
+
+      if (needsSync) {
+        console.log("[Sync] Relatórios locais migrados para o Supabase com sucesso.");
+      }
+
+      return combined.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } catch (e) {
+      console.warn("[Sync] Falha ao buscar relatórios no Supabase, usando locais.");
+    }
+    
+    return localReports;
   },
 
   /**
-   * Obtém relatórios de um setor específico
+   * Obtém relatórios de um setor específico (Híbrido Supabase + Local)
    */
-  getReportsBySector(sectorId: string): SectorReport[] {
-    const all: SectorReport[] = loadFromStorage('sector_reports', []);
+  async getReportsBySector(sectorId: string): Promise<SectorReport[]> {
+    const all = await this.getAllReports();
     return all.filter(r => r.sectorId === sectorId || r.sectorSigla?.toLowerCase() === sectorId?.toLowerCase());
   },
 
   /**
    * Arquiva um relatório (marca como arquivado pela CGP)
    */
-  archiveReport(reportId: string): void {
+  async archiveReport(reportId: string): Promise<void> {
     const reports: SectorReport[] = loadFromStorage('sector_reports', []);
     const report = reports.find(r => r.id === reportId);
     if (report) {
@@ -4721,6 +4756,12 @@ export const dataService = {
       report.archivedAt = new Date().toISOString();
       report.archivedBy = this.getCurrentUser()?.name || 'CGP';
       saveToStorage('sector_reports', reports);
+      
+      // 🚀 SYNC: Atualizar no Supabase
+      try {
+        await supabaseReports.saveReport(report);
+      } catch (e) {}
+
       notifyTaskListeners();
 
       safeToast({
@@ -4731,15 +4772,46 @@ export const dataService = {
   },
 
   /**
+   * Exclui permanentemente um relatório
+   */
+  async deleteReport(reportId: string): Promise<void> {
+    const reports: SectorReport[] = loadFromStorage('sector_reports', []);
+    const updatedReports = reports.filter(r => r.id !== reportId);
+    saveToStorage('sector_reports', updatedReports);
+    
+    // 🚀 SYNC: Atualizar no Supabase
+    try {
+      if (supabaseReports.deleteReport) {
+        await supabaseReports.deleteReport(reportId);
+      }
+    } catch (e) {
+      console.warn("Falha ao excluir do Supabase:", e);
+    }
+
+    notifyTaskListeners();
+
+    safeToast({
+      title: "Relatório Excluído 🗑️",
+      description: `O documento foi permanentemente apagado.`
+    });
+  },
+
+  /**
    * Envia relatório para a CGP (marca como enviado)
    */
-  sendReportToCGP(reportId: string): void {
+  async sendReportToCGP(reportId: string): Promise<void> {
     const reports: SectorReport[] = loadFromStorage('sector_reports', []);
     const report = reports.find(r => r.id === reportId);
     if (report) {
       report.status = 'enviado';
       report.sentAt = new Date().toISOString();
       saveToStorage('sector_reports', reports);
+      
+      // 🚀 SYNC: Atualizar no Supabase
+      try {
+        await supabaseReports.saveReport(report);
+      } catch (e) {}
+
       notifyTaskListeners();
 
       safeToast({
@@ -4747,12 +4819,124 @@ export const dataService = {
         description: `Relatório encaminhado à Coordenação Geral do Projeto para análise.`
       });
     }
+  },
+
+  /**
+   * Assina um relatório como membro solicitado
+   */
+  async signRequestedReport(reportId: string, signatureRequestId: string, signatureSeal: string): Promise<void> {
+    const reports: SectorReport[] = loadFromStorage('sector_reports', []);
+    const report = reports.find(r => r.id === reportId);
+    if (report && report.requestedSignatures) {
+      const signature = report.requestedSignatures.find(s => s.id === signatureRequestId);
+      if (signature) {
+        signature.status = 'deferida';
+        signature.signedAt = new Date().toISOString();
+        signature.signatureSeal = signatureSeal;
+        
+        saveToStorage('sector_reports', reports);
+        
+        // 🚀 SYNC: Atualizar no Supabase
+        try {
+          await supabaseReports.saveReport(report);
+        } catch (e) {}
+  
+        notifyTaskListeners();
+  
+        safeToast({
+          title: "Documento Assinado ✅",
+          description: `Sua assinatura foi anexada ao relatório com sucesso.`
+        });
+      }
+    }
+  },
+
+  /**
+   * Remove uma solicitação de assinatura pendente
+   */
+  async deleteSignatureRequest(reportId: string, signatureRequestId: string): Promise<void> {
+    const reports: SectorReport[] = loadFromStorage('sector_reports', []);
+    const report = reports.find(r => r.id === reportId);
+    if (report && report.requestedSignatures) {
+      report.requestedSignatures = report.requestedSignatures.filter(s => s.id !== signatureRequestId);
+      saveToStorage('sector_reports', reports);
+      
+      // 🚀 SYNC: Atualizar no Supabase
+      try {
+        await supabaseReports.saveReport(report);
+      } catch (e) {}
+
+      notifyTaskListeners();
+
+      safeToast({
+        title: "Solicitação Removida 🗑️",
+        description: `O pedido de assinatura foi cancelado.`
+      });
+    }
+  },
+
+  /**
+   * Exclui um relatório
+   */
+  async deleteReport(reportId: string): Promise<void> {
+    const reports: SectorReport[] = loadFromStorage('sector_reports', []);
+    const filteredReports = reports.filter(r => r.id !== reportId);
+    saveToStorage('sector_reports', filteredReports);
+    
+    // 🚀 SYNC: Excluir no Supabase
+    try {
+      await supabaseReports.deleteReport(reportId);
+    } catch (e) {
+      console.warn("Falha ao excluir relatório no Supabase", e);
+    }
+
+    notifyTaskListeners();
+  },
+
+  /**
+   * Valida a senha do usuário logado para ações destrutivas
+   */
+  async validateActionPassword(password: string): Promise<boolean> {
+    try {
+      const { verifyPassword } = await import('@/lib/auth');
+      const { encontrarUsuarioPorId } = await import('@/lib/auth-credentials');
+      
+      const user = this.getCurrentUser();
+      if (!user) return false;
+      
+      const storedUser = encontrarUsuarioPorId(user.id);
+      if (!storedUser) return false;
+      
+      return verifyPassword(password, storedUser.passwordHash);
+    } catch (e) {
+      console.error("Erro ao validar senha", e);
+      return false;
+    }
+  },
+
+  /**
+   * Assina atualizações de relatórios em tempo real
+   */
+  subscribeToReports(callback: (payload: any) => void) {
+    return supabaseReports.subscribeToReports(callback);
   }
 };
 
 // ═══════════════════════════════════════════════
-// 📋 TIPOS: RELATÓRIOS SETORIAIS
+// 📋 TIPOS: RELATÓRIOS SETORIAIS E ASSINATURAS
 // ═══════════════════════════════════════════════
+export interface ReportSignatureRequest {
+  id: string;
+  userId: string;
+  userName: string;
+  requesterId: string;
+  requesterName: string;
+  status: 'aguardando' | 'deferida' | 'recusada';
+  requestedAt: string;
+  signedAt?: string;
+  signatureSeal?: string;
+}
+
 export interface SectorReport {
   id: string;
   sectorId: string;
@@ -4772,7 +4956,9 @@ export interface SectorReport {
   sentAt?: string;
   archivedAt?: string;
   archivedBy?: string;
+  archivedBy?: string;
   createdAt: string;
+  requestedSignatures?: ReportSignatureRequest[];
 }
 
 export interface MemberActivityEntry {

@@ -31,9 +31,7 @@ export default function JornadaPage() {
 
                 <MethodologyRoadmap />
 
-                <ImpactGoals mode="public" />
 
-                <InteractiveNutritionJourney />
 
                 <section className="py-24 bg-sidebar text-sidebar-foreground relative overflow-hidden">
                     <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] bg-primary/20 blur-[150px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-30" />
@@ -104,21 +102,22 @@ export default function JornadaPage() {
                 <HomeNewsSection />
 
             </main>
-            <footer className="relative z-10 flex flex-col gap-4 py-8 w-full shrink-0 items-center px-4 md:px-6 border-t bg-background">
-                <p className="text-xs text-muted-foreground text-center">
-                © 2026. Rede de Inovação Social para o Combate às Desigualdades por meio da Alimentação Nutricional e Saudável | IF Baiano/CNPq
-                </p>
-                <div className="flex items-center gap-4 sm:gap-6">
+            <footer className="relative z-10 flex flex-col gap-6 py-20 w-full shrink-0 items-center px-4 md:px-6 border-t bg-background">
+                <div className="flex flex-col items-center text-center space-y-6 max-w-2xl">
+                    <div className="flex flex-col items-center gap-3">
+                        <Image src="/images/logo_cnpq.png" alt="Logo CNPq" width={160} height={64} className="mb-2 object-contain" />
+                        <p className="text-[10px] font-black text-muted-foreground tracking-widest uppercase">Projeto financiado pelo Conselho Nacional de Desenvolvimento Científico e Tecnológico - CNPq</p>
+                        <p className="text-[10px] font-black text-primary tracking-widest uppercase">Projeto Coordenado pelo prof. Me Aisamaque Gomes de Souza</p>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground font-bold uppercase mt-2">
+                        © 2026. Rede de Inovação Social para o Combate às Desigualdades por meio da Alimentação Nutricional e Saudável
+                    </p>
+                </div>
+                <div className="flex flex-col items-center gap-4">
                     <VisitorCounter />
-                    <nav className="flex gap-4 sm:gap-6">
-                        <Link href="/transparencia" className="text-xs hover:underline underline-offset-4 font-bold text-primary">
-                        Transparência
-                        </Link>
-                        <Link href="#" className="text-xs hover:underline underline-offset-4">
-                        Termos de Serviço
-                        </Link>
-                        <Link href="#" className="text-xs hover:underline underline-offset-4">
-                        Política de Privacidade
+                    <nav className="flex gap-8">
+                        <Link href="#" className="text-[10px] font-black text-primary/60 hover:text-primary transition-colors uppercase tracking-widest">
+                            Termos de Serviço
                         </Link>
                     </nav>
                 </div>

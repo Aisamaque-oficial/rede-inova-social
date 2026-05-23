@@ -41,12 +41,12 @@ export function ActivityTracker() {
       });
     };
 
-    // Delay inicial para garantir que a sessão foi carregada
+    // Delay inicial mínimo para garantir que a sessão foi carregada
     const timeout = setTimeout(() => {
       trackActivity();
-      // Heartbeat a cada 2 minutos para maior precisão
-      intervalRef.current = setInterval(trackActivity, 2 * 60 * 1000);
-    }, 5000);
+      // Heartbeat a cada 45 segundos para maior precisão sem sobrecarga
+      intervalRef.current = setInterval(trackActivity, 45 * 1000);
+    }, 1000);
 
     return () => {
       clearTimeout(timeout);

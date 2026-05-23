@@ -799,7 +799,7 @@ export const authoralMaterials: AuthoralMaterial[] = [
   },
   {
     id: 'PDF-04',
-    title: 'Glossário BEIDE',
+    title: 'Material instrutivo das diferenças de alimentos',
     type: 'cartilha',
     description: 'Material complementar do glossário para consulta e leitura na íntegra.',
     content: 'Arquivo PDF completo do Glossário BEIDE para leitura e download.',

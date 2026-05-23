@@ -4,20 +4,22 @@ import React, { useEffect, useState } from "react"
 import { motion, useScroll, useSpring, useTransform } from "framer-motion"
 import { 
   Zap, 
+  Search, 
   FlaskConical, 
   Leaf, 
   Sprout, 
   CheckCircle2,
+  Users,
   Trophy
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const stages = [
-  { id: 1, label: "Semente", icon: Sprout, threshold: 0.1, color: "text-orange-500", bg: "bg-orange-500" },
-  { id: 2, label: "Diagnóstico", icon: Leaf, threshold: 0.35, color: "text-amber-500", bg: "bg-amber-500" },
-  { id: 3, label: "Formação", icon: FlaskConical, threshold: 0.6, color: "text-emerald-500", bg: "bg-emerald-500" },
-  { id: 4, label: "Motor LISSA", icon: Zap, threshold: 0.85, color: "text-primary", bg: "bg-primary", isMotor: true },
-  { id: 5, label: "Colheita", icon: Trophy, threshold: 0.98, color: "text-primary", bg: "bg-primary" },
+  { id: 1, label: "🌱 A Semente", icon: Sprout, threshold: 0.1, color: "text-emerald-500", bg: "bg-emerald-500" },
+  { id: 2, label: "🧭 Escuta", icon: Search, threshold: 0.35, color: "text-amber-500", bg: "bg-amber-500" },
+  { id: 3, label: "🤝 Formação", icon: Users, threshold: 0.6, color: "text-blue-500", bg: "bg-blue-500" },
+  { id: 4, label: "💡 Inovação", icon: Zap, threshold: 0.85, color: "text-primary", bg: "bg-primary", isMotor: true },
+  { id: 5, label: "🌾 Transformação", icon: Trophy, threshold: 0.98, color: "text-green-700", bg: "bg-green-700" },
 ]
 
 export default function GrowingPlantIndicator() {

@@ -73,6 +73,12 @@ export function TaskWorkflowManager({ task, open, onOpenChange, onTaskUpdated }:
   const [newAttachment, setNewAttachment] = useState({ name: "", url: "", type: 'link' as 'link' | 'imagem' | 'pdf' });
   const [conclusionLink, setConclusionLink] = useState(task.conclusionLink || "");
   
+  // Edit States
+  const [availableUsers, setAvailableUsers] = useState<any[]>([]);
+  const [isConfirmingEdit, setIsConfirmingEdit] = useState(false);
+  const [editPassword, setEditPassword] = useState("");
+  const [isVerifyingEdit, setIsVerifyingEdit] = useState(false);
+  
   // Trâmites States
   const [isForwarding, setIsForwarding] = useState(false);
   const [forwardSector, setForwardSector] = useState<Department | "">("");
@@ -124,11 +130,62 @@ export function TaskWorkflowManager({ task, open, onOpenChange, onTaskUpdated }:
   const [exceptionJustification, setExceptionJustification] = useState('');
   const [exceptionType, setExceptionType] = useState<ExceptionRequest['type']>('SKIP_EVIDENCE');
 
+  // Load users for responsible selection
+  React.useEffect(() => {
+    if (isEditing) {
+      dataService.getUsers().then(setAvailableUsers);
+    }
+  }, [isEditing]);
+
   const handleRequestException = async () => {
     if (!exceptionJustification) return;
     await dataService.requestException(task.id, exceptionType, exceptionJustification);
     setIsRequestingException(false);
     setExceptionJustification('');
+  };
+
+  const handleSaveEditRequest = () => {
+    setIsConfirmingEdit(true);
+  };
+
+  const processEditUpdate = async () => {
+    setIsVerifyingEdit(true);
+    try {
+      const isValidPassword = await dataService.validateActionPassword(editPassword);
+      if (!isValidPassword) {
+        throw new Error("Senha incorreta.");
+      }
+
+      const user = dataService.getCurrentUser();
+      
+      // Criar entrada no histórico
+      const historyEntry = {
+        timestamp: new Date().toISOString(),
+        userId: user?.id || 'sistema',
+        userName: user?.name || 'Sistema',
+        action: 'ALTERAÇÃO DE DADOS',
+        comment: `Informações da demanda alteradas por ${user?.name} via painel de gestão.`,
+        status: task.status,
+        type: 'status_change' as any
+      };
+
+      const finalHistory = [...(task.history || []), historyEntry];
+      
+      await dataService.fullUpdateTask(task.id, { 
+        ...formData, 
+        history: finalHistory 
+      });
+
+      toast({ title: "Alterações Salvas", description: "A demanda foi atualizada e o trâmite registrado." });
+      onTaskUpdated();
+      setIsEditing(false);
+      setIsConfirmingEdit(false);
+      setEditPassword("");
+    } catch (error: any) {
+      toast({ title: "Erro ao salvar", description: error.message, variant: "destructive" });
+    } finally {
+      setIsVerifyingEdit(false);
+    }
   };
 
   const handleUpdate = async () => {
@@ -283,10 +340,15 @@ export function TaskWorkflowManager({ task, open, onOpenChange, onTaskUpdated }:
                   </div>
                 </div>
                 
-                {isGlobalCoordinator && !isLocked && (
+                {((isGlobalCoordinator || (currentUser?.department === task.sector && role === 'COORDENADOR'))) && !isLocked && (
                     <Button 
                       variant="ghost" 
-                      onClick={() => setIsEditing(!isEditing)}
+                      onClick={() => {
+                        if (isEditing) {
+                          setFormData({ ...task }); // Reset on cancel
+                        }
+                        setIsEditing(!isEditing);
+                      }}
                       className="rounded-full text-[10px] font-black uppercase tracking-widest text-primary hover:bg-primary/5"
                     >
                       {isEditing ? "Cancelar" : "Editar"}
@@ -392,20 +454,49 @@ export function TaskWorkflowManager({ task, open, onOpenChange, onTaskUpdated }:
                         <div className="h-10 w-10 rounded-2xl bg-white flex items-center justify-center text-slate-400">
                            <User size={18} />
                         </div>
-                        <div className="flex flex-col">
+                        <div className="flex flex-col flex-1">
                            <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 italic">Responsável</span>
-                           <span className="text-xs font-bold text-slate-800 uppercase italic">{task.assignedToName}</span>
+                           {isEditing ? (
+                              <select 
+                                 className="w-full bg-transparent border-none text-xs font-bold text-slate-800 uppercase italic outline-none"
+                                 value={formData.assignedTo || ''}
+                                 onChange={(e) => {
+                                    const selectedUser = availableUsers.find(u => u.id === e.target.value);
+                                    setFormData({
+                                       ...formData, 
+                                       assignedTo: e.target.value,
+                                       assignedToName: selectedUser?.nomeCompleto || selectedUser?.name || ''
+                                    });
+                                 }}
+                              >
+                                 <option value="">Selecione...</option>
+                                 {availableUsers.map(u => (
+                                    <option key={u.id} value={u.id}>{u.nomeCompleto || u.name}</option>
+                                 ))}
+                              </select>
+                           ) : (
+                              <span className="text-xs font-bold text-slate-800 uppercase italic">{task.assignedToName}</span>
+                           )}
                         </div>
                      </div>
                      <div className="p-5 rounded-3xl bg-slate-50 border border-slate-100 flex items-center gap-4">
                         <div className="h-10 w-10 rounded-2xl bg-white flex items-center justify-center text-slate-400">
                            <Clock size={18} />
                         </div>
-                        <div className="flex flex-col">
+                        <div className="flex flex-col flex-1">
                            <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 italic">Prazo Final</span>
-                           <span className="text-xs font-bold text-slate-800 uppercase italic">
-                              {task.deadline ? format(new Date(task.deadline), "dd/MM/yyyy") : 'S/P'}
-                           </span>
+                           {isEditing ? (
+                              <input 
+                                 type="date"
+                                 className="w-full bg-transparent border-none text-xs font-bold text-slate-800 uppercase italic outline-none"
+                                 value={formData.deadline ? format(new Date(formData.deadline), "yyyy-MM-dd") : ''}
+                                 onChange={(e) => setFormData({...formData, deadline: e.target.value})}
+                              />
+                           ) : (
+                              <span className="text-xs font-bold text-slate-800 uppercase italic">
+                                 {task.deadline ? format(new Date(task.deadline), "dd/MM/yyyy") : 'S/P'}
+                              </span>
+                           )}
                         </div>
                      </div>
                   </div>
@@ -533,13 +624,21 @@ export function TaskWorkflowManager({ task, open, onOpenChange, onTaskUpdated }:
 
                            <div className="grid grid-cols-2 gap-4">
                               <Button 
-                                variant="outline"
-                                onClick={handleUpdate}
-                                disabled={isSubmitting}
-                                className="h-14 rounded-3xl font-black uppercase tracking-widest text-[10px]"
-                              >
-                                 <Save size={18} className="mr-3" /> Salvar Rascunho
-                              </Button>
+                                 variant="outline"
+                                 onClick={isEditing ? handleSaveEditRequest : handleUpdate}
+                                 disabled={isSubmitting || isVerifyingEdit}
+                                 className={cn(
+                                    "h-14 rounded-3xl font-black uppercase tracking-widest text-[10px]",
+                                    isEditing && "bg-primary text-white hover:bg-primary/90 border-none"
+                                 )}
+                               >
+                                  {isSubmitting || isVerifyingEdit ? (
+                                     <Clock size={18} className="mr-3 animate-spin" />
+                                  ) : (
+                                     <Save size={18} className="mr-3" />
+                                  )}
+                                  {isEditing ? "Salvar Alterações" : "Salvar Rascunho"}
+                               </Button>
                                
                                {task.sectorId === 'social' && (
                                   <div className="col-span-2">
@@ -892,6 +991,45 @@ export function TaskWorkflowManager({ task, open, onOpenChange, onTaskUpdated }:
              </Button>
           </DialogFooter>
        </DialogContent>
+    </Dialog>
+
+    {/* Diálogo de Confirmação para Edição */}
+    <Dialog open={isConfirmingEdit} onOpenChange={setIsConfirmingEdit}>
+        <DialogContent className="max-w-md rounded-[2.5rem] border-none p-8">
+            <DialogHeader className="space-y-4">
+                <div className="h-16 w-16 rounded-3xl bg-primary/10 flex items-center justify-center text-primary mx-auto">
+                    <ShieldAlert size={32} />
+                </div>
+                <div className="text-center space-y-2">
+                    <DialogTitle className="text-xl font-headline uppercase italic tracking-tighter">Confirmar Alterações</DialogTitle>
+                    <DialogDescription className="text-xs font-medium text-slate-500 italic">
+                        Esta ação alterará dados fundamentais da demanda e será registrada permanentemente na rastreabilidade institucional.
+                    </DialogDescription>
+                </div>
+            </DialogHeader>
+
+            <div className="py-6 space-y-4">
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Senha de Autorização</label>
+                    <Input 
+                        type="password"
+                        placeholder="••••••••"
+                        className="h-12 rounded-2xl border-slate-200 bg-slate-50 font-bold text-center tracking-widest"
+                        value={editPassword}
+                        onChange={(e) => setEditPassword(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && processEditUpdate()}
+                    />
+                </div>
+
+                <Button 
+                    className="w-full h-14 rounded-3xl bg-primary hover:bg-primary/90 text-white font-black uppercase italic tracking-widest text-[11px] shadow-lg shadow-primary/20"
+                    onClick={processEditUpdate}
+                    disabled={!editPassword || isVerifyingEdit}
+                >
+                    {isVerifyingEdit ? "Verificando..." : "Assinar e Atualizar Dados"}
+                </Button>
+            </div>
+        </DialogContent>
     </Dialog>
     </>
   );

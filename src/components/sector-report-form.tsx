@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
   FileText, Calendar, User, PenLine, Send, Download,
-  CheckCircle2, Plus, Trash2, Loader2, ShieldCheck, Clock
+  CheckCircle2, Plus, Trash2, Loader2, ShieldCheck, Clock, X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format, subDays, subWeeks, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
@@ -39,6 +39,15 @@ export function SectorReportForm({ sectorId, sectorSigla, sectorName, onReportSa
   const [savedReportId, setSavedReportId] = useState<string | null>(null);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
+  const [allUsers, setAllUsers] = useState<any[]>([]);
+  const [requestedSigners, setRequestedSigners] = useState<any[]>([]);
+
+  React.useEffect(() => {
+    dataService.getUsers().then(users => {
+      setAllUsers(users.filter(u => u.id !== user?.id));
+    });
+  }, [user?.id]);
+
   const getPeriodDates = () => {
     const now = new Date();
     switch (periodType) {
@@ -65,40 +74,61 @@ export function SectorReportForm({ sectorId, sectorSigla, sectorName, onReportSa
     setIsSigned(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!isSigned || !content.trim()) return;
     setIsSaving(true);
 
-    const sealText = `Documento assinado eletronicamente por ${user?.name || 'Membro'}, ${user?.cargo || 'Membro de Setor'}, em ${format(new Date(), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })}, no sistema do projeto Rede Inova Social.`;
+    try {
+      const sealText = `Documento assinado eletronicamente por ${user?.name || 'Membro'}, ${user?.cargo || 'Membro de Setor'}, em ${format(new Date(), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })}, no sistema do projeto Rede Inova Social.`;
 
-    const report: SectorReport = {
-      id: `report-${Date.now()}`,
-      sectorId,
-      sectorSigla,
-      sectorName,
-      reportScope,
-      periodType,
-      periodStart: period.start.toISOString(),
-      periodEnd: period.end.toISOString(),
-      content,
-      memberActivities: reportScope === 'global' ? members.filter(m => m.memberName.trim()) : [],
-      signedBy: user?.name || 'Membro',
-      signedByCargo: user?.cargo || 'Membro do Setor',
-      signedAt: new Date().toISOString(),
-      signatureSeal: sealText,
-      status: 'assinado',
-      createdAt: new Date().toISOString()
-    };
+      const report: SectorReport = {
+        id: `report-${Date.now()}`,
+        sectorId,
+        sectorSigla,
+        sectorName,
+        reportScope,
+        periodType,
+        periodStart: period.start.toISOString(),
+        periodEnd: period.end.toISOString(),
+        content,
+        memberActivities: reportScope === 'global' ? members.filter(m => m.memberName.trim()) : [],
+        signedBy: user?.name || 'Membro',
+        signedByCargo: user?.cargo || 'Membro do Setor',
+        signedAt: new Date().toISOString(),
+        signatureSeal: sealText,
+        status: 'assinado',
+        createdAt: new Date().toISOString(),
+        requestedSignatures: requestedSigners.map(s => ({
+          id: `req-${Date.now()}-${s.id}`,
+          userId: s.id,
+          userName: s.nomeCompleto || s.name,
+          requesterId: user?.id || 'unknown',
+          requesterName: (user as any)?.nomeCompleto || user?.name || 'Sistema',
+          status: 'aguardando',
+          requestedAt: new Date().toISOString()
+        }))
+      };
 
-    dataService.saveReport(report);
-    setSavedReportId(report.id);
-    setIsSaving(false);
-    onReportSaved?.();
+      await dataService.saveReport(report);
+      setSavedReportId(report.id);
+    } catch (error) {
+      console.error("Erro ao salvar relatório:", error);
+    } finally {
+      setIsSaving(false);
+      onReportSaved?.();
+    }
   };
 
-  const handleSendToCGP = () => {
+  const handleSendToCGP = async () => {
     if (savedReportId) {
-      dataService.sendReportToCGP(savedReportId);
+      setIsSaving(true);
+      try {
+        await dataService.sendReportToCGP(savedReportId);
+      } catch (error) {
+        console.error("Erro ao enviar relatório para CGP:", error);
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
 
@@ -108,7 +138,7 @@ export function SectorReportForm({ sectorId, sectorSigla, sectorName, onReportSa
 
     try {
       const { generateReportPdf } = await import('@/lib/pdf-generator');
-      const reports = dataService.getReportsBySector(sectorId);
+      const reports = await dataService.getReportsBySector(sectorId);
       const report = reports.find(r => r.id === savedReportId);
       if (report) {
         await generateReportPdf(report);
@@ -241,6 +271,49 @@ export function SectorReportForm({ sectorId, sectorSigla, sectorName, onReportSa
           ))}
         </div>
       </div>
+      )}
+
+      {/* Solicitar Assinaturas */}
+      {!isSigned && (
+        <div className="space-y-4 pt-4 border-t border-slate-100">
+          <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+            <User className="w-3.5 h-3.5" />
+            Solicitar Assinaturas Adicionais (Opcional)
+          </Label>
+          <div className="flex gap-2 items-center flex-wrap">
+            <select
+              className="h-10 px-3 rounded-xl border border-slate-200 text-sm font-bold bg-white focus:ring-2 focus:ring-primary/20 outline-none flex-1 min-w-[200px]"
+              value=""
+              onChange={(e) => {
+                const selectedUser = allUsers.find(u => u.id === e.target.value);
+                if (selectedUser && !requestedSigners.find(s => s.id === selectedUser.id)) {
+                  setRequestedSigners([...requestedSigners, selectedUser]);
+                }
+              }}
+            >
+              <option value="" disabled>Selecione um membro para assinar...</option>
+              {allUsers.map(u => (
+                <option key={u.id} value={u.id}>{u.nomeCompleto || u.name} ({u.cargo || 'Membro'})</option>
+              ))}
+            </select>
+          </div>
+          
+          {requestedSigners.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              {requestedSigners.map(signer => (
+                <div key={signer.id} className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                  <span className="text-xs font-bold text-slate-700">{signer.nomeCompleto || signer.name}</span>
+                  <button 
+                    onClick={() => setRequestedSigners(requestedSigners.filter(s => s.id !== signer.id))}
+                    className="text-red-400 hover:text-red-600 ml-1"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       )}
 
       {/* Signature Block */}

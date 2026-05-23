@@ -30,40 +30,41 @@ export default function RelatorioAcessosPage() {
     const isAuthorized = dataService.canManageTeam();
     setAuthorized(isAuthorized);
 
-    // 🚀 OTIMIZAÇÃO: Se não estiver autorizado ou se o Firebase não estiver configurado corretamente, 
-    // pula o carregamento pesado e vai para o fallback/erro imediatamente.
-    const isConfigValid = process.env.NEXT_PUBLIC_FIREBASE_API_KEY && process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-
     if (isAuthorized) {
-      if (!isConfigValid) {
-          console.warn("Monitor de Acesso: Configuração do Firebase ausente. Ativando modo local.");
-          loadLocalData();
-      } else {
-          loadData();
-      }
+      loadData();
     } else {
       setLoading(false);
     }
   }, []);
 
-  const loadLocalData = async () => {
-      setLoading(true);
-      try {
-          // Usa o método de listagem que já tem fallback mock
-          const data = await dataService.listarMembrosEquipe();
-          setUsers(data);
-      } finally {
-          setLoading(false);
-      }
-  };
-
   const loadData = async () => {
     setLoading(true);
     try {
-      const data = await dataService.getUserActivityReport();
-      setUsers(data);
+      const allMembers = await dataService.listarMembrosEquipe();
+      const { supabaseActivity } = await import("@/lib/supabase-activity");
+      const logs = await supabaseActivity.getActivityLogs();
+
+      const merged = allMembers.map(m => {
+        // Encontrar o log correspondente a este membro
+        const log = logs.find(l => l.user_id === m.id);
+        if (log) {
+          return { ...m, ...log };
+        }
+        return m;
+      });
+      
+      // Ordenar: Online > Recente > Nunca acessou
+      merged.sort((a, b) => {
+        const dateA = a.last_online ? new Date(a.last_online).getTime() : 0;
+        const dateB = b.last_online ? new Date(b.last_online).getTime() : 0;
+        return dateB - dateA;
+      });
+
+      setUsers(merged);
     } catch (e) {
-      console.error(e);
+      console.error("Erro ao carregar dados de acesso:", e);
+      const fallback = await dataService.listarMembrosEquipe();
+      setUsers(fallback);
     } finally {
       setLoading(false);
     }

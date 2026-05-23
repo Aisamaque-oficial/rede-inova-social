@@ -11,7 +11,8 @@ import {
     AlertTriangle,
     CheckCircle2,
     ArrowRight,
-    Users
+    Users,
+    FileSignature
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
@@ -26,6 +27,7 @@ import Link from "next/link";
  */
 export default function PainelDashboardPage() {
   const [tasks, setTasks] = useState<ProjectTask[]>([]);
+  const [pendingSignatures, setPendingSignatures] = useState<any[]>([]);
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
   const currentUser = dataService.getCurrentUser();
@@ -37,6 +39,14 @@ export default function PainelDashboardPage() {
         try {
             const tasksData = await dataService.getTasks();
             setTasks(tasksData);
+
+            const allReports = await dataService.getAllReports();
+            if (currentUser) {
+                const pendings = (allReports || []).filter(r => 
+                    r.requestedSignatures?.some(s => s.userId === currentUser.id && s.status === 'aguardando')
+                );
+                setPendingSignatures(pendings);
+            }
         } catch (error) {
             console.error("Erro ao carregar dados do dashboard:", error);
         } finally {
@@ -44,7 +54,7 @@ export default function PainelDashboardPage() {
         }
     };
     loadData();
-  }, []);
+  }, [currentUser?.id]);
 
   const overdueTasks = typeof dataService.getOverdueTasks === 'function' 
     ? dataService.getOverdueTasks(currentUser?.id || undefined) 
@@ -111,6 +121,28 @@ export default function PainelDashboardPage() {
              </div>
           </Card>
         </Link>
+
+        {pendingSignatures.length > 0 && (
+          <Link href="/atividades/coordenacao/relatorios?filter=minhas-pendencias">
+            <Card className="p-8 bg-amber-50 text-amber-950 border border-amber-200 rounded-[2.5rem] hover:scale-[1.02] transition-all cursor-pointer shadow-xl group relative overflow-hidden">
+               <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:rotate-12 transition-transform">
+                  <FileSignature className="w-24 h-24 text-amber-600" />
+               </div>
+               <div className="relative z-10">
+                  <div className="p-4 bg-amber-100 rounded-2xl w-fit mb-6 relative">
+                      <FileSignature className="w-8 h-8 text-amber-600" />
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-black animate-bounce shadow-md">
+                        {pendingSignatures.length}
+                      </div>
+                  </div>
+                  <h3 className="text-xl font-black uppercase tracking-tight leading-tight text-amber-900">Documentos<br/>Aguardando Assinatura</h3>
+                  <p className="text-[10px] font-bold opacity-60 mt-2 uppercase tracking-widest italic group-hover:translate-x-2 transition-transform inline-flex items-center gap-2 text-amber-700">
+                      Assinar Eletronicamente Agora <ArrowRight className="w-3 h-3" />
+                  </p>
+               </div>
+            </Card>
+          </Link>
+        )}
       </section>
 
       <div className="grid grid-cols-1 gap-12">

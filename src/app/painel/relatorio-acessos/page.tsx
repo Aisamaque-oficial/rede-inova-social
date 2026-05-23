@@ -216,7 +216,7 @@ export default function RelatorioAcessosPage() {
                         {(() => {
                           const lastOnline = new Date(log.last_online).getTime();
                           const diff = Date.now() - lastOnline;
-                          const isOnline = diff < 60000; // Online se atualizado no último minuto
+                          const isOnline = diff < 90000; // Online se atualizado nos últimos 90 segundos (coberto pelo heartbeat de 45s)
                           
                           return isOnline ? (
                             <>
