@@ -158,25 +158,27 @@ export function MaterialReader({ material, onClose }: MaterialReaderProps) {
                   <h3 className="text-3xl font-black text-primary tracking-tighter uppercase italic mb-2">Gostou deste material?</h3>
                   <p className="text-slate-500 font-bold italic">Você pode visualizar o PDF original ou baixá-lo para imprimir.</p>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0">
-                  <Button 
-                    onClick={() => setViewPdfInline(true)}
-                    variant="outline"
-                    className="rounded-full h-16 px-8 font-black uppercase tracking-tighter text-base gap-3 border-2 border-primary/20 text-primary hover:bg-primary/5"
-                  >
-                    <Maximize2 className="h-5 w-5" />
-                    Visualizar na Tela
-                  </Button>
-                  <Button 
-                    asChild
-                    className="rounded-full h-16 px-8 font-black uppercase tracking-tighter text-base gap-3 shadow-xl"
-                  >
-                    <a href={material.url} target="_blank" rel="noopener noreferrer" download>
-                      <Download className="h-5 w-5" />
-                      Baixar PDF
-                    </a>
-                  </Button>
-                </div>
+                {material.url !== '#' && (
+                  <div className="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0">
+                    <Button 
+                      onClick={() => setViewPdfInline(true)}
+                      variant="outline"
+                      className="rounded-full h-16 px-8 font-black uppercase tracking-tighter text-base gap-3 border-2 border-primary/20 text-primary hover:bg-primary/5"
+                    >
+                      <Maximize2 className="h-5 w-5" />
+                      Visualizar na Tela
+                    </Button>
+                    <Button 
+                      asChild
+                      className="rounded-full h-16 px-8 font-black uppercase tracking-tighter text-base gap-3 shadow-xl"
+                    >
+                      <a href={material.url} target="_blank" rel="noopener noreferrer" download>
+                        <Download className="h-5 w-5" />
+                        Baixar PDF
+                      </a>
+                    </Button>
+                  </div>
+                )}
               </div>
             </motion.div>
           )}
