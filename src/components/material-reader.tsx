@@ -107,9 +107,14 @@ export function MaterialReader({ material, onClose }: MaterialReaderProps) {
                   <h3 className="text-3xl font-black text-primary tracking-tighter uppercase italic mb-2">Gostou deste material?</h3>
                   <p className="text-slate-500 font-bold italic">Você pode baixar a versão completa em PDF para imprimir.</p>
                 </div>
-                <Button className="rounded-full h-16 px-10 font-black uppercase tracking-tighter text-lg gap-4 shadow-xl">
+                <Button 
+                  asChild
+                  className="rounded-full h-16 px-10 font-black uppercase tracking-tighter text-lg gap-4 shadow-xl"
+                >
+                  <a href={material.url} target="_blank" rel="noopener noreferrer" download>
                     <Download className="h-6 w-6" />
                     Baixar PDF
+                  </a>
                 </Button>
               </div>
            </motion.div>

@@ -796,6 +796,18 @@ export const authoralMaterials: AuthoralMaterial[] = [
     author: 'Rede Inova Social',
     imagePlaceholderId: '3',
     createdAt: '2026-04-25T09:00:00Z'
+  },
+  {
+    id: 'PDF-04',
+    title: 'Glossário BEIDE',
+    type: 'cartilha',
+    description: 'Material complementar do glossário para consulta e leitura na íntegra.',
+    content: 'Arquivo PDF completo do Glossário BEIDE para leitura e download.',
+    url: '/materiais/beide_glossario.pdf',
+    thumbnail: '/materials/guia-seguranca.jpg',
+    author: 'Equipe LISSA',
+    imagePlaceholderId: '4',
+    createdAt: '2026-05-23T10:00:00Z'
   }
 ];
 export const bastidoresItems: any[] = [];
