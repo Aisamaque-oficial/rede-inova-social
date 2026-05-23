@@ -1,45 +1,49 @@
 "use client";
 
-import { useState } from "react";
-import { librasGlossary, GlossaryTerm } from "@/lib/mock-data";
+import { useState, useEffect } from "react";
+import { librasService } from "@/lib/libras-service";
 import MainHeader from "@/components/main-header";
 import { Badge } from "@/components/ui/badge";
-import { Library, Search, Ear, Quote, Hash } from "lucide-react";
+import { Library, Search, Ear, Quote, Hash, Loader2 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
-// Flatten the glossary data to easily search and display
-type FlattenedTerm = GlossaryTerm & {
-  eixoId: string;
-  eixoTitle: string;
-  eixoEmoji: string;
-  eixoColor: string | undefined;
-};
-
-const allTerms: FlattenedTerm[] = librasGlossary.flatMap((eixo: any) =>
-  eixo.terms.map((term: any) => ({
-    ...term,
-    eixoId: eixo.id,
-    eixoTitle: eixo.title
-      .split("—")[0]
-      .trim()
-      .replace(/^Eixo (de |do |)\s*/i, ""),
-    eixoEmoji: eixo.emoji || "🔖",
-    eixoColor: eixo.color,
-  })),
-);
+const eixos = [
+  { id: 1, title: 'Fundamentação', emoji: '🤟' },
+  { id: 2, title: 'Imunológico-Digestivo', emoji: '🧬' },
+  { id: 3, title: 'Rotulagem Técnica', emoji: '🏷️' },
+  { id: 4, title: 'Análise Crítica', emoji: '⚖️' },
+  { id: 5, title: 'Soberania Alimentar', emoji: '🌽' },
+];
 
 export default function GlossarioPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeEixoFilter, setActiveEixoFilter] = useState<string>("todos");
+  const [activeEixoFilter, setActiveEixoFilter] = useState<string | number>("todos");
   const [activeVideoUrl, setActiveVideoUrl] = useState<string | null>(null);
+  
+  const [allTerms, setAllTerms] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadGlossary() {
+      try {
+        const data = await librasService.getGlossaryByAxis('todos');
+        setAllTerms(data);
+      } catch (e) {
+        console.error("Erro ao carregar glossário:", e);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadGlossary();
+  }, []);
 
   // Filter logic
   const filteredTerms = allTerms.filter((term) => {
     const matchesSearch =
-      term.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      term.description.toLowerCase().includes(searchTerm.toLowerCase());
+      (term.term || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (term.description || "").toLowerCase().includes(searchTerm.toLowerCase());
     const matchesEixo =
-      activeEixoFilter === "todos" || term.eixoId === activeEixoFilter;
+      activeEixoFilter === "todos" || term.axis_id === activeEixoFilter;
     return matchesSearch && matchesEixo;
   });
 
@@ -99,7 +103,7 @@ export default function GlossarioPage() {
             >
               Todos ({allTerms.length})
             </button>
-            {librasGlossary.map((eixo) => (
+            {eixos.map((eixo) => (
               <button
                 key={eixo.id}
                 onClick={() => setActiveEixoFilter(eixo.id)}
@@ -110,10 +114,7 @@ export default function GlossarioPage() {
                 }`}
               >
                 <span>{eixo.emoji}</span>
-                {eixo.title
-                  .split("—")[0]
-                  .trim()
-                  .replace(/^Eixo (de |do |)\s*/i, "")}
+                {eixo.title}
               </button>
             ))}
           </div>
@@ -125,7 +126,17 @@ export default function GlossarioPage() {
         <div className="flex flex-col lg:flex-row gap-10 items-start">
           {/* Main List */}
           <div className="flex-1 space-y-6">
-            {filteredTerms.length === 0 ? (
+            {isLoading ? (
+              <div className="bg-white rounded-[3rem] p-16 text-center shadow-sm border border-slate-100 flex flex-col items-center justify-center min-h-[400px]">
+                <Loader2 className="h-16 w-16 text-primary mb-6 animate-spin" />
+                <h3 className="text-2xl font-black text-slate-800 mb-2">
+                  Carregando Glossário...
+                </h3>
+                <p className="text-slate-400 font-medium">
+                  Buscando os termos mais recentes no banco de dados.
+                </p>
+              </div>
+            ) : filteredTerms.length === 0 ? (
               <div className="bg-white rounded-[3rem] p-16 text-center shadow-sm border border-slate-100 flex flex-col items-center justify-center">
                 <Search className="h-16 w-16 text-slate-200 mb-6" />
                 <h3 className="text-2xl font-black text-slate-400 mb-2">
