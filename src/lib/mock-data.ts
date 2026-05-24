@@ -865,7 +865,15 @@ export const librasGlossary: any[] = [
     title: 'Imunológico-Digestivo',
     emoji: '🧬',
     description: 'Termos técnicos sobre o sistema imunológico e digestivo.',
-    terms: []
+    terms: [
+      {
+        term: 'Reação Alimentar',
+        description: 'Resposta anormal do organismo após a ingestão de um alimento específico.',
+        videoUrl: 'https://www.youtube.com/watch?v=avcv3vQBGwA',
+        context: 'Pode envolver alergias ou intolerâncias alimentares.',
+        related: ['Sistema Imune', 'Nutrição']
+      }
+    ]
   },
   {
     id: 'rotulagem-tecnica',
