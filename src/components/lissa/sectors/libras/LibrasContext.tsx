@@ -68,11 +68,30 @@ export function LibrasProvider({ children }: { children: ReactNode }) {
         const data = await librasService.getGlossaryByAxis(
           activeModuleId === 'todos' ? 'todos' : Number(activeModuleId)
         );
-        setGlossaryTerms(data);
+
+        let finalData = data;
+        
+        // Fallback to mock data if database returns empty
+        if (data.length === 0) {
+          let mockTerms: any[] = [];
+          librasGlossary.forEach((axis: any, index: number) => {
+            const axisId = index + 1;
+            if (activeModuleId === 'todos' || Number(activeModuleId) === axisId) {
+              mockTerms = mockTerms.concat((axis.terms || []).map((t: any) => ({
+                ...t,
+                eixoTitle: axis.title,
+                eixoEmoji: axis.emoji
+              })));
+            }
+          });
+          finalData = mockTerms;
+        }
+
+        setGlossaryTerms(finalData);
         
         // Auto-select first term of the axis
-        if (data.length > 0) {
-          setActiveTermKey(data[0].term);
+        if (finalData.length > 0) {
+          setActiveTermKey(finalData[0].term);
         } else {
           setActiveTermKey(null);
         }
