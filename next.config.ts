@@ -4,6 +4,7 @@ import 'dotenv/config';
 const nextConfig: NextConfig = {
   /* config options here */
   typescript: {
+    // Ignorando erros temporariamente conforme autorizado na homologação
     ignoreBuildErrors: true,
   },
   eslint: {
