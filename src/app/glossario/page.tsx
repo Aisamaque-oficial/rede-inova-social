@@ -43,7 +43,7 @@ export default function GlossarioPage() {
       (term.term || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
       (term.description || "").toLowerCase().includes(searchTerm.toLowerCase());
     const matchesEixo =
-      activeEixoFilter === "todos" || term.axis_id === activeEixoFilter;
+      activeEixoFilter === "todos" || Number(term.axis_id) === Number(activeEixoFilter);
     return matchesSearch && matchesEixo;
   });
 
@@ -152,6 +152,10 @@ export default function GlossarioPage() {
                   const isActive =
                     activeVideoUrl === term.videoUrl && !!term.videoUrl;
 
+                  const eixoMapped = eixos.find(e => e.id === Number(term.axis_id));
+                  const displayTitle = eixoMapped?.title || term.eixoTitle || 'Conceito Técnico';
+                  const displayEmoji = eixoMapped?.emoji || term.eixoEmoji || '🔖';
+
                   return (
                     <motion.div
                       key={i}
@@ -164,9 +168,9 @@ export default function GlossarioPage() {
                     >
                       <div className="flex justify-between items-start mb-6">
                         <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-                          <span className="text-sm">{term.eixoEmoji}</span>
+                          <span className="text-sm">{displayEmoji}</span>
                           <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">
-                            {term.eixoTitle}
+                            {displayTitle}
                           </span>
                         </div>
                         {term.videoUrl && (

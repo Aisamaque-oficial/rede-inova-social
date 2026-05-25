@@ -50,17 +50,17 @@ export const librasService = {
       videoUrl: 'https://youtu.be/avcv3vQBGwA',
       signStrategy: t.sign_strategy,
       tags: t.tags || [],
-      eixoTitle: t.axis_id === 1 ? 'Fundamentação' :
-                 t.axis_id === 2 ? 'Imunológico-Digestivo' :
-                 t.axis_id === 3 ? 'Rotulagem Técnica' :
-                 t.axis_id === 4 ? 'Análise Crítica' :
-                 t.axis_id === 5 ? 'Soberania Alimentar' :
+      eixoTitle: Number(t.axis_id) === 1 ? 'Fundamentação' :
+                 Number(t.axis_id) === 2 ? 'Imunológico-Digestivo' :
+                 Number(t.axis_id) === 3 ? 'Rotulagem Técnica' :
+                 Number(t.axis_id) === 4 ? 'Análise Crítica' :
+                 Number(t.axis_id) === 5 ? 'Soberania Alimentar' :
                  'Conceito Técnico',
-      eixoEmoji: t.axis_id === 1 ? '🤟' :
-                 t.axis_id === 2 ? '🧬' :
-                 t.axis_id === 3 ? '🏷️' :
-                 t.axis_id === 4 ? '⚖️' :
-                 t.axis_id === 5 ? '🌽' :
+      eixoEmoji: Number(t.axis_id) === 1 ? '🤟' :
+                 Number(t.axis_id) === 2 ? '🧬' :
+                 Number(t.axis_id) === 3 ? '🏷️' :
+                 Number(t.axis_id) === 4 ? '⚖️' :
+                 Number(t.axis_id) === 5 ? '🌽' :
                  '🔖'
     })) as any[];
   },
