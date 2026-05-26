@@ -28,15 +28,16 @@ export function SignDisplay() {
         />
 
         <iframe
-          src={`${activeTermObj.videoUrl.replace('youtu.be/', 'youtube.com/embed/').replace('watch?v=', 'embed/')}?autoplay=1&mute=1&loop=1&controls=0`}
-          className="absolute inset-0 w-full h-full scale-[1.02]"
-          allow="autoplay; encrypted-media"
+          src={`${activeTermObj.videoUrl.replace('youtu.be/', 'youtube.com/embed/').replace('watch?v=', 'embed/')}?autoplay=1&mute=1&loop=1&controls=1&rel=0&modestbranding=1`}
+          className="absolute inset-0 w-full h-full z-10"
+          allow="autoplay; encrypted-media; fullscreen"
+          allowFullScreen
           title={`Sinal de ${activeTermObj.term} em Libras`}
         />
         
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
         
-        <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between z-30">
+        <div className="absolute top-4 left-4 pointer-events-none z-30">
           <div className="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-2xl flex items-center gap-3">
             <Ear className="h-4 w-4 text-primary animate-pulse" />
             <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Sinal em Tempo Real</span>
