@@ -48,18 +48,57 @@ export function SectorReportForm({ sectorId, sectorSigla, sectorName, onReportSa
     });
   }, [user?.id]);
 
+  const [activityDate, setActivityDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [customPeriodStart, setCustomPeriodStart] = useState('');
+  const [customPeriodEnd, setCustomPeriodEnd] = useState('');
+
   const getPeriodDates = () => {
-    const now = new Date();
+    // If user set custom dates, use them
+    if (customPeriodStart && customPeriodEnd) {
+      return { start: new Date(customPeriodStart + 'T00:00:00'), end: new Date(customPeriodEnd + 'T23:59:59') };
+    }
+    const ref = new Date(activityDate + 'T12:00:00');
     switch (periodType) {
-      case 'diaria': return { start: now, end: now };
-      case 'semanal': return { start: startOfWeek(now, { weekStartsOn: 1 }), end: endOfWeek(now, { weekStartsOn: 1 }) };
-      case 'quinzenal': return { start: subDays(now, 14), end: now };
-      case 'mensal': return { start: startOfMonth(now), end: endOfMonth(now) };
+      case 'diaria': return { start: ref, end: ref };
+      case 'semanal': return { start: startOfWeek(ref, { weekStartsOn: 1 }), end: endOfWeek(ref, { weekStartsOn: 1 }) };
+      case 'quinzenal': return { start: subDays(ref, 14), end: ref };
+      case 'mensal': return { start: startOfMonth(ref), end: endOfMonth(ref) };
     }
   };
 
+  // Auto-fill period when periodType or activityDate changes
+  React.useEffect(() => {
+    const ref = new Date(activityDate + 'T12:00:00');
+    switch (periodType) {
+      case 'diaria':
+        setCustomPeriodStart('');
+        setCustomPeriodEnd('');
+        break;
+      case 'semanal':
+        setCustomPeriodStart(format(startOfWeek(ref, { weekStartsOn: 1 }), 'yyyy-MM-dd'));
+        setCustomPeriodEnd(format(endOfWeek(ref, { weekStartsOn: 1 }), 'yyyy-MM-dd'));
+        break;
+      case 'quinzenal':
+        setCustomPeriodStart(format(subDays(ref, 14), 'yyyy-MM-dd'));
+        setCustomPeriodEnd(format(ref, 'yyyy-MM-dd'));
+        break;
+      case 'mensal':
+        setCustomPeriodStart(format(startOfMonth(ref), 'yyyy-MM-dd'));
+        setCustomPeriodEnd(format(endOfMonth(ref), 'yyyy-MM-dd'));
+        break;
+    }
+  }, [periodType, activityDate]);
+
   const period = getPeriodDates();
-  const periodLabel = `${format(period.start, "dd/MM/yyyy")} a ${format(period.end, "dd/MM/yyyy")}`;
+  const periodLabel = periodType === 'diaria'
+    ? format(period.start, "dd/MM/yyyy")
+    : `${format(period.start, "dd/MM/yyyy")} a ${format(period.end, "dd/MM/yyyy")}`;
+
+  // Validation warnings
+  const daysDiff = Math.floor((new Date().getTime() - new Date(activityDate + 'T12:00:00').getTime()) / (1000 * 60 * 60 * 24));
+  const isRetroactive = daysDiff > 7;
+  const isActivityOutsidePeriod = periodType !== 'diaria' && customPeriodStart && customPeriodEnd &&
+    (new Date(activityDate) < new Date(customPeriodStart) || new Date(activityDate) > new Date(customPeriodEnd));
 
   const addMember = () => setMembers([...members, { memberName: "", description: "" }]);
   const removeMember = (index: number) => setMembers(members.filter((_, i) => i !== index));
@@ -177,7 +216,7 @@ export function SectorReportForm({ sectorId, sectorSigla, sectorName, onReportSa
       )}
 
       {/* Period Selection */}
-      <div className="space-y-4">
+      <div className="space-y-5">
         <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
           <Calendar className="w-3.5 h-3.5" />
           Período do Relatório
@@ -202,9 +241,75 @@ export function SectorReportForm({ sectorId, sectorSigla, sectorName, onReportSa
             </button>
           ))}
         </div>
+
+        {/* Data de Realização - sempre visível */}
+        <div className="bg-white border-2 border-slate-100 rounded-2xl p-5 space-y-3">
+          <Label className="text-[10px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-2">
+            <Calendar className="w-3.5 h-3.5 text-primary" />
+            Quando realizou a atividade
+          </Label>
+          <Input
+            type="date"
+            value={activityDate}
+            onChange={(e) => { if (!isSigned) setActivityDate(e.target.value); }}
+            disabled={isSigned}
+            max={format(new Date(), 'yyyy-MM-dd')}
+            className="h-12 rounded-xl border-slate-200 font-bold text-sm"
+          />
+          {isRetroactive && (
+            <div className="flex items-center gap-2 text-amber-600 bg-amber-50 border border-amber-200 px-4 py-2.5 rounded-xl">
+              <Clock className="w-4 h-4 flex-shrink-0" />
+              <span className="text-[11px] font-bold">
+                Atenção: Esta data é de <strong>{daysDiff} dias atrás</strong>. Considere justificar o atraso no corpo do relatório.
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Período de Referência - apenas para semanal/quinzenal/mensal */}
+        {periodType !== 'diaria' && (
+          <div className="bg-white border-2 border-slate-100 rounded-2xl p-5 space-y-3">
+            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-2">
+              <Clock className="w-3.5 h-3.5 text-primary" />
+              Período de referência da atividade
+            </Label>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Início</span>
+                <Input
+                  type="date"
+                  value={customPeriodStart}
+                  onChange={(e) => { if (!isSigned) setCustomPeriodStart(e.target.value); }}
+                  disabled={isSigned}
+                  className="h-12 rounded-xl border-slate-200 font-bold text-sm"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Fim</span>
+                <Input
+                  type="date"
+                  value={customPeriodEnd}
+                  onChange={(e) => { if (!isSigned) setCustomPeriodEnd(e.target.value); }}
+                  disabled={isSigned}
+                  className="h-12 rounded-xl border-slate-200 font-bold text-sm"
+                />
+              </div>
+            </div>
+            {isActivityOutsidePeriod && (
+              <div className="flex items-center gap-2 text-orange-600 bg-orange-50 border border-orange-200 px-4 py-2.5 rounded-xl">
+                <Calendar className="w-4 h-4 flex-shrink-0" />
+                <span className="text-[11px] font-bold">
+                  A data de realização está fora do período de referência informado. Verifique se as datas estão corretas.
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Resumo do período */}
         <div className="flex items-center gap-2 text-xs font-bold text-slate-500 bg-slate-50 p-3 rounded-xl">
           <Clock className="w-4 h-4 text-primary" />
-          Período: <span className="text-slate-800 font-black">{periodLabel}</span>
+          {periodType === 'diaria' ? 'Data' : 'Período'}: <span className="text-slate-800 font-black">{periodLabel}</span>
         </div>
       </div>
 
