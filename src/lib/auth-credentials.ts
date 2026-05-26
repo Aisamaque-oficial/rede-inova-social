@@ -126,7 +126,10 @@ const USUARIOS_INICIAIS: StoredUser[] = [
     cpfOuEmail: '123.123.123-02', 
     nomeCompleto: 'Andréa Gomes',
     role: 'COORDENADOR',
-    assignments: [{ sector: 'cgp', role: 'COORDENADOR' }],
+    assignments: [
+      { sector: 'cgp', role: 'COORDENADOR' },
+      { sector: 'extensao', role: 'COORDENADOR' }
+    ],
     passwordHash: SENHA_PADRAO,
     ativo: true,
     department: 'CGP',
@@ -149,7 +152,8 @@ const USUARIOS_INICIAIS: StoredUser[] = [
     avatarUrl: '/team/danielle.jpeg',
     assignments: [
         { sector: 'cgp', role: 'COORDENADOR' },
-        { sector: 'curadoria', role: 'COORDENADOR' }
+        { sector: 'curadoria', role: 'COORDENADOR' },
+        { sector: 'extensao', role: 'COORDENADOR' }
     ],
     dataCriacao: new Date('2026-01-01').toISOString(),
     criadoPor: 'admin',
@@ -283,7 +287,8 @@ const USUARIOS_INICIAIS: StoredUser[] = [
     nomeCompleto: 'Ilana Anunciação',
     role: 'COLABORADOR',
     assignments: [
-      { sector: 'acessibilidade', role: 'COLABORADOR' }
+      { sector: 'acessibilidade', role: 'COLABORADOR' },
+      { sector: 'extensao', role: 'COLABORADOR' }
     ],
     activeSector: 'acessibilidade',
     passwordHash: SENHA_PADRAO,
@@ -364,6 +369,39 @@ const USUARIOS_INICIAIS: StoredUser[] = [
     bio: "",
     lattesUrl: "",
     cargo: "Núcleo de Acessibilidade",
+    permissoes: PERMS_COLABORADOR_GERAL
+  },
+  // 5. EXTENSÃO
+  {
+    id: '21',
+    cpfOuEmail: 'aline.muniz@redeinova.com', 
+    nomeCompleto: 'Aline Muniz',
+    role: 'COLABORADOR',
+    assignments: [{ sector: 'extensao', role: 'COLABORADOR' }],
+    passwordHash: SENHA_PADRAO,
+    ativo: true,
+    department: 'EXTENSAO',
+    dataCriacao: new Date('2026-05-26').toISOString(),
+    criadoPor: 'admin',
+    bio: "",
+    lattesUrl: "",
+    cargo: "Núcleo de Extensão",
+    permissoes: PERMS_COLABORADOR_GERAL
+  },
+  {
+    id: '22',
+    cpfOuEmail: 'ana.sousa@redeinova.com', 
+    nomeCompleto: 'Ana Sousa',
+    role: 'COLABORADOR',
+    assignments: [{ sector: 'extensao', role: 'COLABORADOR' }],
+    passwordHash: SENHA_PADRAO,
+    ativo: true,
+    department: 'EXTENSAO',
+    dataCriacao: new Date('2026-05-26').toISOString(),
+    criadoPor: 'admin',
+    bio: "",
+    lattesUrl: "",
+    cargo: "Núcleo de Extensão",
     permissoes: PERMS_COLABORADOR_GERAL
   }
 ];
