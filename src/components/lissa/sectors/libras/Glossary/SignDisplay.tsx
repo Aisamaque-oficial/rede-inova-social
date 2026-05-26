@@ -17,7 +17,7 @@ export function SignDisplay() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="relative aspect-video rounded-[3rem] overflow-hidden bg-slate-900 shadow-2xl group ring-1 ring-primary/10"
+        className="relative aspect-video rounded-2xl overflow-hidden bg-slate-900 shadow-2xl group ring-1 ring-primary/10"
       >
         {/* Glow perolado no container quando atualiza */}
         <motion.div 
