@@ -28,7 +28,7 @@ export function SignDisplay() {
         />
 
         <iframe
-          src={`${activeTermObj.videoUrl.replace('watch?v=', 'embed/')}?autoplay=1&mute=1&loop=1&controls=0`}
+          src={`${activeTermObj.videoUrl.replace('youtu.be/', 'youtube.com/embed/').replace('watch?v=', 'embed/')}?autoplay=1&mute=1&loop=1&controls=0`}
           className="absolute inset-0 w-full h-full scale-[1.02]"
           allow="autoplay; encrypted-media"
           title={`Sinal de ${activeTermObj.term} em Libras`}
