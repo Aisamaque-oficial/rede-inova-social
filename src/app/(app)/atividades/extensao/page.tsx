@@ -11,6 +11,7 @@ import {
 import ExtensionCoordinationBoard from '@/components/extension-coordination-board';
 import { Badge } from "@/components/ui/badge";
 import { dataService } from '@/lib/data-service';
+import { getTeamMembers } from '@/lib/mock-data';
 import { SectorSignageHeader } from '@/components/sector-operational-components';
 
 export default function ExtensionCoordinationPage() {
@@ -28,7 +29,7 @@ export default function ExtensionCoordinationPage() {
   };
 
   // Buscar membros (Danielle é a coordenadora aqui)
-  const allMembers = dataService.getTeamMembers();
+  const allMembers = getTeamMembers();
   const danielle = allMembers.find(m => m.id === '5'); // Danielle Silva
   const extensionMembers = allMembers.filter(m => 
     m.id === '5' || // Danielle
