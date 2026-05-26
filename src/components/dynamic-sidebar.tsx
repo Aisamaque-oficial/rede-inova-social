@@ -300,7 +300,7 @@ export default function DynamicSidebar() {
             <ActivityIcon className="h-3 w-3 text-slate-600" />
           </div>
 
-          {prioritizedSectors.map((sector) => {
+          {prioritizedSectors.filter(s => s.id !== 'social' && s.id !== 'redes').map((sector) => {
             const iconMap: Record<string, any> = {
               'ShieldCheck': ShieldCheck,
               'Megaphone': Megaphone,
@@ -379,7 +379,6 @@ export default function DynamicSidebar() {
                         ] as any[]).map((sub, idx) => {
                           const subItems = [...[sub]];
                           
-                          
                           // Mediação Libras removida temporariamente (Estúdio em standby)
                           if (false) {
                             subItems.push(
@@ -422,6 +421,111 @@ export default function DynamicSidebar() {
             );
           })}
 
+          {/* Grupo Especial: EXTENSÃO */}
+          <div className="space-y-1 mb-2 px-2 mt-4">
+            <button 
+              onClick={() => toggleSector('grupo-extensao')}
+              className={cn(
+                "w-full flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all duration-300",
+                openSectors.includes('grupo-extensao')
+                  ? "bg-primary/20 border-primary/40 text-primary shadow-lg shadow-primary/10 backdrop-blur-md" 
+                  : "bg-white/[0.03] border-white/10 text-slate-400 hover:bg-white/10 hover:text-white"
+              )}
+            >
+              <Globe className={cn("h-4 w-4 shrink-0", openSectors.includes('grupo-extensao') ? "text-primary" : "text-slate-500")} />
+              <span className="text-[11px] font-black uppercase tracking-[0.15em] italic leading-tight text-left flex-1 whitespace-normal">
+                COORDENAÇÃO DE EXTENSÃO
+              </span>
+              <ChevronDown className={cn(
+                "h-3 w-3 ml-auto transition-transform duration-300 shrink-0",
+                openSectors.includes('grupo-extensao') ? "rotate-0 text-primary" : "-rotate-90 text-slate-600"
+              )} />
+            </button>
+            
+            <AnimatePresence>
+              {openSectors.includes('grupo-extensao') && (
+                <motion.div 
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="overflow-hidden"
+                >
+                  <div className="ml-6 pl-4 border-l-2 border-white/5 space-y-1.5 py-3 relative">
+                    <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-primary/40 to-transparent" />
+                    
+                    <SidebarMenuButton
+                      asChild
+                      className="h-auto min-h-[2.5rem] py-2 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white transition-all px-3 group/sub relative bg-primary/5 border border-primary/10 mb-2"
+                    >
+                      <Link href="/atividades/extensao" className="flex items-center w-full">
+                        <div className="absolute -left-4 w-2 h-px bg-white/10 group-hover/sub:bg-primary/50 transition-colors" />
+                        <ActivityIcon className="h-3 w-3 mr-2 opacity-50 shrink-0 group-hover/sub:text-primary transition-colors text-primary" />
+                        <span className="flex-1 text-[10px] font-bold uppercase tracking-widest leading-normal whitespace-normal text-primary">
+                          Painel de Coordenação
+                        </span>
+                      </Link>
+                    </SidebarMenuButton>
+
+                    {/* Setor Social */}
+                    <div className="mt-4 mb-2">
+                      <span className="text-[9px] font-black uppercase text-slate-500 tracking-[0.2em] flex items-center gap-1.5">
+                        <Users2 className="w-3 h-3" /> SETOR SOCIAL
+                      </span>
+                    </div>
+                    {[
+                      { label: "Painel de Controle", href: `/setores/social/painel`, icon: LayoutGrid },
+                      { label: "Fluxo Social", href: `/atividades/setor/social`, icon: ActivityIcon },
+                      { label: "Planejamento Mensal", href: `/planejamento?sector=SOCIAL`, icon: CalendarClock },
+                      { label: "Relatório", href: `/atividades/setor/social/relatorio`, icon: FileText }
+                    ].map((item, idx) => (
+                      <SidebarMenuButton
+                        key={`social-${idx}`}
+                        asChild
+                        className="h-auto min-h-[2.5rem] py-2 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white transition-all px-3 group/sub relative"
+                      >
+                        <Link href={item.href} className="flex items-center w-full">
+                          <div className="absolute -left-4 w-2 h-px bg-white/10 group-hover/sub:bg-primary/50 transition-colors" />
+                          <item.icon className="h-3 w-3 mr-2 opacity-50 shrink-0 group-hover/sub:text-primary transition-colors" />
+                          <span className="flex-1 text-[10px] font-bold uppercase tracking-widest leading-normal whitespace-normal">
+                              {item.label}
+                          </span>
+                        </Link>
+                      </SidebarMenuButton>
+                    ))}
+
+                    {/* Setor Redes */}
+                    <div className="mt-4 mb-2">
+                      <span className="text-[9px] font-black uppercase text-slate-500 tracking-[0.2em] flex items-center gap-1.5">
+                        <Network className="w-3 h-3" /> SETOR REDES
+                      </span>
+                    </div>
+                    {[
+                      { label: "Painel de Controle", href: `/setores/redes/painel`, icon: LayoutGrid },
+                      { label: "Fluxo Redes", href: `/atividades/setor/redes`, icon: ActivityIcon },
+                      { label: "Planejamento Mensal", href: `/planejamento?sector=REDES`, icon: CalendarClock },
+                      { label: "Relatório", href: `/atividades/setor/redes/relatorio`, icon: FileText }
+                    ].map((item, idx) => (
+                      <SidebarMenuButton
+                        key={`redes-${idx}`}
+                        asChild
+                        className="h-auto min-h-[2.5rem] py-2 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white transition-all px-3 group/sub relative"
+                      >
+                        <Link href={item.href} className="flex items-center w-full">
+                          <div className="absolute -left-4 w-2 h-px bg-white/10 group-hover/sub:bg-primary/50 transition-colors" />
+                          <item.icon className="h-3 w-3 mr-2 opacity-50 shrink-0 group-hover/sub:text-primary transition-colors" />
+                          <span className="flex-1 text-[10px] font-bold uppercase tracking-widest leading-normal whitespace-normal">
+                              {item.label}
+                          </span>
+                        </Link>
+                      </SidebarMenuButton>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
           {userConfig.isCoordinator && (
             <div className="mt-8 border-t border-white/5 pt-8 mb-20">
               <div className="mb-4 px-4">
@@ -459,17 +563,6 @@ export default function DynamicSidebar() {
                   <Link href="/atividades/coordenacao" className="flex items-center gap-3">
                     <ShieldCheck className="h-4 w-4 shrink-0" />
                     <span className="font-black text-[13px] uppercase tracking-widest leading-snug whitespace-normal">Coordenação Geral do Projeto (CGP)</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  className="h-auto min-h-[2.75rem] py-2.5 rounded-2xl hover:bg-white/5 text-slate-400 hover:text-white transition-all group px-4"
-                >
-                  <Link href="/atividades/extensao" className="flex items-center gap-3">
-                    <Globe className="h-4 w-4 shrink-0 group-hover:text-primary transition-colors" />
-                    <span className="font-black text-[13px] uppercase tracking-widest leading-snug whitespace-normal">Coordenação de Extensão</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
