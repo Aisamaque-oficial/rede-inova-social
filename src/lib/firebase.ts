@@ -2,8 +2,8 @@
 // Exporting dummy objects to prevent build crashes in legacy components that still import them.
 export const app = {} as any;
 export const auth = {
-  onIdTokenChanged: () => () => {},
-  onAuthStateChanged: () => () => {},
+  onIdTokenChanged: (cb: any) => { cb(null); return () => {}; },
+  onAuthStateChanged: (cb: any) => { cb(null); return () => {}; },
   currentUser: null,
 } as any;
 export const db = {} as any;
