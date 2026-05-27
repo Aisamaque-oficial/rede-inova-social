@@ -125,14 +125,15 @@ export default function EventsPage() {
                                 mode="single"
                                 selected={selectedDate}
                                 onSelect={setSelectedDate}
-                                className="rounded-md border shadow-sm mx-auto"
+                                locale={ptBR}
+                                className="rounded-2xl border bg-card shadow-xl mx-auto p-4 md:p-6 w-fit flex justify-center [--cell-size:2.5rem] md:[--cell-size:3rem]"
                                 modifiers={{
                                     reuniao: (date: Date) => teamEvents.some(e => e.type === 'reuniao' && isSameDay(parseISO(e.date), date)),
                                     atividade: (date: Date) => teamEvents.some(e => e.type === 'atividade' && isSameDay(parseISO(e.date), date))
                                 }}
-                                modifiersStyles={{
-                                    reuniao: { fontWeight: 'bold', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '50%' },
-                                    atividade: { fontWeight: 'bold', backgroundColor: '#10b981', color: 'white', borderRadius: '50%' }
+                                modifiersClassNames={{
+                                    reuniao: "bg-primary text-primary-foreground font-black rounded-full shadow-md shadow-primary/30",
+                                    atividade: "bg-emerald-500 text-white font-black rounded-full shadow-md shadow-emerald-500/30"
                                 }}
                             />
                             
