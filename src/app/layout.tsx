@@ -61,12 +61,14 @@ export default function RootLayout({
         <ActivityTracker />
         <AccessibilityProvider>
                 <div className="flex flex-col min-h-screen">
-                    <div 
-                        key="content"
-                        className="flex flex-col min-h-screen"
-                    >
-                        {children}
-                    </div>
+                    <AnimatePresence mode="wait">
+                        <div 
+                            key={pathname}
+                            className="flex flex-col min-h-screen"
+                        >
+                            {children}
+                        </div>
+                    </AnimatePresence>
                 </div>
                 {!isInternalArea && (
                     <>

@@ -31,8 +31,6 @@ export default function JornadaPage() {
 
                 <MethodologyRoadmap />
 
-
-
                 <section className="py-24 bg-sidebar text-sidebar-foreground relative overflow-hidden">
                     <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] bg-primary/20 blur-[150px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-30" />
                     <div className="container px-4 md:px-6 relative z-10">
