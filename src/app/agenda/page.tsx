@@ -17,7 +17,8 @@ import {
   CalendarCheck2,
   Image as ImageIcon,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  FolderOpen
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -30,6 +31,8 @@ import { Separator } from "@/components/ui/separator";
 import MainHeader from "@/components/main-header";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 const FADE_UP_ANIMATION_VARIANTS = {
   hidden: { opacity: 0, y: 10 },
@@ -46,7 +49,7 @@ const STAGGER_CHILDREN_VARIANTS = {
     },
 };
 
-const EventCard = ({ event, index }: { event: (typeof communityEvents)[0], index: number }) => {
+const EventCard = ({ event, index }: { event: any, index: number }) => {
     const gradients = [
         "from-blue-500/20 to-purple-500/20",
         "from-emerald-500/20 to-teal-500/20",
@@ -54,23 +57,68 @@ const EventCard = ({ event, index }: { event: (typeof communityEvents)[0], index
         "from-pink-500/20 to-rose-500/20"
     ];
     const gradient = gradients[index % gradients.length];
+    const hasGallery = event.gallery && event.gallery.length > 0;
 
     return (
         <motion.div variants={FADE_UP_ANIMATION_VARIANTS} className="h-full">
             <Card className="flex flex-col h-full overflow-hidden border-primary/10 shadow-lg hover:shadow-xl transition-all duration-500 group bg-card/50 backdrop-blur-sm">
+                
+                {/* Imagem de Apresentação (Capa) com modal de Galeria/Pasta */}
                 {event.imageUrl ? (
-                    <div className="w-full h-52 relative overflow-hidden bg-muted">
-                        <Image src={event.imageUrl} alt={event.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-80" />
-                        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-                            <Badge variant={event.status === 'realizado' ? 'secondary' : 'default'} className="shadow-lg backdrop-blur-md bg-white/20 text-white border-white/30">
-                                {event.status === 'realizado' ? 'Realizado' : 'Previsto'}
-                            </Badge>
-                            <div className="text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 text-sm font-medium">
-                                <ImageIcon className="w-4 h-4" /> Ver Galeria
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <div className="w-full h-52 relative overflow-hidden bg-muted cursor-pointer">
+                                <Image src={event.imageUrl} alt={event.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-80" />
+                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 backdrop-blur-sm">
+                                    <div className="flex flex-col items-center gap-2 text-white">
+                                        {hasGallery ? (
+                                            <>
+                                                <FolderOpen className="w-10 h-10" />
+                                                <span className="font-bold tracking-widest uppercase text-sm">Abrir Pasta de Fotos</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <ImageIcon className="w-10 h-10" />
+                                                <span className="font-bold tracking-widest uppercase text-sm">Ver Imagem</span>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                                    <Badge variant={event.status === 'realizado' ? 'secondary' : 'default'} className="shadow-lg backdrop-blur-md bg-white/20 text-white border-white/30">
+                                        {event.status === 'realizado' ? 'Realizado' : 'Previsto'}
+                                    </Badge>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-4xl bg-black/95 border-none p-0 overflow-hidden">
+                            <DialogHeader className="absolute top-4 left-4 z-50">
+                                <DialogTitle className="text-white drop-shadow-md text-xl">{event.title}</DialogTitle>
+                            </DialogHeader>
+                            <div className="w-full aspect-video md:aspect-[16/9] relative flex items-center justify-center p-4 pt-16">
+                                {hasGallery ? (
+                                    <Carousel className="w-full max-w-3xl">
+                                        <CarouselContent>
+                                            {event.gallery.map((img: string, i: number) => (
+                                                <CarouselItem key={i} className="flex items-center justify-center">
+                                                    <div className="relative w-full aspect-video rounded-xl overflow-hidden">
+                                                        <Image src={img} alt={`Foto ${i+1}`} fill className="object-contain" />
+                                                    </div>
+                                                </CarouselItem>
+                                            ))}
+                                        </CarouselContent>
+                                        <CarouselPrevious className="left-2 bg-white/10 hover:bg-white/20 text-white border-none" />
+                                        <CarouselNext className="right-2 bg-white/10 hover:bg-white/20 text-white border-none" />
+                                    </Carousel>
+                                ) : (
+                                    <div className="relative w-full h-full rounded-xl overflow-hidden">
+                                        <Image src={event.imageUrl} alt={event.title} fill className="object-contain" />
+                                    </div>
+                                )}
+                            </div>
+                        </DialogContent>
+                    </Dialog>
                 ) : (
                     <div className={cn("w-full h-40 relative flex flex-col items-center justify-center bg-gradient-to-br transition-colors", gradient)}>
                         {event.status === 'realizado' ? (
@@ -188,7 +236,7 @@ export default function EventsPage() {
                 
                 {/* Lado Esquerdo: Abas e Cards */}
                 <div className="w-full">
-                    <Tabs defaultValue="upcoming" className="w-full">
+                    <Tabs defaultValue="past" className="w-full">
                         <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
                             <h3 className="text-2xl font-bold tracking-tight">Cursos e Oficinas</h3>
                             <TabsList className="bg-secondary/50 backdrop-blur-sm border border-border/50 p-1 rounded-full h-auto">
