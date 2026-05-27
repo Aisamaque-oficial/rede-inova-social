@@ -34,6 +34,10 @@ CREATE TABLE IF NOT EXISTS public.comentarios_atribuicao (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- 2.1 PERMISSÕES EXPLÍCITAS (Novo padrão Supabase de 2026)
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.atribuicoes TO anon, authenticated, service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.comentarios_atribuicao TO anon, authenticated, service_role;
+
 -- 3. HABILITAR REALTIME
 -- Isso permite que o cliente escute eventos via `supabase.channel()`
 alter publication supabase_realtime add table public.atribuicoes;

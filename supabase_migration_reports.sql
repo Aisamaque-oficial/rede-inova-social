@@ -27,6 +27,9 @@ CREATE TABLE IF NOT EXISTS public.relatorios_setoriais (
   metadata JSONB -- Backup completo do objeto para resiliência
 );
 
+-- 1.1 PERMISSÕES EXPLÍCITAS (Novo padrão Supabase)
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.relatorios_setoriais TO anon, authenticated, service_role;
+
 -- 2. HABILITAR REALTIME
 -- Isso permite que a Coordenação Geral veja os relatórios aparecendo na hora
 alter publication supabase_realtime add table public.relatorios_setoriais;
