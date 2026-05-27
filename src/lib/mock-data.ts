@@ -747,7 +747,7 @@ export const communityEvents: any[] = [
     title: 'Reunião Nós/Nordeste (Linhas 1 e 2)',
     type: 'Reunião Estratégica',
     status: 'previsto',
-    date: '2026-06-02',
+    date: '2026-06-09',
     duration: '2h',
     audience: 'Pesquisadores dos projetos CNPq',
     content: 'Alinhamento metodológico das Linhas 1 e 2 dos projetos aprovados.',
@@ -989,7 +989,7 @@ export const activeMembersCount = 24;
 export const partnersCount = 12;
 
 export const teamEvents: any[] = [
-  { id: 't-1', title: 'Reunião Nós/Nordeste', date: '2026-06-02', type: 'reuniao', description: 'Linhas 1 e 2 CNPq' },
+  { id: 't-1', title: 'Reunião Nós/Nordeste', date: '2026-06-09', type: 'reuniao', description: 'Linhas 1 e 2 CNPq' },
   { id: 't-2', title: 'Reunião com Agricultura Familiar', date: '2026-06-11', type: 'reuniao', description: 'Itororó' },
   { id: 't-3', title: 'Reunião OSC', date: '2026-06-12', type: 'reuniao', description: 'Com representante da Sociedade Civil' },
   { id: 't-4', title: 'Conexão Café', date: '2026-06-13', type: 'atividade', description: 'Fazenda Vidigal' },
