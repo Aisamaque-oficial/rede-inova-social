@@ -725,7 +725,219 @@ export const territories: Territory[] = [
   { id: 't-2', name: 'Assentamento Novo Horizonte', municipality: 'Bananeiras', region: 'Brejo', status: 'identificado', leadersCount: 3 }
 ];
 export const sectorActivities: SectorActivity[] = [];
-export const communityEvents: any[] = [];
+
+export const communityEvents: any[] = [
+  // REALIZADOS
+  {
+    id: 'evt-1',
+    title: 'Exposição Agropecuária de Itapetinga',
+    type: 'Visita Técnica / Evento',
+    status: 'realizado',
+    date: '2026-05-15',
+    duration: 'Integral',
+    audience: 'Pequenos produtores, empresas e agricultores(as) familiares',
+    content: 'Conhecer e incentivar o ecossistema agropecuário e a produção local.',
+    impact: 'Aproximação institucional e levantamento de necessidades do produtor.',
+    product: 'Registro Fotográfico e Relatório',
+    imageUrl: 'https://images.unsplash.com/photo-1595841696677-6489ff3f8cd1?q=80&w=800&auto=format&fit=crop'
+  },
+  // PREVISTOS - COM DATA
+  {
+    id: 'evt-2',
+    title: 'Reunião Nós/Nordeste (Linhas 1 e 2)',
+    type: 'Reunião Estratégica',
+    status: 'previsto',
+    date: '2026-06-02',
+    duration: '2h',
+    audience: 'Pesquisadores dos projetos CNPq',
+    content: 'Alinhamento metodológico das Linhas 1 e 2 dos projetos aprovados.',
+    impact: 'Integração regional das pesquisas e fortalecimento da rede.',
+    product: 'Ata de Reunião'
+  },
+  {
+    id: 'evt-3',
+    title: 'Reunião CGP x Agricultura Familiar',
+    type: 'Reunião Externa',
+    status: 'previsto',
+    date: '2026-06-11',
+    duration: 'A definir',
+    audience: 'Representantes da Agricultura Familiar em Itororó',
+    content: 'Diálogo sobre fomento e inserção no projeto.',
+    impact: 'Expansão do alcance territorial.',
+    product: 'Termo de Parceria'
+  },
+  {
+    id: 'evt-4',
+    title: 'Reunião com Representante OSC',
+    type: 'Reunião Externa',
+    status: 'previsto',
+    date: '2026-06-12',
+    duration: 'A definir',
+    audience: 'Organizações da Sociedade Civil',
+    content: 'Apresentação do projeto e busca de cooperação técnica.',
+    impact: 'Engajamento da sociedade civil.',
+    product: 'Ata de Reunião'
+  },
+  {
+    id: 'evt-5',
+    title: 'Conexão Café',
+    type: 'Evento de Campo',
+    status: 'previsto',
+    date: '2026-06-13',
+    duration: 'Integral',
+    audience: 'Produtores de Café e Comunidade',
+    content: 'Visita e vivência na Fazenda Vidigal.',
+    impact: 'Valorização da cadeia produtiva do café.',
+    product: 'Registros e Portfólio'
+  },
+  {
+    id: 'evt-6',
+    title: 'Oficina de Rotulagem',
+    type: 'Capacitação',
+    status: 'previsto',
+    date: '2026-06-14',
+    duration: '4h',
+    audience: 'Agricultores familiares de Caatiba',
+    content: 'Normas de rotulagem e boas práticas para comercialização.',
+    impact: 'Adequação de produtos para venda formal.',
+    product: 'Certificados e Fotos'
+  },
+  {
+    id: 'evt-7',
+    title: 'Reunião CGP x Projeto NECTAR (UESB)',
+    type: 'Reunião Estratégica',
+    status: 'previsto',
+    date: '2026-06-16',
+    duration: '2h',
+    audience: 'Coordenação e Pesquisadores UESB',
+    content: 'Sinergia entre laboratórios e extensão.',
+    impact: 'Parceria interinstitucional (IF Baiano e UESB).',
+    product: 'Acordo de Cooperação'
+  },
+  {
+    id: 'evt-8',
+    title: 'Reunião CGP x Movimento de Mulheres',
+    type: 'Reunião Externa',
+    status: 'previsto',
+    date: '2026-06-18',
+    duration: 'A definir',
+    audience: 'Movimento de Mulheres de Itapetinga',
+    content: 'Inclusão de gênero e autonomia financeira na agricultura.',
+    impact: 'Empoderamento feminino territorial.',
+    product: 'Ata de Reunião'
+  },
+  {
+    id: 'evt-9',
+    title: 'Reunião CGP x Movimento Coletivo Afro',
+    type: 'Reunião Externa',
+    status: 'previsto',
+    date: '2026-06-19',
+    duration: 'A definir',
+    audience: 'Comunidade Afrodescendente de Itapetinga',
+    content: 'Políticas afirmativas e segurança alimentar.',
+    impact: 'Inclusão e diversidade no escopo do projeto.',
+    product: 'Ata de Reunião'
+  },
+  {
+    id: 'evt-10',
+    title: 'Exposição do Chocolate (Ilhéus)',
+    type: 'Evento Externo',
+    status: 'previsto',
+    date: '2026-07-22',
+    duration: '5 dias (22 a 26 de Julho)',
+    audience: 'Público Geral e Produtores de Cacau',
+    content: 'Exibição de tecnologias sociais e subprodutos.',
+    impact: 'Visibilidade estadual e nacional.',
+    product: 'Registros Visuais'
+  },
+  {
+    id: 'evt-11',
+    title: 'Simpósio Pós-Graduação (Eng. e Ciênc. de Alimentos)',
+    type: 'Evento Científico',
+    status: 'previsto',
+    date: '2026-08-13',
+    duration: '2 dias (13 e 14 de Agosto)',
+    audience: 'Acadêmicos e Pesquisadores',
+    content: 'Participação do projeto na difusão científica.',
+    impact: 'Publicações e Networking.',
+    product: 'Anais do Evento'
+  },
+  {
+    id: 'evt-12',
+    title: 'Apresentação no CBCTA',
+    type: 'Congresso Nacional',
+    status: 'previsto',
+    date: '2026-11-09',
+    duration: 'A definir',
+    audience: 'Comunidade Científica Nacional',
+    content: 'Apresentação de resultados preliminares.',
+    impact: 'Validação acadêmica em nível nacional.',
+    product: 'Artigo e Pôster'
+  },
+  
+  // PREVISTOS - SEM DEFINIÇÃO DE DATA EXATA
+  {
+    id: 'evt-13',
+    title: 'Reunião CGP x Quilombo dos Thiagos',
+    type: 'Articulação Territorial',
+    status: 'previsto',
+    date: 'A definir (2026)',
+    duration: 'A definir',
+    audience: 'Comunidade Quilombola',
+    content: 'Escuta ativa e resgate alimentar.',
+    impact: 'Reconhecimento e apoio aos povos tradicionais.',
+    product: 'Ata de Reunião e Imagens'
+  },
+  {
+    id: 'evt-14',
+    title: 'Reunião CGP x Quilombo Jussara',
+    type: 'Articulação Territorial',
+    status: 'previsto',
+    date: 'A definir (2026)',
+    duration: 'A definir',
+    audience: 'Comunidade Quilombola',
+    content: 'Escuta ativa e resgate alimentar.',
+    impact: 'Reconhecimento e apoio aos povos tradicionais.',
+    product: 'Ata de Reunião e Imagens'
+  },
+  {
+    id: 'evt-15',
+    title: 'Congresso Final do CNPq',
+    type: 'Evento de Encerramento',
+    status: 'previsto',
+    date: 'A definir (2026)',
+    duration: 'A definir',
+    audience: 'MCTI, CNPq e Público',
+    content: 'Apresentar resultados finais do projeto.',
+    impact: 'Prestação de contas e vitrine tecnológica.',
+    product: 'Relatório Final'
+  },
+  {
+    id: 'evt-16',
+    title: 'Feiras de Agricultura Familiar nas Escolas',
+    type: 'Extensão / Evento',
+    status: 'previsto',
+    date: 'Contínuo (2026)',
+    duration: 'Mensal',
+    audience: 'Estudantes e Comunidade Escolar',
+    content: 'Promoção do consumo saudável no ambiente escolar.',
+    impact: 'Educação nutricional na base.',
+    product: 'Feiras Realizadas'
+  },
+  {
+    id: 'evt-17',
+    title: 'Oficinas e Minicursos Territoriais',
+    type: 'Capacitação',
+    status: 'previsto',
+    date: 'Contínuo (2026)',
+    duration: 'Múltiplos',
+    audience: '13 municípios do território',
+    content: 'Disseminação de técnicas de beneficiamento de alimentos.',
+    impact: 'Elevação da renda local e redução do desperdício.',
+    product: 'Lista de Presença e Fotos'
+  }
+];
+
 export const fairs: any[] = [];
 export interface AuthoralMaterial {
   id: string;
@@ -758,6 +970,36 @@ export const projectUpdates: ProjectUpdate[] = [
     category: 'SISTEMA',
     icon: 'zap'
   }
+];
+
+export const projectMilestones = [
+  { id: 'm1', label: 'Marco 1: Diagnóstico', completed: true, details: 'Levantamento de demandas territoriais finalizado em Janeiro.' },
+  { id: 'm2', label: 'Marco 2: Prototipação', completed: true, details: 'Criação dos laboratórios de inovação em Alimentos.' },
+  { id: 'm3', label: 'Marco 3: Escalonamento', completed: false, details: 'Disseminação das tecnologias sociais para associações.' },
+  { id: 'm4', label: 'Marco 4: Avaliação de Impacto', completed: false, details: 'Mensuração dos indicadores de aumento de renda.' },
+];
+
+export const recentActivities = [
+  { id: 'a1', action: 'Publicação de Cartilha', target: 'Boas Práticas de Fabricação', time: 'Há 2 horas', user: 'ASCOM' },
+  { id: 'a2', action: 'Aprovação de Relatório', target: 'Articulação Quilombola', time: 'Ontem', user: 'Coordenação' },
+  { id: 'a3', action: 'Nova Inscrição', target: 'Oficina de Rotulagem', time: 'Há 2 dias', user: 'Sistema' },
+];
+
+export const activeMembersCount = 24;
+export const partnersCount = 12;
+
+export const teamEvents: any[] = [
+  { id: 't-1', title: 'Reunião Nós/Nordeste', date: '2026-06-02', type: 'reuniao', description: 'Linhas 1 e 2 CNPq' },
+  { id: 't-2', title: 'Reunião com Agricultura Familiar', date: '2026-06-11', type: 'reuniao', description: 'Itororó' },
+  { id: 't-3', title: 'Reunião OSC', date: '2026-06-12', type: 'reuniao', description: 'Com representante da Sociedade Civil' },
+  { id: 't-4', title: 'Conexão Café', date: '2026-06-13', type: 'atividade', description: 'Fazenda Vidigal' },
+  { id: 't-5', title: 'Oficina de Rotulagem', date: '2026-06-14', type: 'atividade', description: 'Caatiba' },
+  { id: 't-6', title: 'Reunião NECTAR', date: '2026-06-16', type: 'reuniao', description: 'Com projeto NECTAR / UESB' },
+  { id: 't-7', title: 'Reunião Movimento de Mulheres', date: '2026-06-18', type: 'reuniao', description: 'Itapetinga' },
+  { id: 't-8', title: 'Reunião Coletivo Afro', date: '2026-06-19', type: 'reuniao', description: 'Itapetinga' },
+  { id: 't-9', title: 'Exposição do Chocolate', date: '2026-07-22', type: 'atividade', description: 'Abertura em Ilhéus' },
+  { id: 't-10', title: 'Simpósio Pós-Graduação', date: '2026-08-13', type: 'atividade', description: 'Abertura do Simpósio' },
+  { id: 't-11', title: 'Apresentação CBCTA', date: '2026-11-09', type: 'atividade', description: 'Congresso Brasileiro' }
 ];
 
 export const authoralMaterials: AuthoralMaterial[] = [

@@ -15,7 +15,8 @@ import {
   CalendarDays, 
   Sprout, 
   Building2, 
-  CalendarCheck2 
+  CalendarCheck2,
+  Image as ImageIcon
 } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -30,12 +31,25 @@ import { Calendar } from "@/components/ui/calendar";
 
 const EventCard = ({ event }: { event: (typeof communityEvents)[0] }) => (
     <Card className="flex flex-col h-full">
-        <CardHeader>
+        {event.imageUrl ? (
+            <div className="w-full h-48 relative overflow-hidden rounded-t-xl bg-muted group cursor-pointer">
+                <Image src={event.imageUrl} alt={event.title} fill className="object-cover transition-transform group-hover:scale-105 duration-500" />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <span className="text-white font-bold flex items-center gap-2"><ImageIcon className="w-5 h-5" /> Ver Galeria</span>
+                </div>
+            </div>
+        ) : event.status === 'realizado' ? (
+             <div className="w-full h-32 relative flex flex-col items-center justify-center bg-slate-50 border-b border-dashed border-slate-200 text-slate-400 cursor-pointer hover:bg-slate-100 transition-colors rounded-t-xl">
+                <ImageIcon className="w-8 h-8 mb-2 opacity-50" />
+                <span className="text-xs font-semibold uppercase tracking-widest">Adicionar Registros Visuais</span>
+             </div>
+        ) : null}
+        <CardHeader className={event.imageUrl || event.status === 'realizado' ? "pt-4" : ""}>
         <div className="flex items-center justify-between">
             <CardTitle className="text-lg leading-tight">{event.title}</CardTitle>
             {event.status === 'realizado' ? 
-                <CheckCircle className="h-5 w-5 text-green-500" aria-label="Realizado" /> : 
-                <CalendarDays className="h-5 w-5 text-muted-foreground/80" aria-label="Previsto" />
+                <CheckCircle className="h-5 w-5 text-emerald-500 flex-shrink-0" aria-label="Realizado" /> : 
+                <CalendarDays className="h-5 w-5 text-primary flex-shrink-0" aria-label="Previsto" />
             }
         </div>
         <CardDescription>{event.type}</CardDescription>
