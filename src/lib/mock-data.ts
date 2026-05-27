@@ -1081,7 +1081,6 @@ export const authoralMaterials: AuthoralMaterial[] = [
   }
 ];
 export const bastidoresItems: any[] = [];
-export const teamEvents: any[] = [];
 export const librasOriginals: any[] = [];
 export const librasShorts: any[] = [];
 export const librasDocs: any[] = [];
