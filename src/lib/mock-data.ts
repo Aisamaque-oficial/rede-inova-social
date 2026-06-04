@@ -725,9 +725,27 @@ export const territories: Territory[] = [
   { id: 't-2', name: 'Assentamento Novo Horizonte', municipality: 'Bananeiras', region: 'Brejo', status: 'identificado', leadersCount: 3 }
 ];
 export const sectorActivities: SectorActivity[] = [];
-
 export const communityEvents: any[] = [
   // REALIZADOS
+  {
+    id: 'evt-18',
+    title: 'Capacitação para acesso à Política de Garantia de Preço Mínimo - PGPM',
+    type: 'Capacitação',
+    status: 'realizado',
+    date: '2026-06-03',
+    duration: 'Integral',
+    audience: 'Pequenos produtores e agricultores familiares',
+    content: 'Temas abordados: 1) PGPM SocioBio Mais, 2) ProVB, 3) SICAN, 4) AGF. Foco em direcionar pequenos produtores para acessar as Políticas do Governo Federal.',
+    impact: 'Conhecimento da necessidade dos pequenos produtores e agricultores familiares na participação de Políticas Públicas promovidas pelo Governo Federal.',
+    product: 'Formação em Políticas Públicas',
+    imageUrl: '/eventos/pgpm-1.jpeg',
+    gallery: [
+      '/eventos/pgpm-1.jpeg',
+      '/eventos/pgpm-2.jpeg',
+      '/eventos/pgpm-3.jpeg',
+      '/eventos/pgpm-4.jpeg'
+    ]
+  },
   {
     id: 'evt-1',
     title: 'Exposição Agropecuária de Itapetinga',
