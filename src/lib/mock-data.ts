@@ -759,7 +759,7 @@ export const communityEvents: any[] = [
     impact: 'Aproximação institucional e levantamento de necessidades do produtor.',
     product: 'Registro Fotográfico e Relatório',
     imageUrl: '/eventos/foto-expo-2.jpg.jpeg',
-    imagePosition: 'object-top',
+    imagePosition: 'object-center',
     gallery: [
       '/eventos/foto-expo-1.jpg.jpeg',
       '/eventos/foto-expo-2.jpg.jpeg',
