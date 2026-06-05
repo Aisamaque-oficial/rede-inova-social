@@ -733,6 +733,7 @@ export const communityEvents: any[] = [
     type: 'Capacitação',
     status: 'realizado',
     date: '2026-06-03',
+    dateDisplay: 'Dia 03/06/2026',
     duration: 'Integral',
     audience: 'Pequenos produtores e agricultores familiares',
     content: 'Temas abordados: 1) PGPM SocioBio Mais, 2) ProVB, 3) SICAN, 4) AGF. Foco em direcionar pequenos produtores para acessar as Políticas do Governo Federal.',
@@ -752,7 +753,8 @@ export const communityEvents: any[] = [
     title: 'Exposição Agropecuária de Itapetinga',
     type: 'Visita Técnica / Evento',
     status: 'realizado',
-    date: '2026-05-15',
+    date: '2026-06-20',
+    dateDisplay: 'Dias 20 a 24/06/2026',
     duration: 'Integral',
     audience: 'Pequenos produtores, empresas e agricultores(as) familiares',
     content: 'Conhecer e incentivar o ecossistema agropecuário e a produção local.',
@@ -1026,7 +1028,13 @@ export const teamEvents: any[] = [
   { id: 't-8', title: 'Reunião Coletivo Afro', date: '2026-06-19', type: 'reuniao', description: 'Itapetinga' },
   { id: 't-9', title: 'Exposição do Chocolate', date: '2026-07-22', type: 'atividade', description: 'Abertura em Ilhéus' },
   { id: 't-10', title: 'Simpósio Pós-Graduação', date: '2026-08-13', type: 'atividade', description: 'Abertura do Simpósio' },
-  { id: 't-11', title: 'Apresentação CBCTA', date: '2026-11-09', type: 'atividade', description: 'Congresso Brasileiro' }
+  { id: 't-11', title: 'Apresentação CBCTA', date: '2026-11-09', type: 'atividade', description: 'Congresso Brasileiro' },
+  { id: 't-12', title: 'Capacitação PGPM', date: '2026-06-03', type: 'atividade', description: 'Capacitação para acesso à PGPM' },
+  { id: 't-13', title: 'Exposição Agropecuária', date: '2026-06-20', type: 'atividade', description: 'Itapetinga' },
+  { id: 't-14', title: 'Exposição Agropecuária', date: '2026-06-21', type: 'atividade', description: 'Itapetinga' },
+  { id: 't-15', title: 'Exposição Agropecuária', date: '2026-06-22', type: 'atividade', description: 'Itapetinga' },
+  { id: 't-16', title: 'Exposição Agropecuária', date: '2026-06-23', type: 'atividade', description: 'Itapetinga' },
+  { id: 't-17', title: 'Exposição Agropecuária', date: '2026-06-24', type: 'atividade', description: 'Itapetinga' }
 ];
 
 export const authoralMaterials: AuthoralMaterial[] = [

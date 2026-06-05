@@ -150,12 +150,18 @@ const EventCard = ({ event, index }: { event: any, index: number }) => {
                 
                 <CardContent className="flex-1 space-y-4 pt-4">
                     <div className="grid grid-cols-2 gap-y-3 gap-x-2 text-sm text-muted-foreground">
+                        {event.dateDisplay && (
+                            <div className="col-span-2 flex items-center gap-2 bg-secondary/50 p-2 rounded-md">
+                                <CalendarDays className="h-4 w-4 text-primary flex-shrink-0" />
+                                <span className="truncate font-medium text-foreground/80" title={event.dateDisplay}>{event.dateDisplay}</span>
+                            </div>
+                        )}
                         <div className="flex items-center gap-2 bg-secondary/50 p-2 rounded-md">
-                            <Clock className="h-4 w-4 text-primary" />
+                            <Clock className="h-4 w-4 text-primary flex-shrink-0" />
                             <span className="truncate" title={event.duration}>{event.duration}</span>
                         </div>
                         <div className="flex items-center gap-2 bg-secondary/50 p-2 rounded-md">
-                            <Users className="h-4 w-4 text-primary" />
+                            <Users className="h-4 w-4 text-primary flex-shrink-0" />
                             <span className="truncate" title={event.audience}>{event.audience}</span>
                         </div>
                     </div>
