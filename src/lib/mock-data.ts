@@ -758,7 +758,7 @@ export const communityEvents: any[] = [
     content: 'Conhecer e incentivar o ecossistema agropecuário e a produção local.',
     impact: 'Aproximação institucional e levantamento de necessidades do produtor.',
     product: 'Registro Fotográfico e Relatório',
-    imageUrl: '/eventos/foto-expo-3.jpg.jpeg',
+    imageUrl: '/eventos/foto-expo-2.jpg.jpeg',
     imagePosition: 'object-[center_30%]',
     gallery: [
       '/eventos/foto-expo-1.jpg.jpeg',
