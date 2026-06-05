@@ -739,7 +739,7 @@ export const communityEvents: any[] = [
     impact: 'Conhecimento da necessidade dos pequenos produtores e agricultores familiares na participação de Políticas Públicas promovidas pelo Governo Federal.',
     product: 'Formação em Políticas Públicas',
     imageUrl: '/eventos/pgpm-1.jpeg',
-    imagePosition: 'object-bottom',
+    imagePosition: 'object-center',
     gallery: [
       '/eventos/pgpm-1.jpeg',
       '/eventos/pgpm-2.jpeg',
