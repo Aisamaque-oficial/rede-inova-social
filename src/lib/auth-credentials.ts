@@ -403,6 +403,22 @@ const USUARIOS_INICIAIS: StoredUser[] = [
     lattesUrl: "",
     cargo: "Núcleo de Extensão",
     permissoes: PERMS_COLABORADOR_GERAL
+  },
+  {
+    id: '23',
+    cpfOuEmail: '082.623.185-36', 
+    nomeCompleto: 'Adeline Alves do Bonfim',
+    role: 'COLABORADOR',
+    assignments: [{ sector: 'extensao', role: 'COLABORADOR' }],
+    passwordHash: SENHA_PADRAO,
+    ativo: true,
+    department: 'EXTENSAO',
+    dataCriacao: new Date().toISOString(),
+    criadoPor: 'admin',
+    bio: "Suporte à coordenação de extensão.",
+    lattesUrl: "",
+    cargo: "Suporte - Núcleo de Extensão",
+    permissoes: PERMS_COLABORADOR_GERAL
   }
 ];
 
