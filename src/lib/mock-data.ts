@@ -728,6 +728,24 @@ export const sectorActivities: SectorActivity[] = [];
 export const communityEvents: any[] = [
   // REALIZADOS
   {
+    id: 'evt-2',
+    title: 'Reunião Nós/Nordeste (Linhas 1 e 2)',
+    type: 'Reunião Estratégica',
+    status: 'realizado',
+    date: '2026-06-09',
+    dateDisplay: 'Dia 09/06/2026, às 14h',
+    duration: '2h',
+    audience: 'Coordenadores de projetos (Linhas 1 e 2 - CNPq 17/2025)',
+    content: 'Reunião em rede para dialogar na construção conectada de informações com vistas à segurança alimentar e nutricional. Organizada pelo Nós-Nordeste 1 (AL, BA, PE e SE).',
+    impact: 'O projeto Rede de Inovação Social esteve presente representado pelo Coordenador Aisamaque Gomes. Integração regional das pesquisas e fortalecimento da rede.',
+    product: 'Ata de Reunião e Registro Fotográfico',
+    imageUrl: '/eventos/reuniao-nos-nordeste.jpeg',
+    imagePosition: 'object-center',
+    gallery: [
+      '/eventos/reuniao-nos-nordeste.jpeg'
+    ]
+  },
+  {
     id: 'evt-18',
     title: 'Capacitação para acesso à Política de Garantia de Preço Mínimo - PGPM',
     type: 'Capacitação',
@@ -771,18 +789,6 @@ export const communityEvents: any[] = [
     ]
   },
   // PREVISTOS - COM DATA
-  {
-    id: 'evt-2',
-    title: 'Reunião Nós/Nordeste (Linhas 1 e 2)',
-    type: 'Reunião Estratégica',
-    status: 'previsto',
-    date: '2026-06-09',
-    duration: '2h',
-    audience: 'Pesquisadores dos projetos CNPq',
-    content: 'Alinhamento metodológico das Linhas 1 e 2 dos projetos aprovados.',
-    impact: 'Integração regional das pesquisas e fortalecimento da rede.',
-    product: 'Ata de Reunião'
-  },
   {
     id: 'evt-3',
     title: 'Reunião CGP x Agricultura Familiar',
