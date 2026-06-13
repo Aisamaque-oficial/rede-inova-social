@@ -280,8 +280,8 @@ export default function EventsPage() {
                     </Tabs>
                 </div>
 
-                {/* Lado Direito: Calendário Sticky */}
-                <div className="lg:sticky lg:top-28 space-y-6">
+                {/* Lado Direito: Calendário */}
+                <div className="space-y-6">
                     <Card className="border-primary/10 shadow-2xl bg-card/80 backdrop-blur-xl overflow-hidden">
                         <div className="absolute top-0 right-0 p-32 bg-primary/5 rounded-full blur-3xl -z-10 translate-x-16 -translate-y-16"></div>
                         <CardHeader className="pb-4 border-b border-border/50 bg-background/50">
