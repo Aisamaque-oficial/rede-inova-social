@@ -241,7 +241,7 @@ export default function EventsPage() {
              <div className="grid lg:grid-cols-[1fr_380px] gap-8 lg:gap-12 items-start">
                 
                 {/* Lado Esquerdo: Abas e Cards */}
-                <div className="w-full">
+                <div className="w-full order-2 lg:order-1">
                     <Tabs defaultValue="past" className="w-full">
                         <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
                             <h3 className="text-2xl font-bold tracking-tight">Cursos e Oficinas</h3>
@@ -281,7 +281,7 @@ export default function EventsPage() {
                 </div>
 
                 {/* Lado Direito: Calendário */}
-                <div className="space-y-6">
+                <div className="space-y-6 order-1 lg:order-2">
                     <Card className="border-primary/10 shadow-2xl bg-card/80 backdrop-blur-xl overflow-hidden">
                         <div className="absolute top-0 right-0 p-32 bg-primary/5 rounded-full blur-3xl -z-10 translate-x-16 -translate-y-16"></div>
                         <CardHeader className="pb-4 border-b border-border/50 bg-background/50">
