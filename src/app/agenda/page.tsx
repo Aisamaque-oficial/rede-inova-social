@@ -224,9 +224,104 @@ export default function EventsPage() {
                         <span>Cronograma e Eventos</span>
                     </motion.div>
                     
-                    <motion.h1 variants={FADE_UP_ANIMATION_VARIANTS} className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-                        Nossa <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">Agenda</span>
-                    </motion.h1>
+                    <motion.div variants={FADE_UP_ANIMATION_VARIANTS} className="flex items-center justify-center gap-4 flex-wrap">
+                        <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+                            Nossa <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">Agenda</span>
+                        </h1>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button variant="outline" size="icon" className="rounded-full h-12 w-12 md:h-16 md:w-16 border-primary/20 bg-background/50 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-all shadow-sm group">
+                                    <CalendarDays className="h-6 w-6 md:h-8 md:w-8 group-hover:scale-110 transition-transform" />
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[425px] p-0 overflow-hidden border-none bg-transparent shadow-none">
+                                <Card className="border-primary/10 shadow-2xl bg-card/95 backdrop-blur-xl overflow-hidden w-full">
+                                    <div className="absolute top-0 right-0 p-32 bg-primary/5 rounded-full blur-3xl -z-10 translate-x-16 -translate-y-16"></div>
+                                    <CardHeader className="pb-4 border-b border-border/50 bg-background/50">
+                                        <CardTitle className="text-xl flex items-center gap-3">
+                                            <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                                                <CalendarDays className="h-5 w-5" />
+                                            </div>
+                                            Agenda da Equipe
+                                        </CardTitle>
+                                        <CardDescription>Planejamentos e reuniões internas</CardDescription>
+                                    </CardHeader>
+                                    <CardContent className="pt-6">
+                                        {isMounted && (
+                                            <Calendar
+                                                mode="single"
+                                                selected={selectedDate}
+                                                onSelect={setSelectedDate}
+                                                locale={ptBR}
+                                                className="rounded-2xl border-none bg-transparent mx-auto p-0 w-fit flex justify-center [--cell-size:2.5rem] md:[--cell-size:2.8rem]"
+                                                modifiers={{
+                                                    reuniao: (date: Date) => teamEvents.some(e => e.type === 'reuniao' && isSameDay(parseISO(e.date), date)),
+                                                    atividade: (date: Date) => teamEvents.some(e => e.type === 'atividade' && isSameDay(parseISO(e.date), date))
+                                                }}
+                                                modifiersClassNames={{
+                                                    reuniao: "relative after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:h-1.5 after:w-1.5 after:bg-primary after:rounded-full font-bold",
+                                                    atividade: "relative after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:h-1.5 after:w-1.5 after:bg-emerald-500 after:rounded-full font-bold",
+                                                    selected: "bg-primary text-primary-foreground rounded-xl shadow-lg shadow-primary/30 after:hidden"
+                                                }}
+                                            />
+                                        )}
+                                        
+                                        <div className="mt-8 space-y-4">
+                                            <div className="flex items-center justify-center gap-6 text-xs font-medium bg-secondary/50 p-3 rounded-xl">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="h-2 w-2 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary),0.8)]" />
+                                                    <span>Reunião</span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                                                    <span>Atividade</span>
+                                                </div>
+                                            </div>
+
+                                            <AnimatePresence mode="wait">
+                                                {selectedEvent ? (
+                                                    <motion.div 
+                                                        key={selectedEvent.id}
+                                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                                                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                                                        className="p-5 rounded-2xl bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 relative overflow-hidden group"
+                                                    >
+                                                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                                            {selectedEvent.type === 'reuniao' ? <Users className="w-16 h-16" /> : <Target className="w-16 h-16" />}
+                                                        </div>
+                                                        <Badge className="mb-3" variant={selectedEvent.type === 'reuniao' ? 'default' : 'secondary'}>
+                                                            {selectedEvent.type === 'reuniao' ? 'Reunião' : 'Atividade'}
+                                                        </Badge>
+                                                        <h4 className="font-bold text-lg leading-tight mb-1 text-foreground">{selectedEvent.title}</h4>
+                                                        <p className="text-sm font-medium text-primary mb-3">
+                                                            {format(parseISO(selectedEvent.date), "dd 'de' MMMM", { locale: ptBR })}
+                                                        </p>
+                                                        <p className="text-sm text-muted-foreground leading-relaxed">{selectedEvent.description}</p>
+                                                    </motion.div>
+                                                ) : (
+                                                    <motion.div 
+                                                        key="empty"
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ opacity: 1 }}
+                                                        className="flex flex-col items-center justify-center py-8 text-center"
+                                                    >
+                                                        <div className="bg-secondary p-4 rounded-full mb-3 text-muted-foreground">
+                                                            <CalendarDays className="w-6 h-6 opacity-50" />
+                                                        </div>
+                                                        <p className="text-sm text-muted-foreground max-w-[200px]">
+                                                            Selecione um dia destacado no calendário para ver os detalhes.
+                                                        </p>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </DialogContent>
+                        </Dialog>
+                    </motion.div>
                     
                     <motion.p variants={FADE_UP_ANIMATION_VARIANTS} className="text-muted-foreground md:text-xl leading-relaxed max-w-[800px]">
                         Acompanhe os planejamentos, cursos, oficinas e feiras. Juntos, construindo uma rede de inovação social e impacto.
@@ -238,10 +333,10 @@ export default function EventsPage() {
         {/* Conteúdo Principal: Bento Grid e Calendário */}
         <section className="w-full py-12 md:py-16">
           <div className="container px-4 md:px-6">
-             <div className="grid lg:grid-cols-[1fr_380px] gap-8 lg:gap-12 items-start">
+             <div className="flex flex-col gap-8 lg:gap-12 items-center max-w-5xl mx-auto w-full">
                 
-                {/* Lado Esquerdo: Abas e Cards */}
-                <div className="w-full order-2 lg:order-1">
+                {/* Abas e Cards */}
+                <div className="w-full">
                     <Tabs defaultValue="past" className="w-full">
                         <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
                             <h3 className="text-2xl font-bold tracking-tight">Cursos e Oficinas</h3>
@@ -280,93 +375,7 @@ export default function EventsPage() {
                     </Tabs>
                 </div>
 
-                {/* Lado Direito: Calendário */}
-                <div className="space-y-6 order-1 lg:order-2">
-                    <Card className="border-primary/10 shadow-2xl bg-card/80 backdrop-blur-xl overflow-hidden">
-                        <div className="absolute top-0 right-0 p-32 bg-primary/5 rounded-full blur-3xl -z-10 translate-x-16 -translate-y-16"></div>
-                        <CardHeader className="pb-4 border-b border-border/50 bg-background/50">
-                            <CardTitle className="text-xl flex items-center gap-3">
-                                <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                                    <CalendarDays className="h-5 w-5" />
-                                </div>
-                                Agenda da Equipe
-                            </CardTitle>
-                            <CardDescription>Planejamentos e reuniões internas</CardDescription>
-                        </CardHeader>
-                        <CardContent className="pt-6">
-                            {isMounted && (
-                                <Calendar
-                                    mode="single"
-                                    selected={selectedDate}
-                                    onSelect={setSelectedDate}
-                                    locale={ptBR}
-                                    className="rounded-2xl border-none bg-transparent mx-auto p-0 w-fit flex justify-center [--cell-size:2.5rem] md:[--cell-size:2.8rem]"
-                                    modifiers={{
-                                        reuniao: (date: Date) => teamEvents.some(e => e.type === 'reuniao' && isSameDay(parseISO(e.date), date)),
-                                        atividade: (date: Date) => teamEvents.some(e => e.type === 'atividade' && isSameDay(parseISO(e.date), date))
-                                    }}
-                                    modifiersClassNames={{
-                                        reuniao: "relative after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:h-1.5 after:w-1.5 after:bg-primary after:rounded-full font-bold",
-                                        atividade: "relative after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:h-1.5 after:w-1.5 after:bg-emerald-500 after:rounded-full font-bold",
-                                        selected: "bg-primary text-primary-foreground rounded-xl shadow-lg shadow-primary/30 after:hidden"
-                                    }}
-                                />
-                            )}
-                            
-                            <div className="mt-8 space-y-4">
-                                <div className="flex items-center justify-center gap-6 text-xs font-medium bg-secondary/50 p-3 rounded-xl">
-                                    <div className="flex items-center gap-2">
-                                        <div className="h-2 w-2 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary),0.8)]" />
-                                        <span>Reunião</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
-                                        <span>Atividade</span>
-                                    </div>
-                                </div>
 
-                                <AnimatePresence mode="wait">
-                                    {selectedEvent ? (
-                                        <motion.div 
-                                            key={selectedEvent.id}
-                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                                            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                                            className="p-5 rounded-2xl bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 relative overflow-hidden group"
-                                        >
-                                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                                {selectedEvent.type === 'reuniao' ? <Users className="w-16 h-16" /> : <Target className="w-16 h-16" />}
-                                            </div>
-                                            <Badge className="mb-3" variant={selectedEvent.type === 'reuniao' ? 'default' : 'secondary'}>
-                                                {selectedEvent.type === 'reuniao' ? 'Reunião' : 'Atividade'}
-                                            </Badge>
-                                            <h4 className="font-bold text-lg leading-tight mb-1 text-foreground">{selectedEvent.title}</h4>
-                                            <p className="text-sm font-medium text-primary mb-3">
-                                                {format(parseISO(selectedEvent.date), "dd 'de' MMMM", { locale: ptBR })}
-                                            </p>
-                                            <p className="text-sm text-muted-foreground leading-relaxed">{selectedEvent.description}</p>
-                                        </motion.div>
-                                    ) : (
-                                        <motion.div 
-                                            key="empty"
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            className="flex flex-col items-center justify-center py-8 text-center"
-                                        >
-                                            <div className="bg-secondary p-4 rounded-full mb-3 text-muted-foreground">
-                                                <CalendarDays className="w-6 h-6 opacity-50" />
-                                            </div>
-                                            <p className="text-sm text-muted-foreground max-w-[200px]">
-                                                Selecione um dia destacado no calendário para ver os detalhes.
-                                            </p>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
              </div>
           </div>
         </section>
