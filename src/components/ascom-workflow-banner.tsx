@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 const WORKFLOW_STEPS = [
-  { id: 1, label: "Direcionamento", sector: "Coord. Executiva", person: "Dayane Lopes", icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
+  { id: 1, label: "Direcionamento", sector: "Coord. Executiva", person: "Coordenação Executiva", icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
   { id: 2, label: "Produção", sector: "ASCOM", icon: LayoutDashboard, color: "text-indigo-600", bg: "bg-indigo-50" },
   { id: 3, label: "Acessibilidade", sector: "Acess", icon: MessageSquare, color: "text-orange-600", bg: "bg-orange-50" },
   { id: 4, label: "Revisão Final", sector: "ASCOM", icon: Zap, color: "text-indigo-600", bg: "bg-indigo-50" },
@@ -43,7 +43,7 @@ export function AscomWorkflowBanner() {
                  Direcionamento Estratégico da <span className="text-primary italic font-black">Coordenação Executiva</span>
               </h3>
               <p className="text-[13px] font-medium text-slate-500 italic max-w-4xl leading-relaxed">
-                 A ASCOM recebe direcionamentos da Coordenação Executiva (Responsável: <span className="text-slate-900 font-bold">Dayane Lopes</span>), 
+                 A ASCOM recebe direcionamentos da Coordenação Executiva (Responsável: <span className="text-slate-900 font-bold">Coordenação Executiva</span>), 
                  garantindo que cada ação de comunicação e popularização da ciência siga o rigor técnico 
                  e os fundamentos de inovação social do projeto Rede Inova Social.
               </p>

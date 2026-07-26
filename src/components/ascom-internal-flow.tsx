@@ -18,7 +18,7 @@ export function AscomInternalFlow() {
   const focalPoints = [
     { sector: "Pesquisa", name: "Prof. Aisamaque", role: "Coordenação Científica", icon: Users },
     { sector: "Extensão", name: "Prof.ª Andréa", role: "Coordenação Extensionista", icon: Users },
-    { sector: "Tecnologia", name: "Dayane Lopes", role: "Articulação Interna", icon: Users }
+    { sector: "Tecnologia", name: "Coordenação Executiva", role: "Articulação Interna", icon: Users }
   ];
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

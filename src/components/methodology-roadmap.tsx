@@ -25,7 +25,7 @@ const stages = [
     desc: "A Rede Inova nasce da articulação entre instituições públicas, comunidades, pesquisadores e movimentos sociais comprometidos com a construção de soluções coletivas para o combate às desigualdades sociais por meio da alimentação saudável.",
     quote: "Toda transformação social começa quando diferentes pessoas, saberes e territórios decidem caminhar juntos.",
     icon: Sprout,
-    image: "/assets/sementeetapa01.JPG",
+    image: "",
     color: "#10b981", // emerald-500
     side: "right",
     actions: ["Pactuação", "Articulação", "Territórios"],
@@ -222,21 +222,23 @@ export default function MethodologyRoadmap() {
                            <span className="text-[10px] font-black uppercase tracking-widest text-primary/60 mt-2">{stage.subtitle}</span>
                         </div>
 
-                         <div className="mb-8 overflow-hidden rounded-[2.5rem] border border-white/5 shadow-2xl relative group/img bg-black/20">
-                            <div className="absolute inset-0 transition-colors duration-500 z-10 bg-black/40 group-hover/img:bg-black/0" />
-                            <motion.div
-                                whileHover={{ scale: 1.05 }}
-                                transition={{ duration: 1.5 }}
-                            >
-                                <Image 
-                                    src={stage.image} 
-                                    alt={stage.title} 
-                                    width={800} 
-                                    height={450} 
-                                    className="w-full h-auto transition-transform duration-700 object-cover aspect-video"
-                                />
-                            </motion.div>
-                         </div>
+                         {stage.image && (
+                           <div className="mb-8 overflow-hidden rounded-[2.5rem] border border-white/5 shadow-2xl relative group/img bg-black/20">
+                              <div className="absolute inset-0 transition-colors duration-500 z-10 bg-black/40 group-hover/img:bg-black/0" />
+                              <motion.div
+                                  whileHover={{ scale: 1.05 }}
+                                  transition={{ duration: 1.5 }}
+                              >
+                                  <Image 
+                                      src={stage.image} 
+                                      alt={stage.title} 
+                                      width={800} 
+                                      height={450} 
+                                      className="w-full h-auto transition-transform duration-700 object-cover aspect-video"
+                                  />
+                              </motion.div>
+                           </div>
+                         )}
 
                         <div className="space-y-6">
                            <p className="text-sm md:text-base text-slate-400 font-bold leading-relaxed">

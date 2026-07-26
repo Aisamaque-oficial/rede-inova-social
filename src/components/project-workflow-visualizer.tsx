@@ -32,7 +32,7 @@ const flowSteps = [
   {
     id: 2,
     title: "EXECUTIVA",
-    subtitle: "Dayane Lopes",
+    subtitle: "Coordenação Executiva",
     sector: "Supervisão",
     icon: UserCheck,
     color: "text-blue-500",
@@ -112,7 +112,7 @@ const flowSteps = [
   {
     id: 10,
     title: "EXECUTIVA",
-    subtitle: "Dayane Lopes",
+    subtitle: "Coordenação Executiva",
     sector: "Governança",
     icon: Activity,
     color: "text-primary",

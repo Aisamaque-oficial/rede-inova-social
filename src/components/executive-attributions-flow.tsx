@@ -101,7 +101,7 @@ export function ExecutiveAttributionsFlow() {
             Função da <span className="text-primary italic">Coordenação Executiva</span>
          </h2>
          <p className="text-xl font-medium text-slate-400 max-w-3xl mx-auto uppercase tracking-wider leading-relaxed">
-            Supervisão e Governança Estratégica: <span className="font-black text-slate-600 italic">Dayane Lopes</span>
+            Supervisão e Governança Estratégica: <span className="font-black text-slate-600 italic">Coordenação Executiva</span>
          </p>
       </div>
 
@@ -187,7 +187,7 @@ export function ExecutiveAttributionsFlow() {
                </h4>
                <div className="flex items-center gap-6 pt-4">
                    <div className="h-0.5 w-24 bg-white/30" />
-                   <span className="text-sm font-black uppercase tracking-[0.3em] text-white/60">Garantia de Excelência • Dayane Lopes</span>
+                   <span className="text-sm font-black uppercase tracking-[0.3em] text-white/60">Garantia de Excelência • Coordenação Executiva</span>
                </div>
             </div>
          </div>

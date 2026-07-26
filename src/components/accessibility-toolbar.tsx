@@ -7,8 +7,11 @@ import { Eye, Ear, Type, RotateCcw, Plus, Minus, Settings2, X, Search, Book, Arr
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import dynamic from 'next/dynamic';
 
-export const AccessibilityToolbar = () => {
+const FacialNavigation = dynamic(() => import('@/components/facial-navigation'), { ssr: false });
+
+export const AccessibilityToolbar = ({ position = 'right' }: { position?: 'left' | 'right' }) => {
   const { 
     isHearingAidActive, isVisualAidActive, fontSize, colorMode, fontStyle, 
     lineSpacing, letterSpacing, isReadingMaskActive, isReadingGuideActive,
@@ -24,6 +27,13 @@ export const AccessibilityToolbar = () => {
   } = useAccessibility();
 
   const [isOpen, setIsOpen] = React.useState(false);
+  const [isFacialNavActive, setIsFacialNavActive] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleToggle = () => setIsFacialNavActive(prev => !prev);
+    window.addEventListener('toggle-facial-nav', handleToggle);
+    return () => window.removeEventListener('toggle-facial-nav', handleToggle);
+  }, []);
 
   // Helper for Card Button
   const ActionCard = ({ 
@@ -46,7 +56,7 @@ export const AccessibilityToolbar = () => {
   );
 
   return (
-    <div className="fixed bottom-6 right-6 z-[10000] flex flex-col-reverse items-end gap-4 pointer-events-none">
+    <div className={cn("fixed bottom-6 z-[10000] flex flex-col-reverse gap-4 pointer-events-none", position === 'left' ? 'left-6 items-start' : 'right-6 items-end')}>
       <AnimatePresence>
         {isOpen && (
           <motion.div 
@@ -158,7 +168,7 @@ export const AccessibilityToolbar = () => {
                     exit={{ opacity: 0, x: 20 }}
                     className="space-y-6"
                   >
-                    {/* Tradutor de Libras Section */}
+                    {/* Tradutor de Libras & Navegação Facial Section */}
                     <div className="space-y-3">
                       <div className="grid grid-cols-2 gap-3">
                           <ActionCard 
@@ -171,7 +181,19 @@ export const AccessibilityToolbar = () => {
                               active={isDictionaryActive}
                               onClick={() => setIsDictionaryActive(true)}
                               icon={Book}
-                              label="Sinônimos e significados"
+                              label="Sinônimos"
+                          />
+                      </div>
+                      <div className="grid grid-cols-1">
+                          <ActionCard 
+                              active={isFacialNavActive} 
+                              onClick={() => {
+                                const event = new CustomEvent('toggle-facial-nav');
+                                window.dispatchEvent(event);
+                              }} 
+                              icon={Focus} 
+                              label="Navegação por Rosto" 
+                              sublabel="Experimental"
                           />
                       </div>
                     </div>
@@ -329,11 +351,14 @@ export const AccessibilityToolbar = () => {
             </div>
 
             {/* Footer */}
-            <div className="p-4 bg-white border-t border-slate-100 flex gap-2">
-                <Button variant="ghost" size="sm" onClick={resetAccessibility} className="flex-1 rounded-xl text-slate-500 hover:text-destructive h-10 font-bold uppercase text-[10px]">
+            <div className="p-4 bg-white border-t border-slate-100 flex flex-col gap-2">
+                <Button variant="ghost" size="sm" onClick={resetAccessibility} className="w-full rounded-xl text-slate-500 hover:text-destructive h-10 font-bold uppercase text-[10px]">
                     <RotateCcw className="h-4 w-4 mr-2" />
                     Resetar Todas Configurações
                 </Button>
+                <div className="text-center pt-2 mt-1 border-t border-slate-50">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Produzido pela MTacess</span>
+                </div>
             </div>
           </motion.div>
         )}
@@ -356,6 +381,8 @@ export const AccessibilityToolbar = () => {
             <span className="font-black text-xs tracking-[0.15em] uppercase text-primary">Acessibilidade</span>
         </Button>
       </div>
+
+      {isFacialNavActive && <FacialNavigation onClose={() => setIsFacialNavActive(false)} />}
       
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar {

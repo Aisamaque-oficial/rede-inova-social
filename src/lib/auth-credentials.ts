@@ -168,31 +168,6 @@ const USUARIOS_INICIAIS: StoredUser[] = [
     }
   },
 
-  // 2. COORDENAÇÃO INTERNA (DAYANE)
-  {
-    id: '4',
-    cpfOuEmail: '369.439.348-05', 
-    nomeCompleto: 'Dayane Lopes',
-    role: 'COORDENADOR',
-    assignments: [
-      { sector: 'cgp', role: 'COORDENADOR' },
-      { sector: 'plan', role: 'COORDENADOR' }
-    ],
-    passwordHash: SENHA_PADRAO,
-    ativo: true,
-    department: 'CGP',
-    avatarUrl: '/team/dayane.jpeg',
-    dataCriacao: new Date('2026-01-01').toISOString(),
-    criadoPor: 'admin',
-    bio: "Planejamento e acompanhamento financeiro do projeto.",
-    lattesUrl: "",
-    cargo: "Coordenadora de Articulações Internas",
-    permissoes: {
-        ...PERMS_ADMIN,
-        EDIT_VISUAL: false,
-        EXPORT_AUDIT: true
-    }
-  },
 
   // 3. ASCOM
   {
@@ -259,28 +234,6 @@ const USUARIOS_INICIAIS: StoredUser[] = [
     }
   },
 
-  // 4. ACESSIBILIDADE
-  {
-    id: '3',
-    cpfOuEmail: '033.292.575-71', 
-    nomeCompleto: 'Bruna Almeida',
-    role: 'COORDENADOR',
-    assignments: [{ sector: 'acessibilidade', role: 'COORDENADOR' }],
-    passwordHash: SENHA_PADRAO,
-    ativo: true,
-    department: 'ACESSIBILIDADE',
-    avatarUrl: '/team/bruna.jpeg',
-    dataCriacao: new Date('2026-01-01').toISOString(),
-    criadoPor: 'admin',
-    bio: "",
-    lattesUrl: "",
-    cargo: "Núcleo de Acessibilidade",
-    permissoes: {
-        ...PERMS_ASCOM_COLABORADOR,
-        EDIT_ACCESSIBILITY: true,
-        VIEW_AUDIT: true
-    }
-  },
   {
     id: '12',
     cpfOuEmail: '038.863.805-21', 
@@ -300,43 +253,6 @@ const USUARIOS_INICIAIS: StoredUser[] = [
     bio: "",
     lattesUrl: "",
     cargo: "Núcleo de Acessibilidade e Extensão",
-    permissoes: PERMS_COLABORADOR_GERAL
-  },
-  {
-    id: '14',
-    cpfOuEmail: '057.725.205-47', 
-    nomeCompleto: 'Bêide Hayalla',
-    role: 'COLABORADOR',
-    assignments: [
-      { sector: 'acessibilidade', role: 'COLABORADOR' }
-    ],
-    activeSector: 'acessibilidade',
-    passwordHash: SENHA_PADRAO,
-    ativo: true,
-    department: 'ACESSIBILIDADE',
-    avatarUrl: '/team/beide.jpeg',
-    dataCriacao: new Date('2026-01-01').toISOString(),
-    criadoPor: 'admin',
-    bio: "",
-    lattesUrl: "",
-    cargo: "Núcleo de Acessibilidade e Extensão",
-    permissoes: PERMS_COLABORADOR_GERAL
-  },
-  {
-    id: '19',
-    cpfOuEmail: '017.173.215-42', 
-    nomeCompleto: 'Thaís Dutra',
-    role: 'COLABORADOR',
-    assignments: [{ sector: 'acessibilidade', role: 'COLABORADOR' }],
-    passwordHash: SENHA_PADRAO,
-    ativo: true,
-    department: 'ACESSIBILIDADE',
-    avatarUrl: '/team/thais.jpeg',
-    dataCriacao: new Date('2026-01-01').toISOString(),
-    criadoPor: 'admin',
-    bio: "",
-    lattesUrl: "",
-    cargo: "Núcleo de Acessibilidade",
     permissoes: PERMS_COLABORADOR_GERAL
   },
   {

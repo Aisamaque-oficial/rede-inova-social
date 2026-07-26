@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste do Widget de Acessibilidade</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #f9fafb;
+        }
+        h1 {
+            color: #111;
+        }
+        .content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    
+    <!-- 1. Importa o Script do Widget -->
+    <script src="./widget/acessibilidade.js" defer></script>
+</head>
+<body>
+
+    <div class="content">
+        <h1>Página de Teste - Widget MTacess</h1>
+        <p>Esta é uma página HTML estática e completamente pura, rodando fora do ambiente React/Next.js da Rede Inova.</p>
+        <p>Se o botão de acessibilidade aparecer flutuando no canto inferior direito e o painel abrir com a assinatura "Produzido pela MTacess", significa que a exportação do Widget foi um sucesso!</p>
+        
+        <!-- 2. Adiciona a tag customizada onde quiser. A cor pode ser personalizada -->
+        <acessibilidade cor-principal="#059669"></acessibilidade>
+        
+    </div>
+
+</body>
+</html>

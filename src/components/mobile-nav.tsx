@@ -19,6 +19,7 @@ const navLinks = [
     { href: "/jornada#sobre", label: "Sobre o Projeto" },
     { href: "/equipe", label: "Equipe" },
     { href: "/laboratorio", label: "Laboratório" },
+    { href: "/territorio", label: "Território" },
     { href: "/noticias", label: "Notícias" },
     { href: "/agenda", label: "Agenda" },
 ];

@@ -64,7 +64,7 @@ export function TeamGrid() {
 
     // Acessibilidade & Inclusão
     // Note: User explicitly listed members for this nucleus
-    const accessibilityMembers = ['beide', 'thaís', 'ilana', 'bruna', 'sara', 'aisamaque', 'shirlene', 'behatryz'];
+    const accessibilityMembers = ['ilana', 'bruna', 'sara', 'aisamaque', 'shirlene', 'behatryz'];
     if (role.includes('núcleo de acessibilidade') || 
         role.includes('inclusão') || 
         accessibilityMembers.some(m => name.includes(m))) {

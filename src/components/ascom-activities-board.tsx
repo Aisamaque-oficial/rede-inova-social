@@ -142,7 +142,7 @@ export function ASCOMActivitiesBoard({ sector, forcedSectorId, isGlobal = false 
 
   return (
     <div className="space-y-12">
-      {/* 🚀 Banner do Fluxo Institucional (Dayane Lopes -> ASCOM -> Acessibilidade -> etc) */}
+      {/* 🚀 Banner do Fluxo Institucional (Coordenação Executiva -> ASCOM -> Acessibilidade -> etc) */}
       <AscomWorkflowBanner />
 
       <div className="flex items-center justify-between px-2">

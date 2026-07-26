@@ -16,6 +16,7 @@ const navLinks = [
     { href: "/jornada#sobre", label: "Sobre o Projeto" },
     { href: "/equipe", label: "Equipe" },
     { href: "/laboratorio", label: "LISSA" },
+    { href: "/territorio", label: "Território" },
     { href: "/agenda", label: "Agenda" },
 ];
 

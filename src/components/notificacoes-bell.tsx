@@ -12,63 +12,61 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { dataService } from "@/lib/data-service";
+import { notificationsService, NotificationItem } from "@/lib/notifications-service";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-interface NotificacaoItem {
-  id: string;
-  titulo: string;
-  descricao: string;
-  tipo: string;
-  lida: boolean;
-  dataCriacao: string;
-  origemUsuarioNome: string;
-}
-
 export function NotificacoesBell() {
-  const [notificacoes, setNotificacoes] = useState<NotificacaoItem[]>([]);
+  const [notificacoes, setNotificacoes] = useState<NotificationItem[]>([]);
   const [naoLidas, setNaoLidas] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPushSupported, setIsPushSupported] = useState(false);
 
   useEffect(() => {
-    carregarNotificacoes();
-    // Recarregar a cada 30 segundos
-    const intervalo = setInterval(carregarNotificacoes, 30000);
-    return () => clearInterval(intervalo);
-  }, []);
-
-  const carregarNotificacoes = () => {
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      setIsPushSupported(true);
+    }
+    
     const userId = dataService.getCurrentUserId();
     if (!userId) {
       setIsLoading(false);
       return;
     }
 
-    const todasNotifications = dataService.obterNotificacoes(userId);
-    setNotificacoes(todasNotifications.slice(0, 10)); // Últimas 10
-    setNaoLidas(dataService.obterContagemNaoLidas(userId));
-    setIsLoading(false);
+    const unsubscribe = notificationsService.subscribeToNotifications(userId, (notifs) => {
+      setNotificacoes(notifs);
+      setNaoLidas(notifs.filter(n => !n.read).length);
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleSubscribePush = async () => {
+     try {
+       const registration = await navigator.serviceWorker.ready;
+       const subscription = await registration.pushManager.subscribe({
+         userVisibleOnly: true,
+         applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "dummy_key_please_set_in_env"
+       });
+       
+       // Save to API
+       // await fetch('/api/notifications/subscribe', { method: 'POST', body: JSON.stringify({ userId: dataService.getCurrentUserId(), subscription }) });
+       alert("Notificações push ativadas com sucesso no seu dispositivo!");
+     } catch(e) {
+       console.error("Failed to subscribe push", e);
+     }
   };
 
-  const handleMarcarComoLida = (notifId: string) => {
-    dataService.marcarComoLida(notifId);
-    setNotificacoes(prev =>
-      prev.map(n =>
-        n.id === notifId ? { ...n, lida: true } : n
-      )
-    );
-    const userId = dataService.getCurrentUserId();
-    if (userId) {
-      setNaoLidas(dataService.obterContagemNaoLidas(userId));
-    }
+  const handleMarcarComoLida = async (notifId: string) => {
+    if(!notifId) return;
+    await notificationsService.markAsRead(notifId);
   };
 
-  const handleMarcarTodasComoLidas = () => {
+  const handleMarcarTodasComoLidas = async () => {
     const userId = dataService.getCurrentUserId();
     if (userId) {
-      dataService.marcarTodasComoLidas(userId);
-      setNotificacoes(prev => prev.map(n => ({ ...n, lida: true })));
-      setNaoLidas(0);
+      await notificationsService.markAllAsRead(userId);
     }
   };
 
@@ -102,6 +100,17 @@ export function NotificacoesBell() {
     }
   };
 
+  const getFormatDate = (createdAt: any) => {
+    if (!createdAt) return "";
+    let dateObj;
+    if (createdAt.toDate) {
+      dateObj = createdAt.toDate();
+    } else {
+      dateObj = new Date(createdAt);
+    }
+    return dateObj.toLocaleDateString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -114,7 +123,7 @@ export function NotificacoesBell() {
           <Bell className="h-5 w-5" />
           {naoLidas > 0 && (
             <Badge
-              className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-red-500"
+              className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-red-500 text-[10px]"
               variant="default"
             >
               {naoLidas > 9 ? "9+" : naoLidas}
@@ -131,10 +140,10 @@ export function NotificacoesBell() {
               size="sm"
               variant="ghost"
               onClick={handleMarcarTodasComoLidas}
-              className="text-xs"
+              className="text-xs h-6 px-2"
             >
               <CheckCheck className="w-3 h-3 mr-1" />
-              Marcar todas como lidas
+              Lidas
             </Button>
           )}
         </div>
@@ -153,39 +162,27 @@ export function NotificacoesBell() {
                   key={notif.id}
                   className={cn(
                     "p-3 rounded-lg border text-sm cursor-pointer hover:shadow-sm transition-all",
-                    getCorTipo(notif.tipo),
-                    !notif.lida && "font-medium"
+                    getCorTipo(notif.type),
+                    !notif.read && "font-medium border-l-4 border-l-blue-500"
                   )}
-                  onClick={() => handleMarcarComoLida(notif.id)}
+                  onClick={() => handleMarcarComoLida(notif.id!)}
                 >
                   <div className="flex items-start gap-2">
                     <span className="text-lg flex-shrink-0">
-                      {getIconoTipo(notif.tipo)}
+                      {getIconoTipo(notif.type)}
                     </span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <h4 className="font-medium truncate">
-                          {notif.titulo}
+                        <h4 className="font-medium text-xs truncate">
+                          {notif.title}
                         </h4>
-                        {!notif.lida && (
-                          <div className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />
-                        )}
                       </div>
                       <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                        {notif.descricao}
+                        {notif.body}
                       </p>
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs text-muted-foreground">
-                          {notif.origemUsuarioNome}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(notif.dataCriacao).toLocaleDateString(
-                            "pt-BR",
-                            {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            }
-                          )}
+                        <span className="text-[10px] text-muted-foreground">
+                          {getFormatDate(notif.createdAt)}
                         </span>
                       </div>
                     </div>
@@ -198,16 +195,14 @@ export function NotificacoesBell() {
 
         <DropdownMenuSeparator />
 
-        <div className="p-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full"
-            asChild
-          >
-            <Link href="/notificacoes">
-              Ver todas as notificações
-            </Link>
+        <div className="p-2 space-y-2">
+          {isPushSupported && (
+            <Button variant="outline" className="w-full text-xs" onClick={handleSubscribePush}>
+              Ativar Avisos no Celular 📱
+            </Button>
+          )}
+          <Button variant="secondary" className="w-full text-xs" asChild>
+            <Link href="/painel/dashboard">Ver todas</Link>
           </Button>
         </div>
       </DropdownMenuContent>

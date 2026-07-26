@@ -1,162 +1,94 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import MainHeader from "@/components/main-header";
-import { TeamGrid } from "@/components/team-grid";
-import TeamFlowchart from "@/components/team-flowchart";
-import LogoCarousel from "@/components/logo-carousel";
-import { Users, LayoutGrid, Map, Sparkles } from "lucide-react";
+import { Hammer, CalendarDays, AlertCircle } from "lucide-react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import Link from "next/link";
 
-import { dataService } from "@/lib/data-service";
-import { CMSPageRenderer } from "@/components/cms/CMSPageRenderer";
-import { CMSBlock } from "@/lib/cms-schema";
-
-export default function TeamPage({ params }: { params?: { estudio?: string } }) {
-  const isStudio = !!params?.estudio; // Check if we are in studio mode
-  const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
-  const [canEdit, setCanEdit] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const userId = dataService.getCurrentUserId();
-    const hasPermission = userId ? dataService.podeEditar(userId) : false;
-    // REGRA DE OURO: Editor visual (lápis) só aparece no Estúdio
-    setCanEdit(hasPermission && isStudio);
-    setIsLoading(false);
-  }, [isStudio]);
-
+export default function TeamPage() {
   return (
     <div className="flex flex-col min-h-screen bg-[#FDFDFF]">
       <MainHeader />
       
-      <main className="flex-1 pt-32 pb-20">
-        {/* Modern Hero Section */}
-        <section className="relative overflow-hidden mb-16">
-           {/* Decorative elements */}
-           <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
-           <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[500px] h-[500px] bg-citrus/5 rounded-full blur-[100px] pointer-events-none" />
-           
-           <div className="container px-4 md:px-6 relative z-10">
-              <div className="flex flex-col items-center text-center space-y-6">
-                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-[10px] font-black uppercase tracking-[0.3em] text-primary"
-                 >
-                    <Sparkles size={12} /> Nossa Equipe
-                 </motion.div>
-                 
-                 <CMSPageRenderer 
-                    pageId="equipe_hero"
-                    isStudio={isStudio}
-                    defaultBlocks={[
-                        { id: "equipe_hero_title", type: 'header', content: "Conheça quem faz acontecer" },
-                        { id: "equipe_hero_subtitle", type: 'text', content: "Pessoas apaixonadas e dedicadas a construir um futuro mais justo e sustentável através da inovação social." }
-                    ]}
-                    className="flex flex-col items-center gap-6"
-                 />
+      <main className="flex-1 flex flex-col items-center justify-center pt-32 pb-20 relative overflow-hidden">
+         {/* Decorative elements */}
+         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+         <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[500px] h-[500px] bg-citrus/5 rounded-full blur-[100px] pointer-events-none" />
+         
+         <div className="container px-4 md:px-6 relative z-10 flex flex-col items-center text-center mt-12 md:mt-24">
+            
+            <motion.div
+               initial={{ opacity: 0, scale: 0.8 }}
+               animate={{ opacity: 1, scale: 1 }}
+               transition={{ duration: 0.6, type: "spring" }}
+               className="w-24 h-24 bg-primary/10 text-primary rounded-3xl flex items-center justify-center mb-8 shadow-xl border border-primary/20"
+            >
+               <Hammer size={48} />
+            </motion.div>
 
-                 {/* View Toggle */}
-                 <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.3 }}
-                    className="flex p-1 bg-slate-100/50 backdrop-blur-md rounded-2xl shadow-inner mt-4 ring-1 ring-slate-200"
-                 >
-                    <Button 
-                       variant={viewMode === 'grid' ? "default" : "ghost"}
-                       onClick={() => setViewMode('grid')}
-                       className={cn(
-                          "rounded-xl font-black uppercase text-[10px] tracking-widest gap-2 h-10 px-6 transition-all duration-500",
-                          viewMode === 'grid' ? "bg-white text-slate-900 shadow-lg ring-1 ring-slate-200" : "text-slate-500 hover:text-primary"
-                       )}
-                    >
-                       <LayoutGrid size={14} /> Galeria Moderna
-                    </Button>
-                    <Button 
-                       variant={viewMode === 'map' ? "default" : "ghost"}
-                       onClick={() => setViewMode('map')}
-                       className={cn(
-                          "rounded-xl font-black uppercase text-[10px] tracking-widest gap-2 h-10 px-6 transition-all duration-500",
-                          viewMode === 'map' ? "bg-white text-slate-900 shadow-lg ring-1 ring-slate-200" : "text-slate-500 hover:text-primary"
-                       )}
-                    >
-                       <Map size={14} /> Mapa Técnico
-                    </Button>
-                 </motion.div>
-              </div>
-           </div>
-        </section>
+            <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ duration: 0.6, delay: 0.1 }}
+               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-[10px] font-black uppercase tracking-[0.3em] text-amber-600 mb-6"
+            >
+               <AlertCircle size={12} /> Em Construção
+            </motion.div>
 
-        {/* Content Display */}
-        <section className="container px-4 md:px-6">
-           <AnimatePresence mode="wait">
-              {viewMode === 'grid' ? (
-                 <motion.div
-                    key="grid"
-                    initial={{ opacity: 0, scale: 0.98, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.98, y: 20 }}
-                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                 >
-                    <TeamGrid />
-                 </motion.div>
-              ) : (
-                 <motion.div
-                    key="map"
-                    initial={{ opacity: 0, scale: 1.02, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 1.02, y: 20 }}
-                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    className="h-[80vh] w-full rounded-[4rem] border border-slate-100 bg-white shadow-3xl overflow-hidden relative ring-1 ring-slate-200"
-                 >
-                    <div className="absolute top-8 left-8 z-20">
-                        <Badge variant="outline" className="bg-white/90 backdrop-blur-xl font-black uppercase text-[10px] tracking-widest px-5 py-2.5 border-slate-100 shadow-xl text-primary ring-1 ring-primary/5">
-                           Visualização Estrutural
-                        </Badge>
-                    </div>
-                    <TeamFlowchart />
-                 </motion.div>
-              )}
-           </AnimatePresence>
-        </section>
+            <motion.h1 
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ duration: 0.6, delay: 0.2 }}
+               className="text-4xl md:text-6xl font-black italic text-slate-900 font-headline leading-tight mb-6"
+            >
+               Nossa Equipe <br className="hidden md:block"/> está em Formação
+            </motion.h1>
 
-        <section className="mt-32">
-           <div className="flex flex-col items-center justify-center text-center space-y-6 mb-12">
-               <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">Parceiros & Realizadores</span>
-               <LogoCarousel />
-           </div>
-        </section>
+            <motion.p 
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ duration: 0.6, delay: 0.3 }}
+               className="text-lg md:text-xl text-slate-600 max-w-2xl mb-12 leading-relaxed"
+            >
+               Estamos preparando uma página incrível para apresentar as pessoas apaixonadas e dedicadas que fazem a Rede Inova acontecer.
+            </motion.p>
+
+            <motion.div 
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ duration: 0.6, delay: 0.4 }}
+               className="bg-white p-6 md:p-8 rounded-[2rem] shadow-xl border border-slate-100 flex flex-col md:flex-row items-center gap-6"
+            >
+               <div className="w-16 h-16 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center">
+                  <CalendarDays size={32} />
+               </div>
+               <div className="text-left text-center md:text-left">
+                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">
+                     Previsão de Abertura
+                  </div>
+                  <div className="text-2xl font-black text-primary">
+                     Dia 25/08/2026
+                  </div>
+               </div>
+            </motion.div>
+
+            <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ duration: 0.6, delay: 0.5 }}
+               className="mt-16"
+            >
+               <Link href="/">
+                  <Button className="h-14 px-8 rounded-full font-black uppercase tracking-widest text-[11px] bg-slate-900 hover:bg-primary transition-colors text-white shadow-xl hover:shadow-primary/25">
+                     Voltar ao Início
+                  </Button>
+               </Link>
+            </motion.div>
+
+         </div>
       </main>
-
-      <footer className="py-16 border-t border-slate-100 bg-white">
-        <div className="container px-4 flex flex-col md:flex-row items-center justify-between gap-8">
-           <div className="flex flex-col items-center md:items-start">
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                 © 2026. Rede de Inovação Social | IF Baiano/CNPq
-              </p>
-              <p className="text-[8px] font-bold text-slate-300 uppercase tracking-widest mt-2 italic">
-                 Tecnologia e Inovação para o Médio Sudoeste Baiano
-              </p>
-           </div>
-           <nav className="flex gap-10">
-              <a href="#" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors decoration-primary/30 hover:underline underline-offset-8">Termos</a>
-              <a href="#" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors decoration-primary/30 hover:underline underline-offset-8">Privacidade</a>
-           </nav>
-        </div>
-      </footer>
-    </div>
-  );
-}
-
-function Badge({ children, className, variant }: { children: React.ReactNode, className?: string, variant?: string }) {
-  return (
-    <div className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold overflow-hidden", className)}>
-        {children}
     </div>
   );
 }

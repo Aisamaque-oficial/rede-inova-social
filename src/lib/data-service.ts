@@ -669,17 +669,23 @@ export const dataService = {
 
 
   async listarMembrosEquipe(): Promise<User[]> {
+    const filterRemovedMembers = (members: User[]) => {
+       return members.filter(m => m.id !== '4' && m.id !== '14' && m.id !== '19' && m.id !== '3');
+    };
+
     if (this.isBypass() || this.isAuthenticatedLocally()) {
-        return [...teamMembers];
+        return filterRemovedMembers([...teamMembers]);
     }
     try {
         const teamCol = collection(db, "users");
         const snapshot = await getDocs(query(teamCol, orderBy("name", "asc")));
-        if (snapshot.empty) return [...teamMembers];
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as User));
+        if (snapshot.empty) return filterRemovedMembers([...teamMembers]);
+        
+        const dbMembers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as User));
+        return filterRemovedMembers(dbMembers);
     } catch (e) {
         console.warn("Firebase Team Error:", e);
-        return [...teamMembers];
+        return filterRemovedMembers([...teamMembers]);
     }
   },
 

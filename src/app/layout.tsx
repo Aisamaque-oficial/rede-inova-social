@@ -19,6 +19,8 @@ import { ActivityTracker } from '@/components/activity-tracker';
 const metadata: Metadata = {
   title: 'RedeInovaSocial',
   description: 'Gerenciador de Projeto da Rede de Inovação Social',
+  manifest: '/manifest.json',
+  themeColor: '#0f172a',
 };
 
 // Importar fontes para acessibilidade

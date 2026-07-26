@@ -18,7 +18,7 @@ export function AscomTeamSection() {
       socials: { site: true, intern: true }
     },
     {
-      name: "Thaíssa Carvalho",
+      name: "Equipe ASCOM",
       role: "Conteúdo e Comunicação Institucional",
       tag: "A Voz do Projeto",
       icon: PenTool,
