@@ -5,12 +5,18 @@ import { db } from '@/lib/firebase-admin'; // We need firebase-admin for backend
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
 
-// Configure Web Push (VAPID)
-webPush.setVapidDetails(
-  'mailto:contato@redeinovasocial.com.br',
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || 'voluntarily_dummy_public_key',
-  process.env.VAPID_PRIVATE_KEY || 'voluntarily_dummy_private_key'
-);
+// Configure Web Push (VAPID) safely for build time
+try {
+  if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+    webPush.setVapidDetails(
+      'mailto:contato@redeinovasocial.com.br',
+      process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+      process.env.VAPID_PRIVATE_KEY
+    );
+  }
+} catch (e) {
+  console.warn("VAPID keys not configured properly, web push will not work.");
+}
 
 export async function POST(req: Request) {
   try {
