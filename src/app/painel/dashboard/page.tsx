@@ -12,7 +12,9 @@ import {
     CheckCircle2,
     ArrowRight,
     Users,
-    FileSignature
+    FileSignature,
+    TrendingUp,
+    Map
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
@@ -87,35 +89,46 @@ export default function PainelDashboardPage() {
       </div>
 
       {/* 🚀 QUICK ACTIONS - ACESSO RÁPIDO */}
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         <Link href="/painel/relatorio-acessos">
-          <Card className="p-8 bg-primary text-slate-950 border-none rounded-[2.5rem] hover:scale-[1.02] transition-all cursor-pointer shadow-xl shadow-primary/20 group relative overflow-hidden">
-             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:rotate-12 transition-transform">
+          <Card className="p-8 bg-gradient-to-br from-primary to-emerald-500 text-slate-950 border-none rounded-[2.5rem] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 cursor-pointer shadow-xl shadow-primary/20 group relative overflow-hidden glass-morphism backdrop-blur-md">
+             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:rotate-12 group-hover:scale-125 transition-transform duration-500">
                 <Activity className="w-24 h-24" />
              </div>
              <div className="relative z-10">
-                <div className="p-4 bg-white/20 rounded-2xl w-fit mb-6">
-                    <Activity className="w-8 h-8" />
+                <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl w-fit mb-6 shadow-inner">
+                    <Activity className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-black uppercase tracking-tight leading-tight">Monitor de<br/>Acessos Ativos</h3>
-                <p className="text-[10px] font-bold opacity-60 mt-2 uppercase tracking-widest italic group-hover:translate-x-2 transition-transform inline-flex items-center gap-2">
-                    Ver Atividade em Tempo Real <ArrowRight className="w-3 h-3" />
-                </p>
+                <h3 className="text-xl font-black uppercase tracking-tight leading-tight text-white drop-shadow-md">Monitor de<br/>Acessos</h3>
+             </div>
+          </Card>
+        </Link>
+
+        <Link href="/painel/metricas-territorio">
+          <Card className="p-8 bg-gradient-to-br from-sky-500 to-blue-600 text-white border-none rounded-[2.5rem] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 cursor-pointer shadow-xl shadow-sky-500/20 group relative overflow-hidden glass-morphism backdrop-blur-md">
+             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:rotate-12 group-hover:scale-125 transition-transform duration-500">
+                <TrendingUp className="w-24 h-24" />
+             </div>
+             <div className="relative z-10">
+                <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl w-fit mb-6 shadow-inner">
+                    <Map className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-black uppercase tracking-tight leading-tight text-white drop-shadow-md">Métricas do<br/>Território</h3>
              </div>
           </Card>
         </Link>
 
         <Link href="/gerenciar/usuarios">
-          <Card className="p-8 bg-slate-900 text-white border-none rounded-[2.5rem] hover:scale-[1.02] transition-all cursor-pointer shadow-xl group relative overflow-hidden">
-             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
+          <Card className="p-8 bg-gradient-to-br from-slate-900 to-slate-800 text-white border-none rounded-[2.5rem] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 cursor-pointer shadow-xl shadow-slate-900/20 group relative overflow-hidden glass-morphism backdrop-blur-md">
+             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-125 transition-transform duration-500">
                 <Users className="w-24 h-24 text-primary" />
              </div>
              <div className="relative z-10">
-                <div className="p-4 bg-white/5 rounded-2xl w-fit mb-6">
+                <div className="p-4 bg-white/5 backdrop-blur-sm rounded-2xl w-fit mb-6 shadow-inner">
                     <Users className="w-8 h-8 text-primary" />
                 </div>
-                <h3 className="text-xl font-black uppercase tracking-tight leading-tight text-white">Gestão da<br/>Equipe Técnica</h3>
-                <p className="text-[10px] font-bold opacity-40 mt-2 uppercase tracking-widest italic group-hover:translate-x-2 transition-transform inline-flex items-center gap-2 text-primary">
+                <h3 className="text-xl font-black uppercase tracking-tight leading-tight text-white drop-shadow-md">Gestão da<br/>Equipe Técnica</h3>
+                <p className="text-[10px] font-bold opacity-60 mt-2 uppercase tracking-widest italic group-hover:translate-x-2 transition-transform inline-flex items-center gap-2 text-primary">
                     Acessar Base de Membros <ArrowRight className="w-3 h-3" />
                 </p>
              </div>
