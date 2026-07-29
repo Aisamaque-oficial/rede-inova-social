@@ -38,8 +38,7 @@ import {
   X,
   FileText,
   FolderArchive,
-  ShoppingBag,
-  PieChart
+  ShoppingBag
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
