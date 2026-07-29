@@ -14,7 +14,7 @@ import {
     Users,
     FileSignature,
     TrendingUp,
-    Map
+    Map as MapIcon
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
@@ -111,7 +111,7 @@ export default function PainelDashboardPage() {
              </div>
              <div className="relative z-10">
                 <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl w-fit mb-6 shadow-inner">
-                    <Map className="w-8 h-8 text-white" />
+                    <MapIcon className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-black uppercase tracking-tight leading-tight text-white drop-shadow-md">Métricas do<br/>Território</h3>
              </div>
