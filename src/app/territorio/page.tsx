@@ -1,13 +1,23 @@
 import React from 'react';
 import Link from 'next/link';
 import { TERRITORY_CITIES } from '@/lib/territory-data';
-import { MapPin, Navigation } from 'lucide-react';
+import { MapPin, Navigation, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function TerritorioPage() {
   return (
     <div className="min-h-screen bg-slate-50 pt-24 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
+        <div className="mb-6">
+            <Link href="/">
+                <Button variant="ghost" className="text-slate-500 hover:text-slate-900">
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Voltar para Início
+                </Button>
+            </Link>
+        </div>
+
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 font-display tracking-tight">
             Território Médio Sudoeste da Bahia
