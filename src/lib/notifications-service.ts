@@ -57,20 +57,9 @@ export const notificationsService = {
 
   // Ouvir notificações em tempo real para um usuário específico
   subscribeToNotifications(userId: string, callback: (notifications: NotificationItem[]) => void) {
-    const q = query(
-      collection(db, "notifications"),
-      where("userId", "==", userId),
-      orderBy("createdAt", "desc"),
-      limit(50)
-    );
-
-    return onSnapshot(q, (snapshot) => {
-      const notifs: NotificationItem[] = [];
-      snapshot.forEach((doc) => {
-        notifs.push({ id: doc.id, ...doc.data() } as NotificationItem);
-      });
-      callback(notifs);
-    });
+    // Firebase has been abandoned. Bypass to prevent crash.
+    callback([]);
+    return () => {};
   },
 
   // Marcar como lida

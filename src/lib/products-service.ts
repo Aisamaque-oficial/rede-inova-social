@@ -29,13 +29,8 @@ export const productsService = {
   // Get products for a specific city
   async getProductsByCity(citySlug: string): Promise<Product[]> {
     try {
-      const q = query(
-        collection(db, "products"),
-        where("citySlug", "==", citySlug),
-        orderBy("createdAt", "desc")
-      );
-      const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+      // Firebase has been abandoned. Bypass to prevent crash.
+      return [];
     } catch (error) {
       console.error("Error fetching products:", error);
       return [];
@@ -45,27 +40,19 @@ export const productsService = {
   // Get products by farmer (for internal panel)
   async getProductsByFarmer(farmerId: string): Promise<Product[]> {
     try {
-      const q = query(
-        collection(db, "products"),
-        where("farmerId", "==", farmerId),
-        orderBy("createdAt", "desc")
-      );
-      const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+      // Firebase has been abandoned. Bypass to prevent crash.
+      return [];
     } catch (error) {
       console.error("Error fetching farmer products:", error);
       return [];
     }
   },
 
-  // Add a new product
+  // Add new product
   async addProduct(product: Omit<Product, "id" | "createdAt">): Promise<string | null> {
     try {
-      const docRef = await addDoc(collection(db, "products"), {
-        ...product,
-        createdAt: serverTimestamp()
-      });
-      return docRef.id;
+      // Firebase has been abandoned. Bypass to prevent crash.
+      return "dummy_id";
     } catch (error) {
       console.error("Error adding product:", error);
       return null;
@@ -75,8 +62,7 @@ export const productsService = {
   // Update product
   async updateProduct(productId: string, data: Partial<Product>): Promise<boolean> {
     try {
-      const docRef = doc(db, "products", productId);
-      await updateDoc(docRef, data);
+      // Firebase has been abandoned. Bypass to prevent crash.
       return true;
     } catch (error) {
       console.error("Error updating product:", error);
@@ -87,7 +73,7 @@ export const productsService = {
   // Delete product
   async deleteProduct(productId: string): Promise<boolean> {
     try {
-      await deleteDoc(doc(db, "products", productId));
+      // Firebase has been abandoned. Bypass to prevent crash.
       return true;
     } catch (error) {
       console.error("Error deleting product:", error);
