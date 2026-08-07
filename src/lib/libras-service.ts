@@ -47,7 +47,7 @@ export const librasService = {
     return (data || []).map(t => ({
       ...t,
       description: t.definition,
-      videoUrl: 'https://youtu.be/avcv3vQBGwA', // t.video_url temporarily removed due to person leaving project
+      videoUrl: '', // t.video_url temporarily removed due to person leaving project
       signStrategy: t.sign_strategy,
       tags: t.tags || [],
       eixoTitle: Number(t.axis_id) === 1 ? 'Fundamentação' :
@@ -73,7 +73,7 @@ export const librasService = {
     }
     return (data || []).map(m => ({
       ...m,
-      videoUrl: 'https://youtu.be/avcv3vQBGwA', // m.video_url temporarily removed
+      videoUrl: '', // m.video_url temporarily removed
       visualReinforcementUrl: m.visual_reinforcement_url,
       supportText: m.support_text,
       practicalApp: m.practical_app
@@ -88,7 +88,7 @@ export const librasService = {
     }
     return (data || []).map(t => ({
       ...t,
-      videoUrl: 'https://youtu.be/avcv3vQBGwA', // t.video_url temporarily removed
+      videoUrl: '', // t.video_url temporarily removed
       quizData: t.quiz_data,
       questions: t.quiz_data // Also map to questions for compatibility
     })) as any[];

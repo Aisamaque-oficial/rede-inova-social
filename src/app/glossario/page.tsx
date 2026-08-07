@@ -288,11 +288,10 @@ export default function GlossarioPage() {
                 >
                   <Ear className="h-12 w-12 mb-4 text-slate-300" />
                   <p className="font-bold text-sm uppercase tracking-widest mb-2">
-                    Painel de Mediação
+                    Traduções em Atualização
                   </p>
                   <p className="text-xs font-medium">
-                    Selecione o ícone da orelha em qualquer termo para exibir a
-                    tradução oficial em Libras.
+                    Os vídeos de tradução oficial em Libras estão sendo atualizados no momento. Retorne em breve para conferir as novidades.
                   </p>
                 </motion.div>
               )}
