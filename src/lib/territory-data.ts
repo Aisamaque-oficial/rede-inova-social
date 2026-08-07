@@ -151,3 +151,7 @@ export function findNearestCities(startCitySlug: string, maxDepth: number = 2): 
 
   return result;
 }
+
+export function getAllCities(): City[] {
+  return TERRITORY_CITIES;
+}
