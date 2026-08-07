@@ -127,6 +127,13 @@ export default function ComercioLoginPage() {
                 {loading ? "Autenticando..." : "Entrar no Sistema"}
                 {!loading && <LogIn className="w-4 h-4 ml-2" />}
               </Button>
+              
+              <div className="mt-6 text-center border-t border-slate-100 pt-6">
+                <p className="text-sm font-medium text-slate-500 mb-2">Ainda não expõe seus produtos?</p>
+                <Link href="/comercio-local/cadastro" className="text-primary font-bold text-sm hover:underline flex items-center justify-center gap-2">
+                    Criar conta de Produtor gratuitamente
+                </Link>
+              </div>
             </form>
           </div>
         </motion.div>
