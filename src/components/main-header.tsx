@@ -131,7 +131,7 @@ export default function MainHeader() {
                                 asChild 
                                 className="rounded-full shadow-lg hover:shadow-primary/20 hover:scale-105 transition-all bg-primary hover:bg-primary/90 text-white px-6"
                             >
-                                <Link href="/login" aria-label="Acessar painel do projeto">Acessar Painel</Link>
+                                <Link href="/login" aria-label="Acessar painel do projeto">Painel da Equipe</Link>
                             </Button>
                         </div>
                     </div>
@@ -163,7 +163,7 @@ export default function MainHeader() {
                             asChild 
                             className="rounded-full text-xs h-9"
                         >
-                            <Link href="/login">Painel</Link>
+                            <Link href="/login">Equipe</Link>
                         </Button>
                         <MobileNav />
                     </div>
