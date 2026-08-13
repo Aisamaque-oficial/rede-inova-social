@@ -7,13 +7,13 @@ import { Button } from '@/components/ui/button';
 export default function CadernoCampoPage() {
   // MOCK DATA for pilot UI
   const unidadesProdutivas = [
-    { id: 1, nome: "Apiário Principal (Mata)", tipo: "Meliponicultura", tamanho: "50 colmeias", status: "Saudável" },
-    { id: 2, nome: "Roça de Mandioca Branca", tipo: "Agricultura", tamanho: "2 hectares", status: "Em crescimento" },
+    { id: 1, nome: "Agroindústria Familiar (Mata)", tipo: "Processamento", tamanho: "N/A", status: "Em Operação" },
+    { id: 2, nome: "Pomar de Jenipapo", tipo: "Fruticultura", tamanho: "1 hectare", status: "Saudável" },
   ];
 
   const registrosProducao = [
-    { id: 1, cultura: "Mel de Uruçu", unidade: "Apiário Principal", plantio: "Jan 2026", previsaoColheita: "Dez 2026", estimativa: "150 litros", status: "em andamento" },
-    { id: 2, cultura: "Mandioca Branca", unidade: "Roça de Mandioca", plantio: "Fev 2026", previsaoColheita: "Out 2026", estimativa: "2 toneladas", status: "praga leve" },
+    { id: 1, cultura: "Chocolate Artesanal (70% Cacau)", unidade: "Agroindústria Familiar", plantio: "Jul 2026", previsaoColheita: "Lote Semanal", estimativa: "200 barras", status: "em andamento" },
+    { id: 2, cultura: "Licor de Jenipapo", unidade: "Pomar de Jenipapo", plantio: "Jan 2026", previsaoColheita: "Dez 2026", estimativa: "150 garrafas", status: "em andamento" },
   ];
 
   return (

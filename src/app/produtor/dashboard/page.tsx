@@ -36,7 +36,7 @@ export default function ProdutorDashboard() {
             <TrendingUp className="w-6 h-6" />
           </div>
           <h2 className="text-xl font-black text-slate-800 mb-2">Sua Produção</h2>
-          <p className="text-slate-500 text-sm mb-6 flex-1">Você tem 2 unidades produtivas ativas e 150 litros de mel previstos para colheita.</p>
+          <p className="text-slate-500 text-sm mb-6 flex-1">Você tem 2 unidades produtivas ativas e 200 barras de chocolate artesanal previstos para este mês.</p>
           <Button asChild className="w-full bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-500/20">
             <Link href="/produtor/caderno-campo">Acessar Caderno de Campo</Link>
           </Button>

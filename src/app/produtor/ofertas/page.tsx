@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 export default function OfertasPage() {
   // MOCK DATA
   const lotes = [
-    { id: 1, produto: "Mel de Uruçu (Pote de Vidro)", categoria: "Mel e derivados", quantidade: "50 potes", preco: 45.00, unidadeVenda: "pote 500g", status: "ativo" },
-    { id: 2, produto: "Mandioca Branca Descascada", categoria: "Raízes e Tubérculos", quantidade: "0 kg", preco: 4.50, unidadeVenda: "kg", status: "esgotado" },
+    { id: 1, produto: "Chocolate Artesanal (70% Cacau)", categoria: "Cacau, doces e derivados", quantidade: "50 barras", preco: 15.00, unidadeVenda: "barra", status: "ativo" },
+    { id: 2, produto: "Licor de Jenipapo", categoria: "Bebidas artesanais", quantidade: "15 garrafas", preco: 25.50, unidadeVenda: "garrafa", status: "ativo" },
   ];
 
   return (
