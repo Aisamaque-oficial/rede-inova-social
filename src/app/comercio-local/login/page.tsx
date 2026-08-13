@@ -27,7 +27,7 @@ export default function ComercioLoginPage() {
         // Para o MVP, salvamos no localStorage (em prod deve ser cookie HTTP Only)
         localStorage.setItem("comercio_user", JSON.stringify(perfil));
         if (perfil.tipo === "produtor") {
-          router.push("/comercio-local/dashboard");
+          router.push("/produtor/dashboard");
         } else {
           router.push("/comercio-local/secretaria");
         }
