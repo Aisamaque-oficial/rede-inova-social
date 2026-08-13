@@ -143,14 +143,14 @@ export default function AgricultoresPage({ params }: { params: { cidade: string 
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 -mt-6 pb-20 relative z-10">
-        <div className="flex flex-col lg:flex-row gap-8">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 pt-8 pb-20 relative z-10">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
           
           {/* Sidebar de Filtros (Professional) */}
-          <div className="w-full lg:w-80 space-y-4">
+          <div className="w-full lg:w-72 space-y-4 shrink-0">
             <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-slate-900 text-sm uppercase tracking-wider">Busca & Filtros</h3>
+                <h3 className="font-semibold text-slate-900 text-sm uppercase tracking-wider">Busca e Filtros</h3>
                 <Filter className="w-4 h-4 text-slate-400" />
               </div>
               
