@@ -1,238 +1,223 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
-import { getCityBySlug, findNearestCities, City } from '@/lib/territory-data';
-import { comercioService, ComercioProduto } from '@/lib/comercio-service';
-import { ArrowLeft, ShoppingBag, MapPin, Phone, Info, Store } from 'lucide-react';
+import { Leaf, Search, MapPin, Star, Filter, MessageCircle, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-type ProdutoVitrine = ComercioProduto & { comercio_perfis: { nome: string; telefone: string } };
+export default function AgricultoresPage({ params }: { params: { cidade: string } }) {
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  // Format city name
+  const cidadeFormatada = params.cidade
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 
-export default function AgricultoresPage() {
-  const params = useParams();
-  const citySlug = params.cidade as string;
-  const city = getCityBySlug(citySlug);
+  // MOCK DATA PARA APRESENTAÇÃO DO SIMPECAL
+  let produtorDestaque = null;
+  let categoriasMock = [];
 
-  const [products, setProducts] = useState<ProdutoVitrine[]>([]);
-  const [nearbyProducts, setNearbyProducts] = useState<{city: City, products: ProdutoVitrine[]}[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (!city) return;
-
-    const loadData = async () => {
-      setIsLoading(true);
-      // Fetch direct city products
-      let cityProducts = await comercioService.getProdutosPorCidade(citySlug);
-
-      // MOCK PARA APRESENTAÇÃO SIMPECAL - CAATIBA
-      if (citySlug === 'caatiba') {
-        const mockProducts = [
-          {
-            id: 'mock-1',
-            produtor_id: 'mock-prod-1',
-            cidade_slug: 'caatiba',
-            nome: 'Chocolate Artesanal (70% Cacau)',
-            descricao: 'Delicioso chocolate artesanal produzido pelas famílias do distrito de Serra Pelada II.',
-            preco: 15.00,
-            unidade: 'barra',
-            imagem_url: '',
-            status: 'ativo',
-            comercio_perfis: {
-              nome: 'Produtores de Serra Pelada II',
-              telefone: '77988889999'
-            }
-          },
-          {
-            id: 'mock-2',
-            produtor_id: 'mock-prod-1',
-            cidade_slug: 'caatiba',
-            nome: 'Licor de Jenipapo',
-            descricao: 'Licor tradicional produzido com frutos selecionados da região de Serra Pelada II.',
-            preco: 25.50,
-            unidade: 'garrafa',
-            imagem_url: '',
-            status: 'ativo',
-            comercio_perfis: {
-              nome: 'Produtores de Serra Pelada II',
-              telefone: '77988889999'
-            }
-          }
-        ];
-        cityProducts = [...cityProducts, ...mockProducts];
-      }
-
-      setProducts(cityProducts as ProdutoVitrine[]);
-
-      // If empty, fetch nearby cities
-      if (cityProducts.length === 0) {
-        const nearestSlugs = findNearestCities(citySlug, 1);
-        const nearby: {city: City, products: ProdutoVitrine[]}[] = [];
-        
-        for (const slug of nearestSlugs) {
-          const adjCity = getCityBySlug(slug);
-          if (adjCity) {
-            const adjProducts = await comercioService.getProdutosPorCidade(slug);
-            if (adjProducts.length > 0) {
-              nearby.push({ city: adjCity, products: adjProducts as ProdutoVitrine[] });
-            }
-          }
-        }
-        setNearbyProducts(nearby);
-      }
-      setIsLoading(false);
+  if (params.cidade === 'caatiba') {
+    produtorDestaque = {
+      nome: "Produtores de Serra Pelada II",
+      especialidade: "Cacau, Doces e Bebidas Artesanais",
+      selos: ["Agricultura Familiar"]
     };
 
-    loadData();
-  }, [city, citySlug]);
+    categoriasMock = [
+      {
+        nome: "Café, cacau e derivados",
+        produtos: [
+          {
+            id: 1,
+            nome: "Chocolate Artesanal (70% Cacau)",
+            descricao: "Produzido com amêndoas selecionadas da cabruca de Serra Pelada II.",
+            preco: "R$ 15,00",
+            unidade: "barra",
+            imagem: "🍫",
+            produtor: "Associação Serra Pelada II",
+            whatsapp: "5577991726710"
+          }
+        ]
+      },
+      {
+        nome: "Polpas, sucos e bebidas",
+        produtos: [
+          {
+            id: 2,
+            nome: "Licor de Jenipapo",
+            descricao: "Receita tradicional com frutas nativas da região.",
+            preco: "R$ 25,50",
+            unidade: "garrafa",
+            imagem: "🍾",
+            produtor: "Associação Serra Pelada II",
+            whatsapp: "5577991726710"
+          }
+        ]
+      }
+    ];
+  } else {
+    // Other cities generic fallback
+    categoriasMock = [
+      {
+        nome: "Hortaliças e verduras",
+        produtos: [
+          {
+            id: 3,
+            nome: "Alface Crespa Orgânica",
+            descricao: "Cultivada sem agrotóxicos na beira do rio.",
+            preco: "R$ 3,50",
+            unidade: "pé",
+            imagem: "🥬",
+            produtor: "Sítio Esperança",
+            whatsapp: "5577991726710"
+          }
+        ]
+      }
+    ];
+  }
 
-  if (!city) return <div>Cidade não encontrada</div>;
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
-  };
-
-  const handleWhatsAppClick = async (product: ProdutoVitrine) => {
-    const message = `Olá ${product.comercio_perfis.nome}! Vi seu produto "${product.nome}" na Vitrine da Rede Inova e tenho interesse.`;
-    const encodedMessage = encodeURIComponent(message);
-    const phone = product.comercio_perfis.telefone.replace(/\D/g, '');
-    
-    // Registrar métrica no Supabase (silencioso)
-    if (product.id) {
-       comercioService.registrarClique(product.id, product.produtor_id, product.cidade_slug).catch(console.error);
-    }
-
-    window.open(`https://wa.me/55${phone}?text=${encodedMessage}`, '_blank');
-  };
-
-  const ProductCard = ({ product, showCity = false }: { product: ProdutoVitrine, showCity?: boolean }) => (
-    <div className="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-slate-100 hover:shadow-xl transition-all duration-300 flex flex-col group">
-      <div className="h-56 w-full bg-slate-50 relative overflow-hidden">
-        {product.imagem_url ? (
-          <img src={product.imagem_url} alt={product.nome} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-        ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 bg-slate-100/50">
-            <ShoppingBag className="w-12 h-12 mb-2" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Sem Imagem</span>
+  return (
+    <div className="min-h-screen bg-slate-50">
+      {/* Header Território */}
+      <div className="bg-emerald-900 text-white pb-12 pt-8 px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-2 text-emerald-400 mb-4">
+            <MapPin className="w-4 h-4" />
+            <span className="text-sm font-bold tracking-widest uppercase">{cidadeFormatada}</span>
           </div>
-        )}
-        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-xl shadow-sm border border-white/20">
-            <span className="font-black text-emerald-600 text-lg">
-                {formatPrice(product.preco)} <span className="text-[10px] text-slate-400">/{product.unidade}</span>
-            </span>
-        </div>
-      </div>
-      <div className="p-6 flex-1 flex flex-col">
-        <h3 className="font-black text-xl text-slate-800 mb-2 leading-tight">{product.nome}</h3>
-        <p className="text-sm text-slate-500 mb-6 line-clamp-2 flex-1 leading-relaxed">{product.descricao || "Sem descrição"}</p>
-        
-        <div className="space-y-3 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100/50">
-          <div className="flex items-center text-xs font-bold text-slate-600">
-            <Store className="w-4 h-4 mr-2 text-slate-400" />
-            {product.comercio_perfis.nome}
-          </div>
-          {showCity && (
-            <div className="flex items-center text-[10px] font-black uppercase tracking-widest text-emerald-600">
-                <MapPin className="w-3 h-3 mr-1" />
-                {getCityBySlug(product.cidade_slug)?.name}
+          <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tighter">
+            Vitrine
+          </h1>
+          <p className="text-emerald-100/80 max-w-2xl text-lg leading-relaxed">
+            Conecte-se diretamente com quem produz. Compre alimentos frescos e artesanais e fortaleça a economia do seu município.
+          </p>
+
+          {produtorDestaque && (
+            <div className="mt-8 bg-white/10 backdrop-blur-sm border border-white/20 p-6 rounded-[2rem] inline-block">
+              <div className="flex items-center gap-3 mb-2">
+                <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
+                <span className="font-bold tracking-widest uppercase text-sm text-amber-400">Destaque da Região</span>
+              </div>
+              <h2 className="text-2xl font-black">{produtorDestaque.nome}</h2>
+              <p className="text-emerald-200 mt-1">{produtorDestaque.especialidade}</p>
+              <div className="flex gap-2 mt-4">
+                {produtorDestaque.selos.map((selo: string, i: number) => (
+                  <span key={i} className="px-3 py-1 bg-white/20 rounded-full text-xs font-bold uppercase tracking-widest">
+                    {selo}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
         </div>
-
-        <button 
-          onClick={() => handleWhatsAppClick(product)}
-          className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 px-4 rounded-xl flex items-center justify-center transition-all hover:scale-[1.02] shadow-lg shadow-emerald-500/20 uppercase tracking-widest text-xs"
-        >
-          <Phone className="w-4 h-4 mr-2" />
-          Solicitar pelo WhatsApp
-        </button>
       </div>
-    </div>
-  );
 
-  return (
-    <div className="min-h-screen bg-slate-50 pt-32 pb-20">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        
-        <div className="mb-10 flex justify-between items-center">
-          <Link href={`/territorio/${city.slug}`} className="inline-flex items-center text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Voltar para {city.name}
-          </Link>
-          <Button asChild variant="outline" size="sm" className="rounded-full shadow-sm text-xs font-bold tracking-widest uppercase border-primary/20 text-primary hover:bg-primary/5">
-            <Link href="/comercio-local/login">
-                Sou Produtor
-            </Link>
-          </Button>
-        </div>
-
-        <div className="mb-16 max-w-4xl">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-emerald-50 text-emerald-600 mb-8 border border-emerald-100">
-            <ShoppingBag className="w-10 h-10" />
-          </div>
-          <h1 className="text-5xl font-black uppercase tracking-tighter text-slate-800 mb-6 leading-[0.9]">
-            Vitrine <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-primary">Solidária</span>
-            <br/><span className="text-3xl text-slate-400">
-              {city.name} {city.slug === 'caatiba' && <span className="text-xl"> (Distrito de Serra Pelada II)</span>}
-            </span>
-          </h1>
-          <p className="text-lg text-slate-500 font-medium leading-relaxed max-w-2xl">
-            Compre diretamente dos agricultores familiares locais. Você negocia via WhatsApp sem intermediários e fortalece a economia da região.
-          </p>
-        </div>
-
-        {isLoading ? (
-          <div className="flex justify-center items-center py-32">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
-          </div>
-        ) : (
-          <>
-            {products.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                {products.map(p => <ProductCard key={p.id} product={p} />)}
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 -mt-8 pb-20">
+        <div className="flex flex-col md:flex-row gap-8">
+          
+          {/* Sidebar de Filtros */}
+          <div className="w-full md:w-72 space-y-4">
+            <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="font-black text-slate-800 tracking-tight text-lg">Buscar</h3>
+                <Filter className="w-5 h-5 text-emerald-500" />
               </div>
-            ) : (
-              <div className="bg-white rounded-[3rem] p-16 border border-slate-100 shadow-xl text-center mb-16 relative overflow-hidden">
-                <div className="absolute inset-0 bg-slate-50/50 pointer-events-none" />
-                <div className="relative z-10">
-                    <Info className="w-16 h-16 text-slate-300 mx-auto mb-6" />
-                    <h3 className="text-2xl font-black uppercase tracking-tight text-slate-800 mb-4">Nenhum produto em {city.name}</h3>
-                    <p className="text-slate-500 font-medium max-w-md mx-auto mb-8">
-                    Os agricultores locais ainda estão preparando suas vitrines. Se você é produtor, clique abaixo para cadastrar seus produtos.
-                    </p>
-                    <Button asChild className="bg-primary hover:bg-primary/90 text-white rounded-full px-8 py-6 font-bold uppercase tracking-widest text-xs shadow-lg shadow-primary/20">
-                        <Link href="/comercio-local/login">Cadastrar Produto</Link>
-                    </Button>
+              
+              <div className="relative mb-6">
+                <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+                <input 
+                  type="text" 
+                  placeholder="O que você procura?"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block pl-10 p-2.5"
+                />
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400">Como funciona?</h4>
+                <div className="flex gap-3 text-sm text-slate-600 bg-emerald-50 p-4 rounded-2xl">
+                  <Info className="w-5 h-5 text-emerald-600 shrink-0" />
+                  <p>A Vitrine conecta você direto ao produtor. Clique em "Solicitar" para combinar a entrega via WhatsApp.</p>
                 </div>
               </div>
-            )}
+            </div>
+          </div>
 
-            {/* Sugestões de Cidades Vizinhas */}
-            {products.length === 0 && nearbyProducts.length > 0 && (
-              <div className="mt-20">
-                <h2 className="text-3xl font-black uppercase tracking-tight text-slate-800 mb-10">
-                  Explorar em cidades vizinhas
-                </h2>
-                
-                <div className="space-y-16">
-                  {nearbyProducts.map(nearby => (
-                    <div key={nearby.city.id}>
-                      <h3 className="text-xl font-bold text-slate-800 mb-8 flex items-center bg-emerald-50 w-fit px-4 py-2 rounded-xl border border-emerald-100">
-                        <MapPin className="w-5 h-5 text-emerald-600 mr-2" />
-                        <span className="text-emerald-900">{nearby.city.name}</span>
-                      </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                        {nearby.products.map(p => <ProductCard key={p.id} product={p} showCity={true} />)}
+          {/* Grid de Produtos Categorizados */}
+          <div className="flex-1 space-y-12">
+            {categoriasMock.map((categoria, catIdx) => {
+              const produtosFiltrados = categoria.produtos.filter(p => 
+                p.nome.toLowerCase().includes(searchTerm.toLowerCase())
+              );
+              
+              if (produtosFiltrados.length === 0) return null;
+
+              return (
+                <div key={catIdx}>
+                  <h2 className="text-2xl font-black text-slate-800 mb-6 flex items-center gap-3">
+                    <div className="w-2 h-8 bg-emerald-500 rounded-full"></div>
+                    {categoria.nome}
+                  </h2>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {produtosFiltrados.map((produto) => (
+                      <div key={produto.id} className="bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col group overflow-hidden">
+                        <div className="h-32 bg-emerald-50/50 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform">
+                          {produto.imagem}
+                        </div>
+                        <div className="p-6 flex-1 flex flex-col">
+                          <div className="flex justify-between items-start mb-2">
+                            <h3 className="font-black text-slate-800 leading-tight text-lg">{produto.nome}</h3>
+                          </div>
+                          <p className="text-sm text-slate-500 mb-4 line-clamp-2">{produto.descricao}</p>
+                          
+                          <div className="mt-auto">
+                            <div className="flex items-center gap-2 mb-4">
+                              <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500">
+                                {produto.produtor.charAt(0)}
+                              </div>
+                              <span className="text-xs font-bold text-slate-400 uppercase tracking-widest line-clamp-1">{produto.produtor}</span>
+                            </div>
+                            
+                            <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                              <div>
+                                <p className="text-2xl font-black text-emerald-600">{produto.preco}</p>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">/{produto.unidade}</p>
+                              </div>
+                              <Button 
+                                className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-500/20"
+                                onClick={() => {
+                                  const msg = encodeURIComponent(`Olá! Vi o produto ${produto.nome} na Vitrine de ${cidadeFormatada} e gostaria de fazer um pedido.`);
+                                  window.open(`https://wa.me/${produto.whatsapp}?text=${msg}`, '_blank');
+                                }}
+                              >
+                                <MessageCircle className="w-4 h-4 mr-2" />
+                                Solicitar
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
+              );
+            })}
+            
+            {categoriasMock.every(cat => cat.produtos.filter(p => p.nome.toLowerCase().includes(searchTerm.toLowerCase())).length === 0) && (
+              <div className="text-center py-20 bg-white rounded-[2rem] border border-slate-100 border-dashed">
+                <Leaf className="w-12 h-12 text-slate-200 mx-auto mb-4" />
+                <h3 className="text-lg font-black text-slate-800 mb-1">Nenhum produto encontrado</h3>
+                <p className="text-slate-500">Tente buscar com outros termos.</p>
               </div>
             )}
-          </>
-        )}
+          </div>
+
+        </div>
       </div>
     </div>
   );
