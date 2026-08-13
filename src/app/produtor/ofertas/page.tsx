@@ -1,15 +1,28 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Plus, Store, Tag, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function OfertasPage() {
   // MOCK DATA
-  const lotes = [
+  const [lotes, setLotes] = useState([
     { id: 1, produto: "Chocolate Artesanal (70% Cacau)", categoria: "Cacau, doces e derivados", quantidade: "50 barras", preco: 15.00, unidadeVenda: "barra", status: "ativo" },
     { id: 2, produto: "Licor de Jenipapo", categoria: "Bebidas artesanais", quantidade: "15 garrafas", preco: 25.50, unidadeVenda: "garrafa", status: "ativo" },
-  ];
+  ]);
+
+  const handleEditPreco = (id: number, precoAtual: number) => {
+    const novoPreco = window.prompt("Digite o novo preço (use ponto para centavos, ex: 16.50):", precoAtual.toString());
+    if (novoPreco && !isNaN(Number(novoPreco))) {
+      setLotes(prev => prev.map(l => l.id === id ? { ...l, preco: Number(novoPreco) } : l));
+      alert("Preço atualizado com sucesso na vitrine!");
+    }
+  };
+
+  const handlePausar = (id: number, statusAtual: string) => {
+    const novoStatus = statusAtual === 'ativo' ? 'pausado' : 'ativo';
+    setLotes(prev => prev.map(l => l.id === id ? { ...l, status: novoStatus } : l));
+  };
 
   return (
     <div className="space-y-8 max-w-5xl">
@@ -63,13 +76,17 @@ export default function OfertasPage() {
 
             <div className="mt-6 flex items-center justify-between">
               <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
-                lote.status === 'ativo' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+                lote.status === 'ativo' ? 'bg-emerald-100 text-emerald-700' : (lote.status === 'pausado' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700')
               }`}>
                 {lote.status}
               </span>
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" className="rounded-xl text-xs h-8">Editar Preço</Button>
-                <Button variant="outline" size="sm" className="rounded-xl text-xs h-8">Pausar Oferta</Button>
+                <Button variant="outline" size="sm" className="rounded-xl text-xs h-8" onClick={() => handleEditPreco(lote.id, lote.preco)}>
+                  Editar Preço
+                </Button>
+                <Button variant="outline" size="sm" className="rounded-xl text-xs h-8" onClick={() => handlePausar(lote.id, lote.status)}>
+                  {lote.status === 'ativo' ? 'Pausar Oferta' : 'Reativar'}
+                </Button>
               </div>
             </div>
           </div>
