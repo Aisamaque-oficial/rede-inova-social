@@ -78,6 +78,13 @@ export default function AgricultoresPage({ params }: { params: { cidade: string 
     ];
   }
 
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
+
+  const categoriasComFiltro = categoriasMock.map(cat => ({
+    ...cat,
+    produtos: cat.produtos.filter(p => p.nome.toLowerCase().includes(searchTerm.toLowerCase()))
+  })).filter(cat => cat.produtos.length > 0 || searchTerm === '');
+
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header Território */}
@@ -141,30 +148,62 @@ export default function AgricultoresPage({ params }: { params: { cidade: string 
                 <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400">Como funciona?</h4>
                 <div className="flex gap-3 text-sm text-slate-600 bg-emerald-50 p-4 rounded-2xl">
                   <Info className="w-5 h-5 text-emerald-600 shrink-0" />
-                  <p>A Vitrine conecta você direto ao produtor. Clique em "Solicitar" para combinar a entrega via WhatsApp.</p>
+                  <p>A Vitrine conecta você direto ao produtor. Escolha uma categoria e clique em "Solicitar" para combinar a entrega via WhatsApp.</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Grid de Produtos Categorizados */}
-          <div className="flex-1 space-y-12">
-            {categoriasMock.map((categoria, catIdx) => {
-              const produtosFiltrados = categoria.produtos.filter(p => 
-                p.nome.toLowerCase().includes(searchTerm.toLowerCase())
-              );
-              
-              if (produtosFiltrados.length === 0) return null;
+          {/* Grid Principal */}
+          <div className="flex-1 space-y-6">
+            {!categoriaSelecionada ? (
+              // MODO 1: MOSTRAR GRID DE CATEGORIAS
+              <>
+                <h2 className="text-2xl font-black text-slate-800 mb-6">Categorias Disponíveis</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {categoriasComFiltro.map((categoria, idx) => {
+                    const totalProdutos = categoria.produtos.length;
+                    const icone = categoria.nome.includes('Cacau') ? '🍫' : (categoria.nome.includes('Polpas') ? '🍹' : '🥬');
+                    
+                    return (
+                      <button 
+                        key={idx}
+                        onClick={() => setCategoriaSelecionada(categoria.nome)}
+                        className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md hover:border-emerald-500 transition-all text-left flex flex-col items-center justify-center gap-4 group"
+                      >
+                        <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                          {icone}
+                        </div>
+                        <div className="text-center">
+                          <h3 className="font-black text-slate-800 text-lg leading-tight">{categoria.nome}</h3>
+                          <p className="text-sm font-bold text-emerald-600 mt-1">{totalProdutos} {totalProdutos === 1 ? 'produto' : 'produtos'}</p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+                {categoriasComFiltro.length === 0 && (
+                  <div className="text-center py-20 bg-white rounded-[2rem] border border-slate-100 border-dashed">
+                    <Leaf className="w-12 h-12 text-slate-200 mx-auto mb-4" />
+                    <h3 className="text-lg font-black text-slate-800 mb-1">Nenhuma categoria encontrada</h3>
+                    <p className="text-slate-500">Tente buscar com outros termos.</p>
+                  </div>
+                )}
+              </>
+            ) : (
+              // MODO 2: MOSTRAR PRODUTOS DA CATEGORIA SELECIONADA
+              <>
+                <div className="flex items-center gap-4 mb-6">
+                  <Button variant="outline" className="rounded-xl border-slate-200 text-slate-600" onClick={() => setCategoriaSelecionada(null)}>
+                    &larr; Voltar às categorias
+                  </Button>
+                  <h2 className="text-2xl font-black text-slate-800 flex-1">{categoriaSelecionada}</h2>
+                </div>
 
-              return (
-                <div key={catIdx}>
-                  <h2 className="text-2xl font-black text-slate-800 mb-6 flex items-center gap-3">
-                    <div className="w-2 h-8 bg-emerald-500 rounded-full"></div>
-                    {categoria.nome}
-                  </h2>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                    {produtosFiltrados.map((produto) => (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {categoriasComFiltro
+                    .find(c => c.nome === categoriaSelecionada)
+                    ?.produtos.map((produto) => (
                       <div key={produto.id} className="bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col group overflow-hidden">
                         <div className="h-32 bg-emerald-50/50 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform">
                           {produto.imagem}
@@ -203,17 +242,8 @@ export default function AgricultoresPage({ params }: { params: { cidade: string 
                         </div>
                       </div>
                     ))}
-                  </div>
                 </div>
-              );
-            })}
-            
-            {categoriasMock.every(cat => cat.produtos.filter(p => p.nome.toLowerCase().includes(searchTerm.toLowerCase())).length === 0) && (
-              <div className="text-center py-20 bg-white rounded-[2rem] border border-slate-100 border-dashed">
-                <Leaf className="w-12 h-12 text-slate-200 mx-auto mb-4" />
-                <h3 className="text-lg font-black text-slate-800 mb-1">Nenhum produto encontrado</h3>
-                <p className="text-slate-500">Tente buscar com outros termos.</p>
-              </div>
+              </>
             )}
           </div>
 
