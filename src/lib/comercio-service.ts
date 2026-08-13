@@ -27,6 +27,21 @@ export interface ComercioProduto {
 export const comercioService = {
   // Autenticação mockada/simples (Para MVP sem auth complexa via Supabase Auth)
   async login(email: string, senha_plana: string): Promise<{ sucesso: boolean; perfil?: ComercioPerfil; mensagem?: string }> {
+    // MOCK PARA APRESENTAÇÃO SIMPECAL
+    if (email === 'produtor@teste.com' && senha_plana === '123456') {
+      return {
+        sucesso: true,
+        perfil: {
+          id: 'mock-prod-1',
+          user_email: 'produtor@teste.com',
+          nome: 'Associação de Serra Pelada II',
+          telefone: '77988889999',
+          cidade_slug: 'caatiba',
+          tipo: 'produtor'
+        }
+      };
+    }
+
     try {
       const { data, error } = await supabase
         .from('comercio_perfis')
@@ -38,8 +53,6 @@ export const comercioService = {
         return { sucesso: false, mensagem: "Usuário não encontrado." };
       }
       
-      // Validação simplificada para o MVP. Em produção real deveríamos usar bycrypt.
-      // Aqui estamos simulando que a senha do banco bate.
       if (data.senha_hash !== senha_plana) {
          return { sucesso: false, mensagem: "Senha incorreta." };
       }
@@ -62,6 +75,34 @@ export const comercioService = {
 
   // Produtos
   async getProdutosPorProdutor(produtorId: string): Promise<ComercioProduto[]> {
+    // MOCK PARA APRESENTAÇÃO SIMPECAL
+    if (produtorId === 'mock-prod-1') {
+      return [
+        {
+          id: 'mock-1',
+          produtor_id: 'mock-prod-1',
+          cidade_slug: 'caatiba',
+          nome: 'Chocolate Artesanal (70% Cacau)',
+          descricao: 'Delicioso chocolate artesanal produzido pelas famílias do distrito de Serra Pelada II.',
+          preco: 15.00,
+          unidade: 'barra',
+          imagem_url: '',
+          ativo: true
+        },
+        {
+          id: 'mock-2',
+          produtor_id: 'mock-prod-1',
+          cidade_slug: 'caatiba',
+          nome: 'Licor de Jenipapo',
+          descricao: 'Licor tradicional produzido com frutos selecionados da região de Serra Pelada II.',
+          preco: 25.50,
+          unidade: 'garrafa',
+          imagem_url: '',
+          ativo: true
+        }
+      ];
+    }
+
     const { data, error } = await supabase
       .from('comercio_produtos')
       .select('*')
