@@ -1,20 +1,40 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Plus, Sprout, Bug, CloudRain, NotebookPen, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export default function CadernoCampoPage() {
+  const router = useRouter();
+
   // MOCK DATA for pilot UI
   const unidadesProdutivas = [
     { id: 1, nome: "Agroindústria Familiar (Mata)", tipo: "Processamento", tamanho: "N/A", status: "Em Operação" },
     { id: 2, nome: "Pomar de Jenipapo", tipo: "Fruticultura", tamanho: "1 hectare", status: "Saudável" },
   ];
 
-  const registrosProducao = [
+  const [registrosProducao, setRegistrosProducao] = useState([
     { id: 1, cultura: "Chocolate Artesanal (70% Cacau)", unidade: "Agroindústria Familiar", plantio: "Jul 2026", previsaoColheita: "Lote Semanal", estimativa: "200 barras", status: "em andamento" },
     { id: 2, cultura: "Licor de Jenipapo", unidade: "Pomar de Jenipapo", plantio: "Jan 2026", previsaoColheita: "Dez 2026", estimativa: "150 garrafas", status: "em andamento" },
-  ];
+  ]);
+
+  const handleRegistrarPerda = (id: number) => {
+    const motivo = window.prompt("Qual foi o motivo da perda na produção? (Ex: Praga, Seca, Problema na máquina)");
+    if (motivo) {
+      setRegistrosProducao(prev => prev.map(r => r.id === id ? { ...r, status: `Perda: ${motivo}` } : r));
+      alert("Perda registrada com sucesso. A Secretaria de Agricultura e a ATER serão notificadas.");
+    }
+  };
+
+  const handleTransformarLote = (id: number) => {
+    const quantidade = window.prompt("Qual quantidade você quer disponibilizar na Vitrine Pública para venda?");
+    if (quantidade) {
+      setRegistrosProducao(prev => prev.map(r => r.id === id ? { ...r, status: 'enviado para vitrine' } : r));
+      alert(`Lote de ${quantidade} gerado com sucesso! Redirecionando para a Vitrine...`);
+      router.push('/produtor/ofertas');
+    }
+  };
 
   return (
     <div className="space-y-8 max-w-5xl">
@@ -103,8 +123,8 @@ export default function CadernoCampoPage() {
                 </div>
                 
                 <div className="mt-4 flex gap-2">
-                   <Button variant="outline" size="sm" className="rounded-xl text-xs flex-1">Registrar Perda</Button>
-                   <Button size="sm" className="rounded-xl text-xs bg-emerald-500 hover:bg-emerald-600 text-white flex-1 shadow-sm">Transformar em Lote (Vitrine)</Button>
+                   <Button variant="outline" size="sm" className="rounded-xl text-xs flex-1" onClick={() => handleRegistrarPerda(reg.id)}>Registrar Perda</Button>
+                   <Button size="sm" className="rounded-xl text-xs bg-emerald-500 hover:bg-emerald-600 text-white flex-1 shadow-sm" onClick={() => handleTransformarLote(reg.id)}>Transformar em Lote (Vitrine)</Button>
                 </div>
               </div>
             ))}
