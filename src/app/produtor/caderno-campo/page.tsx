@@ -9,15 +9,28 @@ export default function CadernoCampoPage() {
   const router = useRouter();
 
   // MOCK DATA for pilot UI
-  const unidadesProdutivas = [
+  const [unidadesProdutivas, setUnidadesProdutivas] = useState([
     { id: 1, nome: "Agroindústria Familiar (Mata)", tipo: "Processamento", tamanho: "N/A", status: "Em Operação" },
     { id: 2, nome: "Pomar de Jenipapo", tipo: "Fruticultura", tamanho: "1 hectare", status: "Saudável" },
-  ];
+  ]);
 
   const [registrosProducao, setRegistrosProducao] = useState([
     { id: 1, cultura: "Chocolate Artesanal (70% Cacau)", unidade: "Agroindústria Familiar", plantio: "Jul 2026", previsaoColheita: "Lote Semanal", estimativa: "200 barras", status: "em andamento" },
     { id: 2, cultura: "Licor de Jenipapo", unidade: "Pomar de Jenipapo", plantio: "Jan 2026", previsaoColheita: "Dez 2026", estimativa: "150 garrafas", status: "em andamento" },
   ]);
+
+  const handleNovaUnidade = () => {
+    const nome = window.prompt("Qual o nome da nova Unidade Produtiva? (Ex: Horta de Fundo de Quintal)");
+    if (nome) {
+      const tipo = window.prompt("Qual a atividade principal dessa unidade? (Ex: Olericultura)");
+      setUnidadesProdutivas(prev => [{ id: Date.now(), nome, tipo: tipo || "Geral", tamanho: "A definir", status: "Em Implantação" }, ...prev]);
+      alert("Unidade produtiva cadastrada com sucesso!");
+    }
+  };
+
+  const handleRegistrarManejo = () => {
+    alert("Aqui abrirá o formulário detalhado do Caderno de Campo.\n\nNa versão final, você poderá registrar:\n- Uso de Insumos\n- Podas/Adubação\n- Relatórios Fotográficos para a ATER.");
+  };
 
   const handleRegistrarPerda = (id: number) => {
     const motivo = window.prompt("Qual foi o motivo da perda na produção? (Ex: Praga, Seca, Problema na máquina)");
@@ -44,11 +57,11 @@ export default function CadernoCampoPage() {
           <p className="text-slate-500 font-medium mt-1">Gestão da produção, unidades e anotações fitossanitárias.</p>
         </div>
         <div className="flex gap-2">
-          <Button className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl">
+          <Button className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl" onClick={handleNovaUnidade}>
             <Plus className="w-4 h-4 mr-2" />
             Nova Unidade
           </Button>
-          <Button variant="outline" className="rounded-xl text-emerald-600 border-emerald-200 hover:bg-emerald-50">
+          <Button variant="outline" className="rounded-xl text-emerald-600 border-emerald-200 hover:bg-emerald-50" onClick={handleRegistrarManejo}>
             <NotebookPen className="w-4 h-4 mr-2" />
             Registrar Manejo
           </Button>
