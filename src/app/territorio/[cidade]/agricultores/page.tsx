@@ -25,7 +25,45 @@ export default function AgricultoresPage() {
     const loadData = async () => {
       setIsLoading(true);
       // Fetch direct city products
-      const cityProducts = await comercioService.getProdutosPorCidade(citySlug);
+      let cityProducts = await comercioService.getProdutosPorCidade(citySlug);
+
+      // MOCK PARA APRESENTAÇÃO SIMPECAL - CAATIBA
+      if (citySlug === 'caatiba') {
+        const mockProducts = [
+          {
+            id: 'mock-1',
+            produtor_id: 'mock-prod-1',
+            cidade_slug: 'caatiba',
+            nome: 'Chocolate Artesanal (70% Cacau)',
+            descricao: 'Delicioso chocolate artesanal produzido pelas famílias do distrito de Serra Pelada II.',
+            preco: 15.00,
+            unidade: 'barra',
+            imagem_url: '',
+            status: 'ativo',
+            comercio_perfis: {
+              nome: 'Produtores de Serra Pelada II',
+              telefone: '77988889999'
+            }
+          },
+          {
+            id: 'mock-2',
+            produtor_id: 'mock-prod-1',
+            cidade_slug: 'caatiba',
+            nome: 'Licor de Jenipapo',
+            descricao: 'Licor tradicional produzido com frutos selecionados da região de Serra Pelada II.',
+            preco: 25.50,
+            unidade: 'garrafa',
+            imagem_url: '',
+            status: 'ativo',
+            comercio_perfis: {
+              nome: 'Produtores de Serra Pelada II',
+              telefone: '77988889999'
+            }
+          }
+        ];
+        cityProducts = [...cityProducts, ...mockProducts];
+      }
+
       setProducts(cityProducts as ProdutoVitrine[]);
 
       // If empty, fetch nearby cities
@@ -136,7 +174,9 @@ export default function AgricultoresPage() {
           </div>
           <h1 className="text-5xl font-black uppercase tracking-tighter text-slate-800 mb-6 leading-[0.9]">
             Vitrine <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-primary">Solidária</span>
-            <br/><span className="text-3xl text-slate-400">{city.name}</span>
+            <br/><span className="text-3xl text-slate-400">
+              {city.name} {city.slug === 'caatiba' && <span className="text-xl"> (Distrito de Serra Pelada II)</span>}
+            </span>
           </h1>
           <p className="text-lg text-slate-500 font-medium leading-relaxed max-w-2xl">
             Compre diretamente dos agricultores familiares locais. Você negocia via WhatsApp sem intermediários e fortalece a economia da região.

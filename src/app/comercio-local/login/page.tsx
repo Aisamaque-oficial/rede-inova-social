@@ -129,10 +129,15 @@ export default function ComercioLoginPage() {
               </Button>
               
               <div className="mt-6 text-center border-t border-slate-100 pt-6">
-                <p className="text-sm font-medium text-slate-500 mb-2">Ainda não expõe seus produtos?</p>
-                <Link href="/comercio-local/cadastro" className="text-primary font-bold text-sm hover:underline flex items-center justify-center gap-2">
-                    Criar conta de Produtor gratuitamente
-                </Link>
+                <p className="text-sm font-medium text-slate-500 mb-2">Ainda não tem acesso ao painel?</p>
+                <a 
+                    href="https://wa.me/5577991726710?text=Ol%C3%A1%21%20Sou%20produtor%20e%20gostaria%20de%20solicitar%20meu%20acesso%20%C3%A0%20Vitrine%20Solid%C3%A1ria."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary font-bold text-sm hover:underline flex items-center justify-center gap-2 bg-primary/5 py-3 rounded-xl transition-colors hover:bg-primary/10"
+                >
+                    Solicite seu cadastro com a Coordenação
+                </a>
               </div>
             </form>
           </div>
