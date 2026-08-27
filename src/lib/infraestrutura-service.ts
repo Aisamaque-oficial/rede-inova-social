@@ -151,6 +151,14 @@ export const infraestruturaService = {
     return !error;
   },
 
+  async updateLote(id: string, updates: Partial<InfraLoteOferta>): Promise<boolean> {
+    const { error } = await supabase.from('infra_lotes_oferta').update(updates).eq('id', id);
+    if (error) {
+      console.error("Erro ao atualizar lote:", error);
+    }
+    return !error;
+  },
+
   // ==========================================
   // CATÁLOGO GLOBAL
   // ==========================================
@@ -158,6 +166,25 @@ export const infraestruturaService = {
   async getCategorias(): Promise<InfraCategoria[]> {
     const { data, error } = await supabase.from('infra_categorias').select('*').order('ordem', { ascending: true });
     return error ? [] : (data as InfraCategoria[]);
+  },
+
+  async getVitrineLotes(cidadeSlug: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('infra_lotes_oferta')
+      .select(`
+        *,
+        produto_base:infra_produtos_base(*),
+        perfil:infra_perfis!inner(*)
+      `)
+      .eq('status', 'ativo')
+      .eq('perfil.cidade_slug', cidadeSlug)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error("Erro ao buscar lotes da vitrine:", error);
+      return [];
+    }
+    return data;
   },
 
   async getProdutosBasePorCategoria(categoriaId: string): Promise<InfraProdutoBase[]> {

@@ -1,22 +1,39 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Leaf, Search, MapPin, Star, Filter, MessageCircle, Coffee, Wheat, Carrot, Apple, Hexagon, Milk, Egg, Beef, Droplets, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Leaf, Search, MapPin, Star, Filter, MessageCircle, Coffee, Wheat, Carrot, Apple, Hexagon, Milk, Egg, Beef, Droplets, ChevronRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { infraestruturaService, InfraCategoria } from '@/lib/infraestrutura-service';
+
+// Mapa de ícones
+const iconMap: Record<string, any> = {
+  Wheat: Wheat,
+  Leaf: Leaf,
+  Carrot: Carrot,
+  Apple: Apple,
+  Coffee: Coffee,
+  Hexagon: Hexagon,
+  Milk: Milk,
+  Egg: Egg,
+  Beef: Beef,
+  Droplets: Droplets
+};
 
 export default function AgricultoresPage({ params }: { params: { cidade: string } }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
   
+  const [categorias, setCategorias] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   // Format city name
   const cidadeFormatada = params.cidade
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 
-  // MOCK DATA PARA APRESENTAÇÃO DO SIMPECAL
+  // Para o protótipo, vamos manter o destaque manual se for caatiba
   let produtorDestaque = null;
-
   if (params.cidade === 'caatiba') {
     produtorDestaque = {
       nome: "Produtores de Serra Pelada II",
@@ -25,83 +42,48 @@ export default function AgricultoresPage({ params }: { params: { cidade: string 
     };
   }
 
-  // All 10 categories requested by the user
-  const categoriasMock = [
-    {
-      nome: "Grãos, cereais e leguminosas",
-      icone: Wheat,
-      produtos: []
-    },
-    {
-      nome: "Raízes, tubérculos e derivados",
-      icone: Leaf,
-      produtos: []
-    },
-    {
-      nome: "Hortaliças e verduras",
-      icone: Carrot,
-      produtos: []
-    },
-    {
-      nome: "Frutas",
-      icone: Apple,
-      produtos: []
-    },
-    {
-      nome: "Café, cacau e derivados",
-      icone: Coffee,
-      produtos: params.cidade === 'caatiba' ? [
-        {
-          id: 1,
-          nome: "Chocolate Artesanal (70% Cacau)",
-          descricao: "Produzido com amêndoas selecionadas da cabruca de Serra Pelada II.",
-          preco: "R$ 15,00",
-          unidade: "barra",
-          produtor: "Associação Serra Pelada II",
-          whatsapp: "5577991726710"
-        }
-      ] : []
-    },
-    {
-      nome: "Mel e produtos das abelhas",
-      icone: Hexagon,
-      produtos: []
-    },
-    {
-      nome: "Leite e derivados",
-      icone: Milk,
-      produtos: []
-    },
-    {
-      nome: "Ovos e origem animal",
-      icone: Egg,
-      produtos: []
-    },
-    {
-      nome: "Carnes e derivados",
-      icone: Beef,
-      produtos: []
-    },
-    {
-      nome: "Polpas, sucos e bebidas",
-      icone: Droplets,
-      produtos: params.cidade === 'caatiba' ? [
-        {
-          id: 2,
-          nome: "Licor de Jenipapo",
-          descricao: "Receita tradicional com frutas nativas da região. Perfeito para festas.",
-          preco: "R$ 25,50",
-          unidade: "garrafa",
-          produtor: "Associação Serra Pelada II",
-          whatsapp: "5577991726710"
-        }
-      ] : []
-    }
-  ];
+  useEffect(() => {
+    async function loadData() {
+      setLoading(true);
+      try {
+        const [cats, lotes] = await Promise.all([
+          infraestruturaService.getCategorias(),
+          infraestruturaService.getVitrineLotes(params.cidade)
+        ]);
 
-  const categoriasComFiltro = categoriasMock.map(cat => ({
+        // Agrupar lotes por categoria
+        const categoriasEstruturadas = cats.map(cat => {
+          // Filtrar os lotes que pertencem a esta categoria
+          const lotesDaCat = lotes.filter(lote => lote.produto_base?.categoria_id === cat.id);
+          
+          return {
+            ...cat,
+            iconeComponent: iconMap[cat.icone || 'Leaf'] || Leaf,
+            produtos: lotesDaCat.map(lote => ({
+              id: lote.id,
+              nome: lote.produto_base?.nome || 'Desconhecido',
+              descricao: lote.produto_base?.descricao || '',
+              preco: `R$ ${Number(lote.preco_venda).toFixed(2).replace('.', ',')}`,
+              unidade: lote.unidade_venda,
+              produtor: lote.perfil?.nome_completo || 'Produtor',
+              whatsapp: lote.perfil?.telefone || ''
+            }))
+          };
+        });
+
+        setCategorias(categoriasEstruturadas);
+      } catch (error) {
+        console.error("Erro ao carregar dados da vitrine:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, [params.cidade]);
+
+  const categoriasComFiltro = categorias.map(cat => ({
     ...cat,
-    produtos: cat.produtos.filter(p => p.nome.toLowerCase().includes(searchTerm.toLowerCase()))
+    produtos: cat.produtos.filter((p: any) => p.nome.toLowerCase().includes(searchTerm.toLowerCase()))
   })).filter(cat => cat.produtos.length > 0 || searchTerm === '');
 
   return (
@@ -176,7 +158,12 @@ export default function AgricultoresPage({ params }: { params: { cidade: string 
 
           {/* Grid Principal */}
           <div className="flex-1">
-            {!categoriaSelecionada ? (
+            {loading ? (
+              <div className="flex justify-center items-center py-20">
+                <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+                <span className="ml-3 text-slate-500 font-medium">Carregando produtores locais...</span>
+              </div>
+            ) : !categoriaSelecionada ? (
               // MODO 1: MOSTRAR GRID DE CATEGORIAS (Professional Layout)
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
@@ -186,7 +173,7 @@ export default function AgricultoresPage({ params }: { params: { cidade: string 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {categoriasComFiltro.map((categoria, idx) => {
                     const totalProdutos = categoria.produtos.length;
-                    const Icon = categoria.icone;
+                    const Icon = categoria.iconeComponent;
                     const temProduto = totalProdutos > 0;
                     
                     return (
@@ -228,7 +215,7 @@ export default function AgricultoresPage({ params }: { params: { cidade: string 
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                   {categoriasComFiltro
                     .find(c => c.nome === categoriaSelecionada)
-                    ?.produtos.map((produto) => (
+                    ?.produtos.map((produto: any) => (
                       <div key={produto.id} className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row overflow-hidden transition-all hover:shadow-md">
                         <div className="p-6 flex-1 flex flex-col justify-between">
                           <div>
@@ -251,7 +238,7 @@ export default function AgricultoresPage({ params }: { params: { cidade: string 
                               className="bg-slate-900 hover:bg-slate-800 text-white rounded-lg shadow-sm"
                               onClick={() => {
                                 const msg = encodeURIComponent(`Olá! Vi o produto ${produto.nome} na Vitrine de ${cidadeFormatada} e gostaria de fazer um pedido.`);
-                                window.open(`https://wa.me/${produto.whatsapp}?text=${msg}`, '_blank');
+                                window.open(`https://wa.me/${produto.whatsapp.replace(/\D/g, '')}?text=${msg}`, '_blank');
                               }}
                             >
                               <MessageCircle className="w-4 h-4 mr-2" />

@@ -2,6 +2,17 @@
 -- REDE INOVA SOCIAL - INFRAESTRUTURA DIGITAL TERRITORIAL
 -- ==========================================
 
+-- LIMPEZA DE TABELAS EXISTENTES (Evita erro de 'already exists')
+DROP TABLE IF EXISTS public.infra_pedidos CASCADE;
+DROP TABLE IF EXISTS public.infra_lotes_oferta CASCADE;
+DROP TABLE IF EXISTS public.infra_registros_producao CASCADE;
+DROP TABLE IF EXISTS public.infra_unidades_produtivas CASCADE;
+DROP TABLE IF EXISTS public.infra_perfil_selos CASCADE;
+DROP TABLE IF EXISTS public.infra_selos CASCADE;
+DROP TABLE IF EXISTS public.infra_perfis CASCADE;
+DROP TABLE IF EXISTS public.infra_produtos_base CASCADE;
+DROP TABLE IF EXISTS public.infra_categorias CASCADE;
+
 -- 1. CATÁLOGO GLOBAL (Gerenciado pela Administração)
 CREATE TABLE public.infra_categorias (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
