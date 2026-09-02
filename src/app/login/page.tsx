@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
-import { dataService } from "@/lib/data-service";
+import { supabase } from "@/lib/supabase";
 const logoPath = "/images/redeinova.png";
 const logoCnpqPath = "/images/cnpq2.png";
 import { formatarCPF, validarCPF } from "@/lib/auth";
@@ -55,24 +55,52 @@ export default function LoginPage() {
         return;
       }
 
-      const resultado = await dataService.fazerLogin(cpfOuEmail, senha);
+      // 1. Supabase Auth Login
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: cpfOuEmail, // Pode precisar ajustar se usar CPF, mas por enquanto vamos usar e-mail
+        password: senha,
+      });
 
-      if (resultado.sucesso && resultado.usuario) {
-        setUsuarioLogado(resultado.usuario);
-        
-        const firstName = resultado.usuario?.nomeCompleto?.split(' ')[0] || "Membro";
-        
-        toast({
-          title: "Acesso Autorizado",
-          description: `Bem-vindo de volta, ${firstName}!`,
-        });
-
-        setTimeout(() => {
-          router.push("/painel/dashboard");
-        }, 2000);
-      } else {
-        setErro(resultado.mensagem || "Credenciais incorretas.");
+      if (authError || !authData.user) {
+        setErro(authError?.message || "Credenciais incorretas.");
+        setIsLoading(false);
+        return;
       }
+
+      // 2. Buscar o perfil para saber o tipo e redirecionar corretamente
+      const { data: perfilData, error: perfilError } = await supabase
+        .from('infra_perfis')
+        .select('*')
+        .eq('id', authData.user.id)
+        .single();
+
+      if (perfilError || !perfilData) {
+        // Se der erro ao buscar o perfil, pode ser um admin legado, fallback para painel antigo
+        setUsuarioLogado({ nomeCompleto: 'Admin' });
+        toast({ title: "Acesso Autorizado", description: "Bem-vindo de volta!" });
+        setTimeout(() => router.push("/painel/dashboard"), 2000);
+        return;
+      }
+
+      setUsuarioLogado(perfilData);
+      const firstName = perfilData.nome_completo?.split(' ')[0] || "Usuário";
+      
+      toast({
+        title: "Acesso Autorizado",
+        description: `Bem-vindo de volta, ${firstName}!`,
+      });
+
+      // 3. Redirecionamento Baseado no Tipo de Perfil
+      setTimeout(() => {
+        if (perfilData.tipo_perfil === 'secretaria' || perfilData.tipo_perfil === 'admin') {
+          router.push("/comercio-local/secretaria");
+        } else if (perfilData.tipo_perfil === 'produtor') {
+          router.push("/produtor/caderno-campo");
+        } else {
+          router.push("/"); // Fallback
+        }
+      }, 2000);
+
     } catch (error) {
       setErro("Ocorreu um erro ao processar seu login. Tente novamente.");
     } finally {

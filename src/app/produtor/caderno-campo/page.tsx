@@ -5,22 +5,21 @@ import { Plus, Sprout, Bug, CloudRain, NotebookPen, MapPin, Loader2 } from 'luci
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { infraestruturaService, InfraUnidadeProdutiva, InfraRegistroProducao } from '@/lib/infraestrutura-service';
-
-// Para fins de teste e piloto, usamos o ID do produtor de Caatiba inserido no Seed
-const PERFIL_CAATIBA_ID = 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function CadernoCampoPage() {
   const router = useRouter();
+  const { profile, loading: authLoading } = useAuth(true);
 
   const [unidadesProdutivas, setUnidadesProdutivas] = useState<InfraUnidadeProdutiva[]>([]);
   const [registrosProducao, setRegistrosProducao] = useState<InfraRegistroProducao[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const carregarDados = async () => {
+  const carregarDados = async (perfilId: string) => {
     setLoading(true);
     try {
-      const unidades = await infraestruturaService.getUnidadesProdutivas(PERFIL_CAATIBA_ID);
-      const registros = await infraestruturaService.getRegistrosProducao(PERFIL_CAATIBA_ID);
+      const unidades = await infraestruturaService.getUnidadesProdutivas(perfilId);
+      const registros = await infraestruturaService.getRegistrosProducao(perfilId);
       setUnidadesProdutivas(unidades);
       setRegistrosProducao(registros);
     } catch (error) {
@@ -31,24 +30,29 @@ export default function CadernoCampoPage() {
   };
 
   useEffect(() => {
-    carregarDados();
-  }, []);
+    if (profile && profile.tipo_perfil === "produtor") {
+      carregarDados(profile.id);
+    } else if (profile && profile.tipo_perfil !== "produtor") {
+      router.push("/");
+    }
+  }, [profile, router]);
 
   const handleNovaUnidade = async () => {
+    if (!profile) return;
     const nome = window.prompt("Qual o nome da nova Unidade Produtiva? (Ex: Horta de Fundo de Quintal)");
     if (nome) {
       const tamanhoStr = window.prompt("Qual o tamanho estimado em hectares? (Ex: 1.5, deixe em branco se não souber)");
       const tamanho = tamanhoStr ? parseFloat(tamanhoStr) : undefined;
       
       const nova = await infraestruturaService.addUnidadeProdutiva({
-        perfil_id: PERFIL_CAATIBA_ID,
+        perfil_id: profile.id,
         nome,
         tamanho_hectares: tamanho
       });
 
       if (nova) {
         alert("Unidade produtiva cadastrada com sucesso!");
-        carregarDados(); // Recarrega os dados do banco
+        carregarDados(profile.id); // Recarrega os dados do banco
       } else {
         alert("Erro ao cadastrar unidade produtiva.");
       }

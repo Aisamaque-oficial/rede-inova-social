@@ -28,7 +28,7 @@ export default function ProdutorLayout({ children }: { children: React.ReactNode
 
   const handleLogout = () => {
     localStorage.removeItem("comercio_user");
-    router.push("/comercio-local/login");
+    router.push("/login");
   };
 
   return (

@@ -4,18 +4,19 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Store, Tag, AlertCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { infraestruturaService, InfraLoteOferta } from '@/lib/infraestrutura-service';
-
-// Para fins de teste e piloto, usamos o ID do produtor de Caatiba inserido no Seed
-const PERFIL_CAATIBA_ID = 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee';
+import { useAuth } from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
 
 export default function OfertasPage() {
+  const router = useRouter();
+  const { profile, loading: authLoading } = useAuth(true);
   const [lotes, setLotes] = useState<InfraLoteOferta[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const carregarLotes = async () => {
+  const carregarLotes = async (perfilId: string) => {
     setLoading(true);
     try {
-      const data = await infraestruturaService.getLotes(PERFIL_CAATIBA_ID);
+      const data = await infraestruturaService.getLotes(perfilId);
       setLotes(data);
     } catch (error) {
       console.error("Erro ao carregar lotes", error);
@@ -25,8 +26,12 @@ export default function OfertasPage() {
   };
 
   useEffect(() => {
-    carregarLotes();
-  }, []);
+    if (profile && profile.tipo_perfil === "produtor") {
+      carregarLotes(profile.id);
+    } else if (profile && profile.tipo_perfil !== "produtor") {
+      router.push("/");
+    }
+  }, [profile, router]);
 
   const handleEditPreco = async (id: string, precoAtual: number) => {
     const novoPreco = window.prompt("Digite o novo preço (use ponto para centavos, ex: 16.50):", precoAtual.toString());
@@ -34,7 +39,7 @@ export default function OfertasPage() {
       const success = await infraestruturaService.updateLote(id, { preco_venda: Number(novoPreco) });
       if (success) {
         alert("Preço atualizado com sucesso na vitrine!");
-        carregarLotes();
+        if (profile) carregarLotes(profile.id);
       } else {
         alert("Erro ao atualizar preço.");
       }
@@ -45,7 +50,7 @@ export default function OfertasPage() {
     const novoStatus = statusAtual === 'ativo' ? 'pausado' : 'ativo';
     const success = await infraestruturaService.updateLote(id, { status: novoStatus });
     if (success) {
-      carregarLotes();
+      if (profile) carregarLotes(profile.id);
     }
   };
 

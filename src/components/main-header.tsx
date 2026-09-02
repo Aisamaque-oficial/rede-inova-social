@@ -120,7 +120,7 @@ export default function MainHeader() {
                                 asChild 
                                 className="rounded-full shadow-sm hover:scale-105 transition-all border-emerald-200 text-emerald-700 hover:bg-emerald-50 px-6"
                             >
-                                <Link href="/comercio-local/login" aria-label="Acessar painel do agricultor familiar">
+                                <Link href="/login" aria-label="Acessar painel do agricultor familiar">
                                     Painel do Produtor
                                 </Link>
                             </Button>
@@ -155,7 +155,7 @@ export default function MainHeader() {
                             asChild 
                             className="rounded-full text-xs h-9 border-emerald-200 text-emerald-700 hover:bg-emerald-50 hidden sm:flex"
                         >
-                            <Link href="/comercio-local/login">Produtor</Link>
+                            <Link href="/login">Produtor</Link>
                         </Button>
                          <Button 
                             variant="default" 

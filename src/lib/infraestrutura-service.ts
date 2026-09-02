@@ -194,5 +194,25 @@ export const infraestruturaService = {
       .eq('categoria_id', categoriaId)
       .order('nome', { ascending: true });
     return error ? [] : (data as InfraProdutoBase[]);
+  },
+
+  async getMetricasSecretaria(cidadeSlug: string) {
+    const { data: produtores } = await supabase
+        .from('infra_perfis')
+        .select('*')
+        .eq('cidade_slug', cidadeSlug)
+        .eq('tipo_perfil', 'produtor');
+        
+    const { data: produtos } = await supabase
+        .from('infra_lotes_oferta')
+        .select('*, perfil:infra_perfis!inner(*)')
+        .eq('perfil.cidade_slug', cidadeSlug)
+        .eq('status', 'ativo');
+        
+    return {
+        totalProdutores: produtores?.length || 0,
+        totalProdutosAtivos: produtos?.length || 0,
+        totalCliques: 0 // Simplificado para MVP
+    };
   }
 };
