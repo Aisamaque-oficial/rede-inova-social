@@ -40,9 +40,9 @@ export async function middleware(request: NextRequest) {
     if (request.nextUrl.pathname.startsWith('/api/')) {
       return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 })
     }
-    // no user, redirect to login
+    // no user, redirect to comercio-local login
     const url = request.nextUrl.clone()
-    url.pathname = '/login'
+    url.pathname = '/comercio-local/login'
     return NextResponse.redirect(url)
   }
 

@@ -31,13 +31,19 @@ export function useAuth(requireAuth = true) {
             
           setProfile(perfil);
         } else if (requireAuth && mounted) {
-          // If auth is required but no session exists, redirect to login
-          router.push('/login');
+          // If auth is required but no session exists, redirect to proper login
+          const target = (pathname?.startsWith('/produtor') || pathname?.startsWith('/comercio-local'))
+            ? '/comercio-local/login'
+            : '/login';
+          router.push(target);
         }
       } catch (e) {
         console.error("Auth error:", e);
         if (requireAuth && mounted) {
-          router.push('/login');
+          const target = (pathname?.startsWith('/produtor') || pathname?.startsWith('/comercio-local'))
+            ? '/comercio-local/login'
+            : '/login';
+          router.push(target);
         }
       } finally {
         if (mounted) setLoading(false);
@@ -60,7 +66,10 @@ export function useAuth(requireAuth = true) {
       } else {
         setProfile(null);
         if (requireAuth) {
-          router.push('/login');
+          const target = (pathname?.startsWith('/produtor') || pathname?.startsWith('/comercio-local'))
+            ? '/comercio-local/login'
+            : '/login';
+          router.push(target);
         }
       }
       setLoading(false);

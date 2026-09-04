@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Leaf, LogOut, Menu, X, LayoutDashboard, NotebookPen, Store, Package, Settings, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/lib/supabase';
 
 export default function ProdutorLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -26,9 +27,9 @@ export default function ProdutorLayout({ children }: { children: React.ReactNode
     { name: 'Perfil da Propriedade', href: '/produtor/perfil', icon: Settings },
   ];
 
-  const handleLogout = () => {
-    localStorage.removeItem("comercio_user");
-    router.push("/login");
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/comercio-local/login");
   };
 
   return (

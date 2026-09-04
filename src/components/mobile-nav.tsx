@@ -63,11 +63,18 @@ export function MobileNav() {
                 </Link>
             ))}
              <Link
+                href="/comercio-local/login"
+                onClick={() => setOpen(false)}
+                className="text-emerald-400 font-semibold pt-4"
+            >
+                Painel do Produtor
+            </Link>
+             <Link
                 href="/login"
                 onClick={() => setOpen(false)}
-                className="text-sidebar-foreground font-semibold pt-4"
+                className="text-sidebar-foreground font-semibold"
             >
-                Acessar Painel
+                Painel da Equipe
             </Link>
         </div>
       </SheetContent>

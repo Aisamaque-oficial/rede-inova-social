@@ -36,7 +36,7 @@ export default function SecretariaDashboard() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    router.push("/login");
+    router.push("/comercio-local/login");
   };
 
   const handleCadastrarProdutor = async (e: React.FormEvent) => {

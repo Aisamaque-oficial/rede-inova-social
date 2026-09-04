@@ -1,0 +1,163 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Leaf, LogIn, Lock, Mail, Store, AlertCircle, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/lib/supabase";
+import Link from "next/link";
+
+export default function ComercioLoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      // Autenticação oficial via Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password: senha,
+      });
+
+      if (authError || !authData.user) {
+        setError("E-mail ou senha incorretos. Verifique suas credenciais.");
+        setLoading(false);
+        return;
+      }
+
+      // Busca perfil no banco de dados
+      const { data: perfil, error: perfilError } = await supabase
+        .from("infra_perfis")
+        .select("*")
+        .eq("id", authData.user.id)
+        .single();
+
+      if (perfil?.tipo_perfil === "secretaria" || perfil?.tipo_perfil === "admin") {
+        router.push("/comercio-local/secretaria");
+      } else if (perfil?.tipo_perfil === "produtor") {
+        router.push("/produtor/caderno-campo");
+      } else {
+        // Se ainda não tiver perfil definido ou for produtor
+        router.push("/produtor/caderno-campo");
+      }
+    } catch (err: any) {
+      console.error("Erro no login:", err);
+      setError("Ocorreu um erro ao conectar ao servidor. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[#f5f4f0] relative overflow-hidden">
+      {/* Background Decor */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] -translate-y-1/4 translate-x-1/4" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-600/10 rounded-full blur-[100px] translate-y-1/4 -translate-x-1/4" />
+      </div>
+
+      <div className="w-full max-w-5xl mx-auto p-4 z-10 flex flex-col md:flex-row items-center gap-12">
+        {/* Left Side: Brand & Context */}
+        <div className="flex-1 text-center md:text-left space-y-6">
+          <Link href="/" className="inline-flex items-center text-sm font-bold text-slate-400 hover:text-primary transition-colors mb-4">
+             <ArrowLeft className="w-4 h-4 mr-2" />
+             Voltar para o site Principal
+          </Link>
+          <div className="inline-flex items-center justify-center md:justify-start gap-3 bg-white px-4 py-2 rounded-2xl shadow-sm border border-slate-100">
+            <Store className="w-6 h-6 text-primary" />
+            <span className="font-black text-sm uppercase tracking-widest text-slate-700">Comércio Local</span>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-slate-800 leading-[0.9]">
+            Painel do <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">
+              Agricultor
+            </span>
+          </h1>
+          <p className="text-slate-600 font-medium text-lg max-w-md mx-auto md:mx-0">
+            Acesse o sistema para expor seus produtos na vitrine digital do seu município e gerenciar seus pedidos.
+          </p>
+        </div>
+
+        {/* Right Side: Login Card */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-md"
+        >
+          <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-2xl border border-white">
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl mx-auto flex items-center justify-center mb-4">
+                <Leaf className="w-8 h-8" />
+              </div>
+              <h2 className="text-2xl font-black uppercase tracking-tight text-slate-800">Acessar Conta</h2>
+              <p className="text-sm font-medium text-slate-500 mt-2">Para Produtores e Secretarias</p>
+            </div>
+
+            <form onSubmit={handleLogin} className="space-y-5">
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  {error}
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Seu e-mail cadastrado"
+                    className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-12 pr-4 text-slate-700 font-medium placeholder:text-slate-400 focus:ring-2 focus:ring-primary/20 transition-all"
+                    required
+                  />
+                </div>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <input
+                    type="password"
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
+                    placeholder="Sua senha"
+                    className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-12 pr-4 text-slate-700 font-medium placeholder:text-slate-400 focus:ring-2 focus:ring-primary/20 transition-all"
+                    required
+                  />
+                </div>
+              </div>
+
+              <Button 
+                type="submit" 
+                disabled={loading}
+                className="w-full bg-primary hover:bg-primary/90 text-white rounded-2xl py-6 font-bold uppercase tracking-wider text-sm transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-primary/20"
+              >
+                {loading ? "Autenticando..." : "Entrar no Sistema"}
+                {!loading && <LogIn className="w-4 h-4 ml-2" />}
+              </Button>
+              
+              <div className="mt-6 text-center border-t border-slate-100 pt-6">
+                <p className="text-sm font-medium text-slate-500 mb-2">Ainda não tem acesso ao painel?</p>
+                <a 
+                    href="https://wa.me/5577991726710?text=Ol%C3%A1%21%20Sou%20produtor%20e%20gostaria%20de%20solicitar%20meu%20acesso%20%C3%A0%20Vitrine%20Solid%C3%A1ria."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary font-bold text-sm hover:underline flex items-center justify-center gap-2 bg-primary/5 py-3 rounded-xl transition-colors hover:bg-primary/10"
+                >
+                    Solicite seu cadastro com a Coordenação
+                </a>
+              </div>
+            </form>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
