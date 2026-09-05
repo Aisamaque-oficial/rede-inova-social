@@ -1,14 +1,14 @@
-import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
 // Fallback para evitar erro de build quando as variáveis não estão no Vercel
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder-project.supabase.co';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://srlffddllhzzbzdnsfin.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_-l5XG7n6WC8rEboHQnFHtg_4CxvNYPj';
 
 if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
   console.warn('⚠️ NEXT_PUBLIC_SUPABASE_URL não configurada. Use as Variáveis de Ambiente da Vercel.');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
 
 /**
  * 📊 user_activity_logs Table Schema (SQL):

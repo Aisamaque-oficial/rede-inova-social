@@ -40,18 +40,15 @@ export default function ComercioLoginPage() {
         .eq("id", authData.user.id)
         .single();
 
-      if (perfil?.tipo_perfil === "secretaria" || perfil?.tipo_perfil === "admin") {
-        router.push("/comercio-local/secretaria");
-      } else if (perfil?.tipo_perfil === "produtor") {
-        router.push("/produtor/caderno-campo");
-      } else {
-        // Se ainda não tiver perfil definido ou for produtor
-        router.push("/produtor/caderno-campo");
-      }
+      const targetUrl = (perfil?.tipo_perfil === "secretaria" || perfil?.tipo_perfil === "admin")
+        ? "/comercio-local/secretaria"
+        : "/produtor/caderno-campo";
+
+      // Redirecionamento completo do navegador para propagar os cookies da sessão
+      window.location.href = targetUrl;
     } catch (err: any) {
       console.error("Erro no login:", err);
       setError("Ocorreu um erro ao conectar ao servidor. Tente novamente.");
-    } finally {
       setLoading(false);
     }
   };
