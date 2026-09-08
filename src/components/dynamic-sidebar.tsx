@@ -38,7 +38,8 @@ import {
   X,
   FileText,
   FolderArchive,
-  ShoppingBag
+  ShoppingBag,
+  FileSpreadsheet
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -150,6 +151,7 @@ export default function DynamicSidebar() {
           roles: ["admin", "coordinator", "member_editor", "member"]
       },
       { label: "Métricas do Território", icon: PieChart, href: "/painel/metricas-territorio", roles: ["admin", "coordinator"] },
+      { label: "Exportação & Relatórios", icon: FileSpreadsheet, href: "/painel/relatorios", roles: ["admin", "coordinator"] },
       { label: "Minhas Tarefas (Atribuídas)", icon: ClipboardList, href: "/minhas-tarefas", roles: ["admin", "coordinator", "member"] },
       { label: "Minhas Demandas (Solicitadas)", icon: Send, href: "/atividades/minhas-demandas", roles: ["admin", "coordinator", "member"] },
       { label: "Meus Produtos (Vitrine)", icon: ShoppingBag, href: "/painel/meus-produtos", roles: ["admin", "coordinator", "member", "member_editor"] }
