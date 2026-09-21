@@ -65,19 +65,6 @@ function GlossaryView({ isStudio }: LibrasSetorProps) {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <GlossaryFilters />
-      
-      <div className="grid lg:grid-cols-12 gap-12 items-start">
-        <div className="lg:col-span-5 space-y-8">
-          <GlossarySearch />
-        </div>
-        <div className="lg:col-span-7 sticky top-8">
-          <div className="bg-white rounded-[4rem] shadow-[0_50px_100px_rgba(0,0,0,0.08)] border border-primary/5 p-10 md:p-12 space-y-10 overflow-hidden relative">
-            <SignDisplay />
-            <TermDefinition />
-            <EmptyStateWrapper />
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
