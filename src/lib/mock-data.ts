@@ -7171,21 +7171,773 @@ export const librasPills: any[] = [
 
 export const librasTracks: any[] = [
   {
-    id: 'track-1',
-    title: 'Introdução à Mediação Científica',
-    description: 'Aprenda as bases da tradução de conceitos complexos.',
-    videoUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
-    questions: [
+    "id": "trilha-1",
+    "title": "Alimentação Saudável",
+    "subtitle": "O que nossas escolhas alimentares têm a ver com saúde, cultura e território?",
+    "description": "Entenda os princípios de uma alimentação adequada e saudável, valorizando comida de verdade e respeitando os saberes locais.",
+    "category": "Alimentação",
+    "duration": "12 min",
+    "stepsCount": 5,
+    "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+    "tags": [
+      "Comida de Verdade",
+      "Guia Alimentar",
+      "Nutrição",
+      "Cultura"
+    ],
+    "steps": [
       {
-        question: 'O que é um classificador na Libras?',
-        options: ['Um tipo de sinal icônico', 'Um recurso de dactilologia', 'Uma marca de plural'],
-        correct: 0
+        "stepNumber": 1,
+        "type": "video",
+        "title": "Etapa 1 — O que significa alimentação saudável?",
+        "subtitle": "Apresentação em Libras e conceitos estruturantes",
+        "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+        "content": "Alimentação adequada e saudável não é uma fórmula matemática nem contagem de calorias. Segundo o Guia Alimentar para a População Brasileira, comer bem envolve a escolha de alimentos in natura e minimamente processados, a valorização da culinária tradicional e a partilha da mesa com a família e a comunidade."
+      },
+      {
+        "stepNumber": 2,
+        "type": "concepts",
+        "title": "Etapa 2 — Conheça os Conceitos em Libras",
+        "subtitle": "Termos científicos selecionados do nosso Glossário",
+        "conceptTerms": [
+          {
+            "term": "Alimentação Saudável",
+            "codeId": "1A",
+            "definition": "Padrão alimentar adequado às necessidades biológicas e sociais dos indivíduos, respeitando fases da vida e culturas locais.",
+            "signStrategy": "Sinal composto: ALIMENTO + EQUILÍBRIO/SAÚDE + BEM-ESTAR com expressão corporal harmônica."
+          },
+          {
+            "term": "Comida de Verdade",
+            "codeId": "1B",
+            "definition": "Alimentos in natura ou minimamente processados, livres de aditivos industriais químicos, maquiagem de cor e conservantes sintéticos.",
+            "signStrategy": "Sinal enérgico de COMIDA PURA E GENUÍNA segurando raízes e frutos frescos."
+          },
+          {
+            "term": "Biodiversidade Alimentar",
+            "codeId": "1C",
+            "definition": "Variedade de espécies vegetais e animais utilizadas na alimentação humana, garantindo resiliência e riqueza de micronutrientes.",
+            "signStrategy": "Mãos espalhando dezenas de sementes e frutos nativos com grande amplitude no espaço de sinalização."
+          }
+        ]
+      },
+      {
+        "stepNumber": 3,
+        "type": "pill",
+        "title": "Etapa 3 — Minuto do Conhecimento",
+        "subtitle": "Pílula rápida em vídeo de 54 segundos",
+        "pill": {
+          "title": "Como Higienizar Vegetais e Frutas Corretamente",
+          "duration": "54 seg",
+          "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+          "supportText": "A água corrente retira poeira e sujidades físicas, mas somente a imersão em água clorada elimina bactérias e parasitas invisíveis.",
+          "practicalApp": "Mergulhar folhas em 1 litro de água com 1 colher de água sanitária própria para alimentos por 15 minutos."
+        }
+      },
+      {
+        "stepNumber": 4,
+        "type": "case",
+        "title": "Etapa 4 — Na Vida Real (Situação-Problema)",
+        "subtitle": "Aplicação prática dos determinantes alimentares",
+        "caseStudy": {
+          "context": "João compra quase todos os alimentos da sua família em um pequeno mercadinho do bairro. Lá há pouca variedade de alimentos frescos e a feira livre mais próxima fica a 4 km de distância, sem transporte público frequente.",
+          "question": "Alimentar-se bem depende somente da vontade e das escolhas individuais de João?",
+          "options": [
+            {
+              "id": "opt-1",
+              "text": "Sim. Se João se esforçar e tiver força de vontade, ele consegue comer saudável em qualquer lugar.",
+              "isCorrect": false,
+              "explanation": "Incorreto. A ciência demonstra que comer bem não é só uma decisão individual: o ambiente alimentar, a proximidade física de feiras e o custo dos alimentos determinam as escolhas possíveis."
+            },
+            {
+              "id": "opt-2",
+              "text": "Não. O acesso a alimentos saudáveis depende também do ambiente alimentar, da renda, da proximidade de feiras e do transporte no território.",
+              "isCorrect": true,
+              "explanation": "Correto! Esse fenômeno é estudado como 'deserto alimentar'. Ambientes com pouca oferta de feiras e excesso de ultraprocessados limitam a soberania alimentar das famílias."
+            }
+          ]
+        }
+      },
+      {
+        "stepNumber": 5,
+        "type": "territory",
+        "title": "Etapa 5 — O que acontece no seu território?",
+        "subtitle": "Aproximando conhecimento científico e realidade local",
+        "territoryReflection": {
+          "prompt": "Onde você mora, é fácil encontrar alimentos frescos, variados e a preços justos?",
+          "options": [
+            "Sim, temos feiras livres, hortas ou sacolões próximos.",
+            "Razoável, encontro alguns vegetais, mas os preços são elevados.",
+            "Difícil, predominam mercadinhos com biscoitos e ultraprocessados."
+          ],
+          "insight": "O LISSA mapeia essas disparidades territoriais para fortalecer a conexão com produtores locais e agricultores familiares da região."
+        }
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Qual é a recomendação de ouro do Guia Alimentar para a População Brasileira?",
+        "options": [
+          "Prefira alimentos in natura ou minimamente processados a alimentos ultraprocessados.",
+          "Corte totalmente os carboidratos e coma apenas suplementos industrializados.",
+          "Substitua todas as refeições por shakes e barras de proteína."
+        ],
+        "correct": 0,
+        "explanation": "A base da alimentação saudável deve ser composta por alimentos in natura e minimamente processados."
+      },
+      {
+        "question": "O que caracteriza uma situação de 'deserto alimentar'?",
+        "options": [
+          "Locais secos onde não chove há mais de um ano.",
+          "Bairros ou territórios onde há escassez de alimentos frescos e abundância de ultraprocessados.",
+          "Áreas de cultivo que foram abandonadas pelos agricultores."
+        ],
+        "correct": 1,
+        "explanation": "Desertos alimentares são regiões urbanas ou rurais com acesso precário a comida fresca e saudável."
+      },
+      {
+        "question": "Por que a água corrente sozinha não é suficiente para higienizar verduras consumidas cruas?",
+        "options": [
+          "Porque a água da torneira sempre estraga as folhas verdes.",
+          "Porque ela remove apenas a sujeira visível, sendo necessária a solução clorada para eliminar micróbios patogênicos.",
+          "Porque os vegetais devem ser sempre cozidos no fogo."
+        ],
+        "correct": 1,
+        "explanation": "A sanitização com solução clorada é imprescindível para inativar bactérias patogênicas e parasitas."
+      }
+    ]
+  },
+  {
+    "id": "trilha-2",
+    "title": "Segurança Alimentar e Nutricional",
+    "subtitle": "Acesso, disponibilidade, qualidade e direito humano à alimentação",
+    "description": "Compreenda a SAN como um direito universal de acesso regular e permanente a alimentos seguros e saudáveis.",
+    "category": "Segurança Alimentar",
+    "duration": "15 min",
+    "stepsCount": 5,
+    "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+    "tags": [
+      "SAN",
+      "Direito Humano",
+      "Inocuidade",
+      "Políticas Públicas"
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "type": "video",
+        "title": "Etapa 1 — Direito Humano à Alimentação Adequada",
+        "subtitle": "Apresentação em Libras e fundamentação legal",
+        "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+        "content": "A Segurança Alimentar e Nutricional (SAN) consiste na realização do direito de todos ao acesso regular e permanente a alimentos de qualidade, em quantidade suficiente, sem comprometer o acesso a outras necessidades essenciais."
+      },
+      {
+        "stepNumber": 2,
+        "type": "concepts",
+        "title": "Etapa 2 — Conceitos Fundamentais em Libras",
+        "subtitle": "Termos estruturantes do Glossário Científico",
+        "conceptTerms": [
+          {
+            "term": "Segurança Alimentar e Nutricional",
+            "codeId": "2A",
+            "definition": "Direito de todos ao acesso permanente a alimentos saudáveis, respeitando a sustentabilidade e diversidade cultural.",
+            "signStrategy": "Sinal composto: DIREITO + COMIDA + SAUDÁVEL + POPULAÇÃO + SUSTENTÁVEL em espaço amplo."
+          },
+          {
+            "term": "Inocuidade dos Alimentos",
+            "codeId": "2B",
+            "definition": "Garantia de que os alimentos não causarão danos ou agravos à saúde do consumidor quando preparados e consumidos.",
+            "signStrategy": "Sinal composto: ALIMENTO + LIVRE DE PERIGO + PROTEGER SAÚDE com expressão de segurança."
+          },
+          {
+            "term": "Soberania Alimentar",
+            "codeId": "2C",
+            "definition": "Direito dos povos de decidirem suas próprias políticas de produção, distribuição e consumo de alimentos de forma autônoma.",
+            "signStrategy": "Mãos firmes sinalizando POVO + DECIDIR + SUA TERRA + SUA PRODUÇÃO."
+          }
+        ]
+      },
+      {
+        "stepNumber": 3,
+        "type": "pill",
+        "title": "Etapa 3 — Minuto do Conhecimento",
+        "subtitle": "Pílula de 1 minuto em vídeo",
+        "pill": {
+          "title": "O que é SAN? Conceito em 1 Minuto",
+          "duration": "1 min",
+          "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+          "supportText": "A SAN integra desde o acesso à terra e à água até a qualidade sanitária e nutricional no prato do consumidor final.",
+          "practicalApp": "Garantir refeições saudáveis e nutritivas no Programa Nacional de Alimentação Escolar (PNAE)."
+        }
+      },
+      {
+        "stepNumber": 4,
+        "type": "case",
+        "title": "Etapa 4 — Na Vida Real (Situação-Problema)",
+        "subtitle": "Análise de impacto em compras públicas",
+        "caseStudy": {
+          "context": "Uma escola municipal optou por comprar hortaliças e frutas diretamente da cooperativa de agricultores familiares da região para compor a merenda escolar dos estudantes.",
+          "question": "Essa medida promove a Segurança Alimentar e Nutricional no território?",
+          "options": [
+            {
+              "id": "opt-1",
+              "text": "Sim, pois fornece alimentos frescos e nutritivos aos alunos e simultaneamente gera renda e autonomia aos produtores locais.",
+              "isCorrect": true,
+              "explanation": "Perfeito! A compra direta da agricultura familiar fortalece a economia local, encurta distâncias e garante comida fresca às crianças."
+            },
+            {
+              "id": "opt-2",
+              "text": "Não, pois comprar pacotes de alimentos ultraprocessados em grandes redes atacadistas seria mais prático.",
+              "isCorrect": false,
+              "explanation": "Incorreto. Ultraprocessados aumentam o risco de obesidade infantil e doenças crônicas, além de drenar recursos para fora do município."
+            }
+          ]
+        }
+      },
+      {
+        "stepNumber": 5,
+        "type": "territory",
+        "title": "Etapa 5 — O que acontece no seu território?",
+        "subtitle": "Equipamentos públicos de segurança alimentar",
+        "territoryReflection": {
+          "prompt": "Você conhece ou já utilizou algum equipamento de segurança alimentar na sua cidade (Restaurante Popular, Banco de Alimentos, Cozinha Comunitária)?",
+          "options": [
+            "Sim, já utilizei ou conheço onde fica no meu município.",
+            "Sei que existe, mas nunca visitei.",
+            "Não existe esse tipo de política no meu bairro/cidade."
+          ],
+          "insight": "Equipamentos públicos de SAN são estratégicos para garantir dignidade nutricional para populações em vulnerabilidade."
+        }
+      }
+    ],
+    "quiz": [
+      {
+        "question": "O que significa a sigla SAN?",
+        "options": [
+          "Segurança Alimentar e Nutricional",
+          "Sistema de Armazenamento Nacional",
+          "Serviço de Alimentação Noturna"
+        ],
+        "correct": 0,
+        "explanation": "SAN é a sigla oficial para Segurança Alimentar e Nutricional."
+      },
+      {
+        "question": "Qual é a diferença entre Segurança Alimentar e Soberania Alimentar?",
+        "options": [
+          "Não há nenhuma diferença, são termos sinônimos.",
+          "Segurança Alimentar foca no acesso ao alimento; Soberania Alimentar foca no direito dos povos de definirem como esse alimento é produzido e distribuído.",
+          "Segurança Alimentar é para o campo e Soberania Alimentar é apenas para indústrias."
+        ],
+        "correct": 1,
+        "explanation": "Soberania Alimentar valoriza a autonomia política dos povos sobre seus sistemas agrícolas e alimentares."
+      }
+    ]
+  },
+  {
+    "id": "trilha-3",
+    "title": "Do Campo à Mesa",
+    "subtitle": "Agricultura familiar, produção, circulação e consumo dos alimentos",
+    "description": "Acompanhe o caminho percorrido pelos alimentos, a valorização da agricultura familiar e os circuitos curtos de comercialização.",
+    "category": "Agricultura Familiar",
+    "duration": "14 min",
+    "stepsCount": 5,
+    "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+    "tags": [
+      "Agricultura Familiar",
+      "Cadeia Produtiva",
+      "Rastreabilidade",
+      "Feiras"
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "type": "video",
+        "title": "Etapa 1 — Quem produz a comida que vai à mesa?",
+        "subtitle": "A força da agricultura familiar em Libras",
+        "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+        "content": "Mais de 70% dos alimentos consumidos diariamente pelos brasileiros (feijão, arroz, mandioca, hortaliças e leite) vêm da agricultura familiar. Conhecer a origem dos alimentos aproxima campo e cidade."
+      },
+      {
+        "stepNumber": 2,
+        "type": "concepts",
+        "title": "Etapa 2 — Conceitos da Cadeia Produtiva",
+        "subtitle": "Terminologia em Libras",
+        "conceptTerms": [
+          {
+            "term": "Cadeia Alimentar",
+            "codeId": "3A",
+            "definition": "Sequência de etapas na produção, processamento, distribuição, armazenamento e manipulação de um alimento até o consumo.",
+            "signStrategy": "Sinal encadeado de elos: PLANTAÇÃO + TRANSPORTE + PROCESSAMENTO + MESA."
+          },
+          {
+            "term": "Rastreabilidade",
+            "codeId": "3B",
+            "definition": "Capacidade de seguir o histórico, a aplicação ou a localização de um alimento através de etapas documentadas de produção.",
+            "signStrategy": "Sinal composto: INVESTIGAR + ORIGEM + CAMINHO PERCORRIDO DO PRODUTO."
+          },
+          {
+            "term": "Produção Primária",
+            "codeId": "3C",
+            "definition": "Fase inicial da cadeia que inclui cultivo de vegetais, criação de animais e colheita antes de qualquer processamento.",
+            "signStrategy": "Sinal com as mãos na terra brotando sementes e colhendo frutos da horta."
+          }
+        ]
+      },
+      {
+        "stepNumber": 3,
+        "type": "pill",
+        "title": "Etapa 3 — Minuto do Conhecimento",
+        "subtitle": "Pílula sobre armazenamento e transporte",
+        "pill": {
+          "title": "Temperatura Segura: Geladeira e Fogão",
+          "duration": "1 min",
+          "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+          "supportText": "O transporte e o armazenamento refrigerado impedem a proliferação bacteriana entre o campo e a feira.",
+          "practicalApp": "Transportar queijos e produtos perecíveis em caixas térmicas limpas e aferir a temperatura."
+        }
+      },
+      {
+        "stepNumber": 4,
+        "type": "case",
+        "title": "Etapa 4 — Na Vida Real (Situação-Problema)",
+        "subtitle": "Circuito curto vs longas cadeias de intermediários",
+        "caseStudy": {
+          "context": "Dona Maria é agricultora familiar e produz tomate sem agrotóxicos. Quando vende para um atravessador, recebe R$ 1,50 pelo quilo. Na feira direta ao consumidor da cidade vizinha, ela vende a R$ 5,00 e o cliente paga menos do que no grande supermercado.",
+          "question": "O que essa comparação evidencia sobre os circuitos curtos de comercialização?",
+          "options": [
+            {
+              "id": "opt-1",
+              "text": "Evidencia que feiras diretas eliminam intermediários abusivos, valorizam o agricultor e tornam o alimento fresco mais acessível.",
+              "isCorrect": true,
+              "explanation": "Exatamente! Os circuitos curtos reduzem o desperdício no transporte, remuneram dignamente o produtor e garantem comida mais fresca."
+            },
+            {
+              "id": "opt-2",
+              "text": "Evidencia que o produtor deve sempre terceirizar o transporte para não ter trabalho.",
+              "isCorrect": false,
+              "explanation": "Incorreto. A dependência excessiva de intermediários frequentemente achata os ganhos da família agricultora."
+            }
+          ]
+        }
+      },
+      {
+        "stepNumber": 5,
+        "type": "territory",
+        "title": "Etapa 5 — No Seu Território",
+        "subtitle": "Circuitos locais de abastecimento",
+        "territoryReflection": {
+          "prompt": "Você tem o costume de comprar em feiras livres de produtores locais no seu bairro ou cidade?",
+          "options": [
+            "Sim, compro toda semana na feira livre.",
+            "Ocasionalmente, quando tenho tempo.",
+            "Raramente ou nunca, compro apenas em hipermercados."
+          ],
+          "insight": "Comprar em feiras fortalece diretamente as famílias camponesas que alimentam o país com respeito à terra."
+        }
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Qual porcentagem aproximada dos alimentos básicos na mesa dos brasileiros vem da agricultura familiar?",
+        "options": [
+          "Cerca de 70%",
+          "Menos de 10%",
+          "Apenas 2%"
+        ],
+        "correct": 0,
+        "explanation": "A agricultura familiar é responsável por cerca de 70% dos alimentos básicos consumidos no Brasil."
+      },
+      {
+        "question": "Para que serve a rastreabilidade dos alimentos?",
+        "options": [
+          "Para saber onde o alimento foi produzido e garantir sua segurança em caso de problemas sanitários.",
+          "Apenas para colocar código de barras no produto.",
+          "Para aumentar o preço do produto artificialmente."
+        ],
+        "correct": 0,
+        "explanation": "A rastreabilidade permite identificar a procedência e intervir rapidamente se houver risco de contaminação."
+      }
+    ]
+  },
+  {
+    "id": "trilha-4",
+    "title": "Entendendo os Alimentos",
+    "subtitle": "In natura, minimamente processados, processados e ultraprocessados",
+    "description": "Domine a classificação NOVA do Guia Alimentar e saiba distinguir alimentos saudáveis de produtos ultraprocessados nocivos à saúde.",
+    "category": "Saúde",
+    "duration": "12 min",
+    "stepsCount": 5,
+    "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+    "tags": [
+      "Classificação NOVA",
+      "Ultraprocessados",
+      "In Natura",
+      "Saúde"
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "type": "video",
+        "title": "Etapa 1 — A Classificação NOVA em Libras",
+        "subtitle": "Como a ciência agrupa os alimentos pelo tipo de processamento",
+        "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+        "content": "A classificação NOVA, criada por pesquisadores brasileiros da USP e adotada pela ONU, divide os alimentos em 4 grupos de acordo com a extensão e o propósito do processamento industrial a que foram submetidos."
+      },
+      {
+        "stepNumber": 2,
+        "type": "concepts",
+        "title": "Etapa 2 — Os 4 Grupos em Libras",
+        "subtitle": "Termos estruturantes do Glossário",
+        "conceptTerms": [
+          {
+            "term": "Alimento In Natura",
+            "codeId": "4A",
+            "definition": "Alimentos obtidos diretamente de plantas ou animais que não sofreram qualquer alteração após deixarem a natureza.",
+            "signStrategy": "Sinal de fruto colhido do pé e consumido fresco com expressão de naturalidade."
+          },
+          {
+            "term": "Alimento Processado",
+            "codeId": "4B",
+            "definition": "Fabricados com a adição de sal, açúcar ou óleo a alimentos in natura, como conservas de legumes e queijos artesanais.",
+            "signStrategy": "Sinal composto: ALIMENTO NATURAL + ADICIONAR SAL/AÇÚCAR + GUARDAR EM POTE."
+          },
+          {
+            "term": "Alimento Ultraprocessado",
+            "codeId": "4C",
+            "definition": "Formulações industriais ricas em açúcares, gorduras, aromatizantes e corantes sintéticos, com quase nada do alimento original.",
+            "signStrategy": "Sinal com mãos imitando engrenagens industriais, pós químicos artificiais e sinal de ALERTA/DANO À SAÚDE."
+          }
+        ]
+      },
+      {
+        "stepNumber": 3,
+        "type": "pill",
+        "title": "Etapa 3 — Minuto do Conhecimento",
+        "subtitle": "Exemplo do milho em 3 estágios",
+        "pill": {
+          "title": "Contaminação Cruzada na Cozinha",
+          "duration": "1 min",
+          "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+          "supportText": "Entender o processamento também nos ensina a manipular e conservar os alimentos de forma segura em casa.",
+          "practicalApp": "Separar a espiga de milho fresca dos alimentos já cozidos ou prontos para servir."
+        }
+      },
+      {
+        "stepNumber": 4,
+        "type": "case",
+        "title": "Etapa 4 — Na Vida Real (Situação-Problema)",
+        "subtitle": "Comparando a espiga de milho e o salgadinho",
+        "caseStudy": {
+          "context": "Na lanchonete da escola há três opções: milho verde cozido na espiga, milho em conserva em lata e salgadinho de pacote sabor milho com glutamato monossódico.",
+          "question": "Como esses 3 itens se classificam segundo o Guia Alimentar?",
+          "options": [
+            {
+              "id": "opt-1",
+              "text": "Espiga = In natura; Milho em lata = Processado; Salgadinho de pacote = Ultraprocessado.",
+              "isCorrect": true,
+              "explanation": "Perfeito! A espiga é in natura/minimamente processada; o enlatado tem água e sal (processado); o salgadinho é uma formulação de farinhas, gorduras e pós químicos (ultraprocessado)."
+            },
+            {
+              "id": "opt-2",
+              "text": "Todos são exatamente a mesma coisa porque todos levam o nome 'milho'.",
+              "isCorrect": false,
+              "explanation": "Incorreto. O salgadinho contém aditivos artificiais e teores altíssimos de sódio e gorduras saturadas, sem as fibras e nutrientes do grão original."
+            }
+          ]
+        }
+      },
+      {
+        "stepNumber": 5,
+        "type": "territory",
+        "title": "Etapa 5 — No Seu Território",
+        "subtitle": "Publicidade de ultraprocessados",
+        "territoryReflection": {
+          "prompt": "Você nota que produtos ultraprocessados têm embalagens muito coloridas com personagens infantis perto dos caixas de mercado?",
+          "options": [
+            "Sim, é muito comum e chama muita atenção de crianças.",
+            "Às vezes reparo nisso.",
+            "Nunca havia prestado atenção nessa estratégia."
+          ],
+          "insight": "O marketing agressivo de ultraprocessados é uma das causas do aumento da diabetes e hipertensão na juventude."
+        }
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Qual é a regra prática do Guia Alimentar para ultraprocessados?",
+        "options": [
+          "Evite o consumo de alimentos ultraprocessados.",
+          "Consuma ultraprocessados no café, almoço e jantar.",
+          "Ultraprocessados são os mais saudáveis porque duram mais tempo no armário."
+        ],
+        "correct": 0,
+        "explanation": "A recomendação científica brasileira é evitar o consumo de ultraprocessados."
+      },
+      {
+        "question": "Qual dos seguintes itens é um alimento in natura?",
+        "options": [
+          "Maçã fresca colhida da macieira",
+          "Refrigerante de cola",
+          "Salsicha ultraprocessada"
+        ],
+        "correct": 0,
+        "explanation": "A maçã fresca é um alimento in natura, sem qualquer aditivo químico."
+      }
+    ]
+  },
+  {
+    "id": "trilha-5",
+    "title": "Entendendo os Rótulos",
+    "subtitle": "Ingredientes, informações nutricionais, alergênicos e a nova lupa frontal",
+    "description": "Aprenda a ler e interpretar rótulos de alimentos: tabela nutricional, ingredientes em ordem decrescente, lupa frontal da ANVISA e alertas de alergênicos.",
+    "category": "Segurança Alimentar",
+    "duration": "15 min",
+    "stepsCount": 6,
+    "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+    "tags": [
+      "Rótulos",
+      "ANVISA",
+      "Lupa Frontal",
+      "Alergênicos",
+      "Direito"
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "type": "video",
+        "title": "Etapa 1 — A Nova Rotulagem Nutricional no Brasil",
+        "subtitle": "A lupa frontal e a clareza em Libras",
+        "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+        "content": "A legislação brasileira da ANVISA (RDC nº 429/2020) tornou obrigatória a lupa frontal preta na parte superior da embalagem para avisar os consumidores quando o alimento contém alto teor de açúcar adicionado, gordura saturada ou sódio."
+      },
+      {
+        "stepNumber": 2,
+        "type": "concepts",
+        "title": "Etapa 2 — Termos Obrigatórios de Rotulagem",
+        "subtitle": "Conceitos em Libras",
+        "conceptTerms": [
+          {
+            "term": "Lista de Ingredientes",
+            "codeId": "5A",
+            "definition": "Relação de todos os ingredientes que compõem o produto, dispostos obrigatoriamente em ordem decrescente de peso.",
+            "signStrategy": "Sinal de lista vertical indicando: O PRIMEIRO É O QUE TEM MAIS, O ÚLTIMO É O QUE TEM MENOS."
+          },
+          {
+            "term": "Rotulagem Frontal (Lupa)",
+            "codeId": "5B",
+            "definition": "Símbolo informativo colocado na frente da embalagem para alertar visualmente sobre altos teores de nutrientes críticos.",
+            "signStrategy": "Mão em formato de Lupa olhando a frente da embalagem com sinal de ATENÇÃO/AÇÚCAR/SÓDIO."
+          },
+          {
+            "term": "Alérgenos Alimentares",
+            "codeId": "5C",
+            "definition": "Substâncias capazes de provocar reações alérgicas graves (ex: leite, ovos, amendoim, glúten, castanhas e soja).",
+            "signStrategy": "Sinal composto: ALIMENTO + REAÇÃO ALÉRGICA NO CORPO + ALERTA."
+          }
+        ]
+      },
+      {
+        "stepNumber": 3,
+        "type": "pill",
+        "title": "Etapa 3 — Minuto do Conhecimento",
+        "subtitle": "Pílula sobre prazos nos rótulos",
+        "pill": {
+          "title": "Prazo de Validade vs Vida de Prateleira",
+          "duration": "2 min",
+          "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+          "supportText": "O prazo de validade garante a segurança microbiológica e nutricional até a data impressa na embalagem fechada.",
+          "practicalApp": "Verificar a data de validade antes da compra e checar o tempo seguro de consumo após aberto."
+        }
+      },
+      {
+        "stepNumber": 4,
+        "type": "case",
+        "title": "Etapa 4 — Na Vida Real (Decifrando a Lista de Ingredientes)",
+        "subtitle": "O primeiro ingrediente manda em tudo!",
+        "caseStudy": {
+          "context": "Você pega um pacote de 'Biscoito Integral de Aveia e Mel'. Ao ler a lista de ingredientes no verso, a ordem é: 1º Açúcar refinado, 2º Gordura vegetal hidrogenada, 3º Farinha de trigo enriquecida, 4º Aveia (2%), 5º Mel artificial.",
+          "question": "Esse produto é de fato predominantemente integral de aveia e mel?",
+          "options": [
+            {
+              "id": "opt-1",
+              "text": "Não. Como a lista é em ordem decrescente, esse produto é composto majoritariamente por açúcar e gordura, tendo apenas 2% de aveia.",
+              "isCorrect": true,
+              "explanation": "Exatamente! A ordem dos ingredientes nunca mente: o primeiro item é o que está em maior quantidade em todo o produto."
+            },
+            {
+              "id": "opt-2",
+              "text": "Sim, se está escrito 'integral' na frente da embalagem em letras grandes, podemos confiar sem ler a lista.",
+              "isCorrect": false,
+              "explanation": "Incorreto. A indústria frequentemente usa estratégias de marketing na frente; a verdade está sempre na lista de ingredientes."
+            }
+          ]
+        }
+      },
+      {
+        "stepNumber": 5,
+        "type": "territory",
+        "title": "Etapa 5 — Acessibilidade dos Rótulos em Libras",
+        "subtitle": "Um desafio para a comunidade surda",
+        "territoryReflection": {
+          "prompt": "Como uma pessoa surda pode conferir se um alimento contém glúten ou alérgenos se os termos técnicos estiverem escritos em linguagem complexa?",
+          "options": [
+            "Através de QR Codes nos rótulos que direcionem para vídeos curtos explicativos em Libras.",
+            "Com pictogramas e ícones visuais claros e universais na embalagem.",
+            "Ambas as soluções são fundamentais para garantir a acessibilidade comunicacional."
+          ],
+          "insight": "O LISSA apoia o letramento bilíngue para que informações sanitárias de rótulos estejam ao alcance de todas as pessoas."
+        }
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Na lista de ingredientes de um produto alimentício, qual item aparece em primeiro lugar?",
+        "options": [
+          "O ingrediente que está em maior quantidade no produto.",
+          "O ingrediente mais caro da fórmula.",
+          "O ingrediente que dá o nome ao produto, mesmo que tenha pouco."
+        ],
+        "correct": 0,
+        "explanation": "Por lei, o primeiro ingrediente da lista é sempre aquele presente em maior quantidade de peso."
+      },
+      {
+        "question": "O que indica a nova lupa preta frontal nos rótulos de alimentos no Brasil?",
+        "options": [
+          "Alto teor de açúcar adicionado, gordura saturada ou sódio.",
+          "Que o produto foi inspecionado com microscópio óptico.",
+          "Que o produto é 100% orgânico e vegano."
+        ],
+        "correct": 0,
+        "explanation": "A lupa frontal da ANVISA serve para alertar de forma clara sobre nutrientes críticos em excesso."
+      }
+    ]
+  },
+  {
+    "id": "trilha-6",
+    "title": "Ciência em Libras",
+    "subtitle": "Como conceitos científicos da alimentação são mediados em Libras",
+    "description": "Explore os bastidores da mediação científica: como termos da microbiologia, química dos alimentos e boas práticas ganham precisão linguística em Libras.",
+    "category": "Ciência",
+    "duration": "14 min",
+    "stepsCount": 5,
+    "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+    "tags": [
+      "Mediação Linguística",
+      "Classificadores",
+      "Microbiologia",
+      "Libras"
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "type": "video",
+        "title": "Etapa 1 — Tradução Terminológica vs Mediação Científica",
+        "subtitle": "O papel do LISSA na construção terminológica",
+        "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+        "content": "Traduzir ciência para a Libras não é apenas soletrar palavras difíceis letra por letra. Envolve criar metáforas visuais precisas, classificadores descritivos e expressões não-manuais que transmitam com fidelidade o fenômeno biológico ou químico."
+      },
+      {
+        "stepNumber": 2,
+        "type": "concepts",
+        "title": "Etapa 2 — Conceitos da Mediação Linguística",
+        "subtitle": "Termos em Libras",
+        "conceptTerms": [
+          {
+            "term": "Classificador em Libras",
+            "codeId": "6A",
+            "definition": "Configuração de mão específica que representa visualmente a forma, tamanho, textura, movimento ou localização de um objeto ou microrganismo.",
+            "signStrategy": "Demonstração de bactérias se multiplicando exponencialmente através de classificadores manuais visuais."
+          },
+          {
+            "term": "Perigo Biológico",
+            "codeId": "6B",
+            "definition": "Microrganismos patogênicos vivos (bactérias, fungos, vírus e parasitas) capazes de causar intoxicações ou infecções alimentares.",
+            "signStrategy": "Sinal composto: SERES MINÚSCULOS INVISÍVEIS + PENETRAR ALIMENTO + CAUSAR DOENÇA."
+          },
+          {
+            "term": "Procedimento Operacional Padronizado (POP)",
+            "codeId": "6C",
+            "definition": "Instrução sequencial escrita e detalhada de como executar tarefas de higiene e controle para garantir a qualidade sanitária.",
+            "signStrategy": "Sinal sequencial: MANUAL PASSO A PASSO + SEGUIR À RISCA + GARANTIR SEGURANÇA."
+          }
+        ]
+      },
+      {
+        "stepNumber": 3,
+        "type": "pill",
+        "title": "Etapa 3 — Minuto do Conhecimento",
+        "subtitle": "Pílula sobre Perigo Biológico vs Perigo Químico",
+        "pill": {
+          "title": "Perigo Biológico vs Perigo Químico",
+          "duration": "1 min",
+          "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+          "supportText": "A mediação em Libras distingue claramente micróbios vivos que se multiplicam de substâncias químicas tóxicas sem vida.",
+          "practicalApp": "Identificar se o risco decorre de contaminação bacteriana por temperatura inadequada ou resíduo de sabão."
+        }
+      },
+      {
+        "stepNumber": 4,
+        "type": "case",
+        "title": "Etapa 4 — Na Vida Real (Desafio de Mediação)",
+        "subtitle": "Como comunicar 'Salmonella' ou 'Surto Alimentar'?",
+        "caseStudy": {
+          "context": "Em uma oficina de manipulação de alimentos para cozinheiros surdos, o instrutor precisa explicar como a bactéria Salmonella sobrevive na maionese caseira deixada fora da geladeira.",
+          "question": "Qual é a estratégia linguística mais eficaz e inclusiva em Libras?",
+          "options": [
+            {
+              "id": "opt-1",
+              "text": "Usar apenas a soletração datilológica da palavra 'S-A-L-M-O-N-E-L-L-A' repetidas vezes.",
+              "isCorrect": false,
+              "explanation": "Incorreto. A soletração mostra como a palavra se escreve em português, mas não explica o conceito biológico do microrganismo."
+            },
+            {
+              "id": "opt-2",
+              "text": "Apresentar a datilologia acompanhada de classificadores que mostrem a bactéria invisível no ovo cru, sua multiplicação no calor e o dano intestinal.",
+              "isCorrect": true,
+              "explanation": "Correto! A mediação científica une o nome técnico à representação visual icônica do mecanismo microbiológico."
+            }
+          ]
+        }
+      },
+      {
+        "stepNumber": 5,
+        "type": "territory",
+        "title": "Etapa 5 — Acessibilidade Científica",
+        "subtitle": "Inclusão nos laboratórios e indústrias",
+        "territoryReflection": {
+          "prompt": "Você já viu materiais didáticos de química ou biologia com tradução completa em Libras nas escolas da sua região?",
+          "options": [
+            "Quase nunca, a maioria dos materiais científicos não é acessível.",
+            "Já vi algumas iniciativas isoladas.",
+            "Sim, conheço projetos bilíngues na minha instituição."
+          ],
+          "insight": "O LISSA trabalha para que a ciência alimentar seja 100% bilíngue e acessível a estudantes e trabalhadores surdos."
+        }
+      }
+    ],
+    "quiz": [
+      {
+        "question": "O que é um classificador na Língua Brasileira de Sinais (Libras)?",
+        "options": [
+          "Um recurso visual e morfológico que representa a forma, tamanho, textura ou ação de elementos e microrganismos.",
+          "Um dicionário de papel que traduz palavras para o inglês.",
+          "Uma regra que proíbe o uso de expressões faciais na ciência."
+        ],
+        "correct": 0,
+        "explanation": "Os classificadores são fundamentais para explicar conceitos científicos espaciais e biológicos em Libras."
+      },
+      {
+        "question": "Por que a mediação científica em Libras é mais ampla do que uma simples tradução palavra por palavra?",
+        "options": [
+          "Porque ela constrói sentido conceitual e letramento científico respeitando a natureza visual e espacial da Libras.",
+          "Porque ela demora mais tempo para ser feita.",
+          "Porque os cientistas não gostam de palavras em português."
+        ],
+        "correct": 0,
+        "explanation": "A mediação científica envolve conceituação profunda, didática visual e validação terminológica com a comunidade."
       }
     ]
   }
 ];
-
-// ScientificFragment interface moved/consolidated below
 
 export interface GlossaryTerm {
   term: string;

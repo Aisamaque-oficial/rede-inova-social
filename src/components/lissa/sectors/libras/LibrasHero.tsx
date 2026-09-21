@@ -68,7 +68,7 @@ export function LibrasHero({ isStudio }: LibrasHeroProps) {
               </h1>
               
               <p className="text-lg md:text-xl text-slate-300 max-w-2xl font-medium leading-relaxed">
-                A democratização da ciência começa pela língua. Explore nosso sistema de tradução terminológica para Segurança Alimentar.
+                A democratização da ciência começa pelo acesso linguístico. Explore conteúdos científicos sobre alimentação e segurança alimentar em Libras.
               </p>
             </motion.div>
 
