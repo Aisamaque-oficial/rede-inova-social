@@ -13,6 +13,7 @@ const eixos = [
   { id: 3, title: 'Rotulagem Técnica', emoji: '🏷️' },
   { id: 4, title: 'Análise Crítica', emoji: '⚖️' },
   { id: 5, title: 'Soberania Alimentar', emoji: '🌽' },
+  { id: 6, title: 'Produção e Segurança no Campo', emoji: '🌱' },
 ];
 
 export default function GlossarioPage() {

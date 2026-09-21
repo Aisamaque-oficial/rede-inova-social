@@ -152,7 +152,7 @@ export interface Flow {
   name: string;
   sectorId: string;
   description: string;
-  nature: 'conteúdo' | 'territorial' | 'parceria' | 'científico' | 'acessibilidade' | 'publicação';
+  nature: 'conteúdo' | 'territorial' | 'parceria' | 'científico' | 'acessibilidade' | 'publicação' | 'gestão';
   blockingRules: boolean;
 }
 

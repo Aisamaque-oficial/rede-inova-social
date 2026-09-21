@@ -17,6 +17,7 @@ export function GlossaryFilters() {
     { id: '3', title: 'ROTULAGEM TÉCNICA', emoji: '🏷️' },
     { id: '4', title: 'ANÁLISE CRÍTICA', emoji: '⚖️' },
     { id: '5', title: 'SOBERANIA ALIMENTAR', emoji: '🌽' },
+    { id: '6', title: 'PRODUÇÃO NO CAMPO', emoji: '🌱' },
   ];
 
   return (
@@ -29,11 +30,12 @@ export function GlossaryFilters() {
       
       {filters.map((filter) => {
         const isActive = activeModuleId === filter.id ||
-          (filter.id === '1' && activeModuleId === 'fundamentacao') ||
-          (filter.id === '2' && activeModuleId === 'imunologico-digestivo') ||
-          (filter.id === '3' && activeModuleId === 'rotulagem-tecnica') ||
-          (filter.id === '4' && activeModuleId === 'analise-critica') ||
-          (filter.id === '5' && activeModuleId === 'soberania-alimentar');
+          (filter.id === '1' && (activeModuleId === 'fundamentacao' || activeModuleId === 1)) ||
+          (filter.id === '2' && (activeModuleId === 'imunologico-digestivo' || activeModuleId === 2)) ||
+          (filter.id === '3' && (activeModuleId === 'rotulagem-tecnica' || activeModuleId === 3)) ||
+          (filter.id === '4' && (activeModuleId === 'analise-critica' || activeModuleId === 4)) ||
+          (filter.id === '5' && (activeModuleId === 'soberania-alimentar' || activeModuleId === 5)) ||
+          (filter.id === '6' && (activeModuleId === 'producao-campo' || activeModuleId === 6));
         return (
           <button
             key={filter.id}

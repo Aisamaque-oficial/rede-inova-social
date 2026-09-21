@@ -39,7 +39,7 @@ export function CategoryGrid() {
                 "font-black text-[10px] uppercase tracking-widest leading-tight",
                 isActive ? "text-white" : "text-white/40"
               )}>
-                {eixo.title.split('—')[1] || eixo.title}
+                {(eixo.title.split('—')[1] || eixo.title).trim()}
               </h4>
             </div>
           </motion.button>

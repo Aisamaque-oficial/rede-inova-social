@@ -49,7 +49,8 @@ function parseAxisId(axisId: string | number): number | 'todos' {
     'imunologico-digestivo': 2,
     'rotulagem-tecnica': 3,
     'analise-critica': 4,
-    'soberania-alimentar': 5
+    'soberania-alimentar': 5,
+    'producao-campo': 6
   };
   if (typeof axisId === 'string' && slugMap[axisId.toLowerCase()]) {
     return slugMap[axisId.toLowerCase()];
@@ -124,12 +125,14 @@ export const librasService = {
                    Number(t.axis_id) === 3 ? 'Rotulagem Técnica' :
                    Number(t.axis_id) === 4 ? 'Análise Crítica' :
                    Number(t.axis_id) === 5 ? 'Soberania Alimentar' :
+                   Number(t.axis_id) === 6 ? 'Produção e Segurança no Campo' :
                    'Conceito Técnico',
         eixoEmoji: Number(t.axis_id) === 1 ? '🤟' :
                    Number(t.axis_id) === 2 ? '🧬' :
                    Number(t.axis_id) === 3 ? '🏷️' :
                    Number(t.axis_id) === 4 ? '⚖️' :
                    Number(t.axis_id) === 5 ? '🌽' :
+                   Number(t.axis_id) === 6 ? '🌱' :
                    '🔖'
       }));
     } catch (e: any) {

@@ -97,12 +97,14 @@ export function LibrasProvider({ children }: { children: ReactNode }) {
                (axisSlugOrId === '3' || axisSlugOrId === 'rotulagem-tecnica') ? 'Rotulagem Técnica' :
                (axisSlugOrId === '4' || axisSlugOrId === 'analise-critica') ? 'Análise Crítica' :
                (axisSlugOrId === '5' || axisSlugOrId === 'soberania-alimentar') ? 'Soberania Alimentar' :
+               (axisSlugOrId === '6' || axisSlugOrId === 'producao-campo') ? 'Produção e Segurança no Campo' :
                'Conceito Técnico',
         emoji: (axisSlugOrId === '1' || axisSlugOrId === 'fundamentacao') ? '🤟' :
                (axisSlugOrId === '2' || axisSlugOrId === 'imunologico-digestivo') ? '🧬' :
                (axisSlugOrId === '3' || axisSlugOrId === 'rotulagem-tecnica') ? '🏷️' :
                (axisSlugOrId === '4' || axisSlugOrId === 'analise-critica') ? '⚖️' :
                (axisSlugOrId === '5' || axisSlugOrId === 'soberania-alimentar') ? '🌽' :
+               (axisSlugOrId === '6' || axisSlugOrId === 'producao-campo') ? '🌱' :
                '🔖'
       };
 

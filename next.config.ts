@@ -1,11 +1,16 @@
 import type {NextConfig} from 'next';
 import 'dotenv/config';
-import withSerwistInit from '@serwist/next';
-
-const withSerwist = withSerwistInit({
-  swSrc: 'src/app/sw.ts',
-  swDest: 'public/sw.js',
-});
+let withSerwist: (config: any) => any = (config) => config;
+try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const withSerwistInit = require('@serwist/next').default || require('@serwist/next');
+  withSerwist = withSerwistInit({
+    swSrc: 'src/app/sw.ts',
+    swDest: 'public/sw.js',
+  });
+} catch {
+  // @serwist/next não instalado neste ambiente
+}
 
 const nextConfig: NextConfig = {
   /* config options here */
