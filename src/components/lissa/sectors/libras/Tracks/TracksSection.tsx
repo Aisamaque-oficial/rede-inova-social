@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Compass, 
@@ -19,17 +19,49 @@ import {
   Trophy, 
   RotateCcw,
   Check,
-  AlertCircle
+  AlertCircle,
+  Film,
+  ChevronRight,
+  ChevronLeft,
+  Plus,
+  Volume2,
+  Layers,
+  Tv,
+  Info,
+  Share2,
+  Bookmark
 } from "lucide-react";
 import { librasTracks } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
+// Aesthetic gradients for cinematic cards
+const CARD_GRADIENTS = [
+  "from-emerald-950 via-slate-900 to-slate-950",
+  "from-cyan-950 via-slate-900 to-slate-950",
+  "from-amber-950 via-slate-900 to-slate-950",
+  "from-teal-950 via-slate-900 to-slate-950",
+  "from-blue-950 via-slate-900 to-slate-950",
+  "from-violet-950 via-slate-900 to-slate-950"
+];
+
+const ACCENT_COLORS = [
+  "text-emerald-400 border-emerald-500/30 bg-emerald-500/10",
+  "text-cyan-400 border-cyan-500/30 bg-cyan-500/10",
+  "text-amber-400 border-amber-500/30 bg-amber-500/10",
+  "text-teal-400 border-teal-500/30 bg-teal-500/10",
+  "text-blue-400 border-blue-500/30 bg-blue-500/10",
+  "text-violet-400 border-violet-500/30 bg-violet-500/10"
+];
+
 export function TracksSection() {
-  // Active track being viewed/studied (null = view all tracks list)
+  // Active track being viewed/studied (null = catalog view)
   const [activeTrackId, setActiveTrackId] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>("Todas");
   
-  // Track step management
+  // Featured track for the billboard hero (defaults to first track)
+  const [billboardTrackId, setBillboardTrackId] = useState<string>(librasTracks[0]?.id || "trilha-1");
+
+  // Track step management (0 to steps.length)
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   
   // Interactive stage states
@@ -42,18 +74,26 @@ export function TracksSection() {
   const [quizScore, setQuizScore] = useState<number>(0);
   const [isQuizCompleted, setIsQuizCompleted] = useState<boolean>(false);
 
-  // Completed tracks in localStorage
+  // Completed tracks and Bookmarks in localStorage
   const [completedTrackIds, setCompletedTrackIds] = useState<string[]>([]);
+  const [bookmarkedTrackIds, setBookmarkedTrackIds] = useState<string[]>([]);
+
+  // Horizontal carousel scroll ref
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       try {
-        const stored = localStorage.getItem("lissa_completed_tracks");
-        if (stored) {
-          setCompletedTrackIds(JSON.parse(stored));
+        const storedCompleted = localStorage.getItem("lissa_completed_tracks");
+        if (storedCompleted) {
+          setCompletedTrackIds(JSON.parse(storedCompleted));
+        }
+        const storedBookmarks = localStorage.getItem("lissa_bookmarked_tracks");
+        if (storedBookmarks) {
+          setBookmarkedTrackIds(JSON.parse(storedBookmarks));
         }
       } catch (e) {
-        console.error("Error reading completed tracks:", e);
+        console.error("Error reading storage:", e);
       }
     }
   }, []);
@@ -72,9 +112,28 @@ export function TracksSection() {
     }
   };
 
+  const toggleBookmark = (trackId: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    const updated = bookmarkedTrackIds.includes(trackId)
+      ? bookmarkedTrackIds.filter(id => id !== trackId)
+      : [...bookmarkedTrackIds, trackId];
+    setBookmarkedTrackIds(updated);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem("lissa_bookmarked_tracks", JSON.stringify(updated));
+      } catch (err) {
+        console.error("Error saving bookmark:", err);
+      }
+    }
+  };
+
   const activeTrack = useMemo(() => {
     return librasTracks.find(t => t.id === activeTrackId) || null;
   }, [activeTrackId]);
+
+  const billboardTrack = useMemo(() => {
+    return librasTracks.find(t => t.id === billboardTrackId) || librasTracks[0];
+  }, [billboardTrackId]);
 
   const categories = ["Todas", "Alimentação", "Segurança Alimentar", "Agricultura Familiar", "Saúde", "Ciência"];
 
@@ -86,9 +145,9 @@ export function TracksSection() {
   const progressPercentage = Math.round((completedTrackIds.length / librasTracks.length) * 100);
 
   // Reset steps and questions when entering a track
-  const handleStartTrack = (trackId: string) => {
+  const handleStartTrack = (trackId: string, stepIndex = 0) => {
     setActiveTrackId(trackId);
-    setCurrentStepIndex(0);
+    setCurrentStepIndex(stepIndex);
     setSelectedCaseOption(null);
     setSelectedTerritoryOption(null);
     setCurrentQuestionIndex(0);
@@ -96,15 +155,15 @@ export function TracksSection() {
     setQuizScore(0);
     setIsQuizCompleted(false);
     if (typeof window !== "undefined") {
-      window.scrollTo({ top: 380, behavior: "smooth" });
+      window.scrollTo({ top: 200, behavior: "smooth" });
     }
   };
 
-  const handleBackToTracks = () => {
+  const handleBackToCatalog = () => {
     setActiveTrackId(null);
     setCurrentStepIndex(0);
     if (typeof window !== "undefined") {
-      window.scrollTo({ top: 320, behavior: "smooth" });
+      window.scrollTo({ top: 300, behavior: "smooth" });
     }
   };
 
@@ -117,7 +176,7 @@ export function TracksSection() {
       setSelectedCaseOption(null);
       setSelectedTerritoryOption(null);
       if (typeof window !== "undefined") {
-        window.scrollTo({ top: 400, behavior: "smooth" });
+        window.scrollTo({ top: 220, behavior: "smooth" });
       }
     }
   };
@@ -126,14 +185,14 @@ export function TracksSection() {
     if (currentStepIndex > 0) {
       setCurrentStepIndex(prev => prev - 1);
       if (typeof window !== "undefined") {
-        window.scrollTo({ top: 400, behavior: "smooth" });
+        window.scrollTo({ top: 220, behavior: "smooth" });
       }
     }
   };
 
   // Quiz answer submit
   const handleAnswerQuestion = (optionIndex: number) => {
-    if (selectedAnswer !== null) return; // already answered
+    if (selectedAnswer !== null) return;
     setSelectedAnswer(optionIndex);
     const question = activeTrack?.quiz[currentQuestionIndex];
     if (question && optionIndex === question.correct) {
@@ -147,7 +206,6 @@ export function TracksSection() {
       setCurrentQuestionIndex(prev => prev + 1);
       setSelectedAnswer(null);
     } else {
-      // Finished quiz!
       setIsQuizCompleted(true);
       if (activeTrack) {
         saveTrackCompletion(activeTrack.id);
@@ -170,147 +228,386 @@ export function TracksSection() {
     return `${base}${sep}autoplay=1&mute=0&controls=1&rel=0&modestbranding=1`;
   };
 
+  // Carousel scroll
+  const scrollCarousel = (direction: "left" | "right") => {
+    if (carouselRef.current) {
+      const { scrollLeft, clientWidth } = carouselRef.current;
+      const scrollAmount = clientWidth * 0.75;
+      carouselRef.current.scrollTo({
+        left: direction === "left" ? scrollLeft - scrollAmount : scrollLeft + scrollAmount,
+        behavior: "smooth"
+      });
+    }
+  };
+
   // =========================================================
-  // VIEW 1: HUB DE TRILHAS (GRADE COM 3 CARDS POR LINHA)
+  // VIEW 1: STREAMING CATALOG (ESTILO NETFLIX / PRIME / HBO)
   // =========================================================
   if (!activeTrackId || !activeTrack) {
     return (
-      <div className="space-y-10 mb-20 animate-in fade-in duration-500 w-full">
-        {/* Banner de Apresentação das Trilhas */}
-        <div className="bg-white/95 backdrop-blur-md p-8 md:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="space-y-2.5 max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
-                <Compass className="h-3.5 w-3.5" />
-                <span>Temporada 1 • Alimentação e Território</span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-black text-slate-800 uppercase tracking-tight">
-                Trilhas de Conhecimento
-              </h2>
-              <p className="text-base md:text-lg text-primary font-bold">
-                Percursos curtos para aprender conceitos de alimentação, segurança alimentar e ciência em Libras.
-              </p>
-              <p className="text-xs md:text-sm text-slate-500 font-medium leading-relaxed">
-                Escolha uma trilha, avance pelas etapas e teste seus conhecimentos. Os conteúdos combinam Libras, recursos visuais, textos em linguagem clara e atividades rápidas.
-              </p>
+      <div className="space-y-12 mb-20 animate-in fade-in duration-700 w-full text-white">
+        
+        {/* =========================================================
+            1. CINEMATIC BILLBOARD HERO (O GRANDE DESTAQUE)
+            ========================================================= */}
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl min-h-[460px] md:min-h-[520px] flex flex-col justify-end p-8 md:p-14">
+          {/* Background Ambient Glows & Image Simulation */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-emerald-950/30 z-10" />
+          
+          {/* Animated decorative cinema background */}
+          <div className="absolute inset-0 opacity-40 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-600/30 via-cyan-900/20 to-slate-950" />
+          <div className="absolute top-0 right-0 w-3/4 h-full bg-[radial-gradient(circle_at_70%_30%,_rgba(16,185,129,0.15),transparent_60%)]" />
+
+          {/* Billboard Content */}
+          <div className="relative z-20 max-w-3xl space-y-5">
+            {/* Streaming Badges */}
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="px-3 py-1 rounded-md bg-emerald-500 text-slate-950 font-black text-[10px] uppercase tracking-widest flex items-center gap-1.5 shadow-lg shadow-emerald-500/20">
+                <Tv className="h-3 w-3" />
+                <span>LISSA ORIGINAL</span>
+              </span>
+              <span className="px-2.5 py-1 rounded-md bg-white/10 backdrop-blur-md text-white border border-white/15 font-black text-[10px] uppercase tracking-wider">
+                Temporada 1
+              </span>
+              <span className="px-2.5 py-1 rounded-md bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 font-bold text-[10px] uppercase">
+                {billboardTrack.category}
+              </span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/15 text-slate-200">
+                LIBRAS 100%
+              </span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/15 text-slate-200">
+                CC PT-BR
+              </span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                HD
+              </span>
             </div>
 
-            {/* Barra de Progresso Simples e Amigável */}
-            <div className="p-6 rounded-[2rem] bg-slate-50 border border-slate-200/80 min-w-[280px] space-y-3 shrink-0">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-wider text-slate-600">Seu Progresso</span>
-                <span className="text-xs font-black text-primary">
-                  {completedTrackIds.length} de {librasTracks.length} concluídas
+            {/* Title */}
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black uppercase tracking-tight text-white drop-shadow-md leading-[1.05]">
+              {billboardTrack.title}
+            </h1>
+
+            {/* Subtitle / Synopsis */}
+            <p className="text-sm md:text-base text-slate-300 font-medium leading-relaxed max-w-2xl line-clamp-3 md:line-clamp-none">
+              {billboardTrack.description}
+            </p>
+
+            {/* Quick Metadata */}
+            <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
+              <span className="text-emerald-400 font-black">99% de Relevância</span>
+              <span>•</span>
+              <span>{billboardTrack.duration} de imersão</span>
+              <span>•</span>
+              <span>{billboardTrack.stepsCount} episódios + quiz</span>
+            </div>
+
+            {/* Action Buttons (Play & More Info) */}
+            <div className="flex flex-wrap items-center gap-3.5 pt-2">
+              <button
+                onClick={() => handleStartTrack(billboardTrack.id)}
+                className="px-8 py-4 rounded-2xl bg-white hover:bg-slate-200 text-slate-950 font-black text-sm uppercase tracking-wider flex items-center gap-2.5 shadow-xl hover:scale-105 transition-all duration-300"
+              >
+                <Play className="h-5 w-5 fill-slate-950" />
+                <span>
+                  {completedTrackIds.includes(billboardTrack.id) ? "Reassistir Trilha" : "Assistir Agora"}
                 </span>
-              </div>
-              <div className="w-full h-3 rounded-full bg-slate-200 overflow-hidden">
-                <motion.div 
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progressPercentage}%` }}
-                  transition={{ duration: 0.8 }}
-                  className="h-full bg-primary rounded-full shadow-sm"
-                />
-              </div>
-              <span className="text-[10px] font-bold text-slate-400 block text-right">
-                {progressPercentage}% do percurso completo
+              </button>
+
+              <button
+                onClick={() => toggleBookmark(billboardTrack.id)}
+                className={cn(
+                  "px-5 py-4 rounded-2xl backdrop-blur-md border font-black text-xs uppercase tracking-wider flex items-center gap-2 transition-all",
+                  bookmarkedTrackIds.includes(billboardTrack.id)
+                    ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                    : "bg-white/10 hover:bg-white/20 text-white border-white/20"
+                )}
+              >
+                <Bookmark className={cn("h-4 w-4", bookmarkedTrackIds.includes(billboardTrack.id) && "fill-emerald-400")} />
+                <span>{bookmarkedTrackIds.includes(billboardTrack.id) ? "Na Minha Lista" : "Minha Lista"}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* =========================================================
+            2. BARRA DE STATUS / RESUMO DO ALUNO (ESTILO STREAMING)
+            ========================================================= */}
+        <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 p-6 md:p-8 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+              <Trophy className="h-6 w-6" />
+            </div>
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">
+                Sua Jornada de Maratonista Científico
               </span>
+              <h3 className="text-lg font-black text-white uppercase tracking-tight">
+                {completedTrackIds.length} de {librasTracks.length} Trilhas Concluídas
+              </h3>
             </div>
           </div>
 
-          {/* Filtros de Categorias */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 pt-2 scrollbar-none border-t border-slate-100">
-            {categories.map((cat) => {
-              const isSelected = activeCategory === cat;
+          <div className="w-full md:w-72 space-y-2">
+            <div className="flex justify-between text-xs font-bold">
+              <span className="text-slate-400">Temporada 1</span>
+              <span className="text-emerald-400 font-mono">{progressPercentage}% Completo</span>
+            </div>
+            <div className="w-full h-2.5 rounded-full bg-slate-800 overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${progressPercentage}%` }}
+                transition={{ duration: 0.8 }}
+                className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full shadow-lg shadow-emerald-500/30"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* =========================================================
+            3. CARROSSEL HORIZONTAL: EM ALTA NA TEMPORADA 1
+            ========================================================= */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="w-2.5 h-6 bg-emerald-500 rounded-full" />
+              <h2 className="text-xl md:text-2xl font-black uppercase tracking-tight text-white">
+                Temporada 1: Alimentação & Território
+              </h2>
+            </div>
+
+            {/* Setas de rolagem do carrossel */}
+            <div className="hidden md:flex items-center gap-2">
+              <button
+                onClick={() => scrollCarousel("left")}
+                className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 transition-all hover:scale-105"
+                aria-label="Rolar para a esquerda"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => scrollCarousel("right")}
+                className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 transition-all hover:scale-105"
+                aria-label="Rolar para a direita"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Fileira Horizontal de Cards Deslizáveis */}
+          <div 
+            ref={carouselRef}
+            className="flex items-stretch gap-5 overflow-x-auto pb-6 pt-2 scrollbar-none snap-x snap-mandatory"
+          >
+            {librasTracks.map((track, i) => {
+              const isCompleted = completedTrackIds.includes(track.id);
+              const isSelectedBillboard = billboardTrackId === track.id;
+              const gradientClass = CARD_GRADIENTS[i % CARD_GRADIENTS.length];
+              const accentClass = ACCENT_COLORS[i % ACCENT_COLORS.length];
+
               return (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={cn(
-                    "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap border shrink-0",
-                    isSelected
-                      ? "bg-slate-900 text-white border-slate-900 shadow-md scale-[1.02]"
-                      : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:border-slate-300"
-                  )}
+                <div
+                  key={track.id}
+                  onClick={() => setBillboardTrackId(track.id)}
+                  className="snap-start shrink-0 w-[290px] sm:w-[320px] md:w-[350px] group cursor-pointer"
                 >
-                  {cat}
-                </button>
+                  <div className={cn(
+                    "rounded-[2rem] p-6 border transition-all duration-300 flex flex-col justify-between h-[360px] relative overflow-hidden bg-gradient-to-b shadow-xl",
+                    gradientClass,
+                    isSelectedBillboard 
+                      ? "border-emerald-500 ring-2 ring-emerald-500/30 scale-[1.02]" 
+                      : "border-slate-800/80 hover:border-slate-600 hover:scale-[1.02]"
+                  )}>
+                    {/* Background glow hover */}
+                    <div className="absolute inset-0 bg-emerald-500/0 group-hover:bg-emerald-500/5 transition-colors pointer-events-none" />
+
+                    <div>
+                      {/* Top Badges */}
+                      <div className="flex items-center justify-between mb-4">
+                        <span className={cn("px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border", accentClass)}>
+                          {track.category}
+                        </span>
+
+                        <div className="flex items-center gap-2">
+                          {isCompleted && (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-black border border-emerald-500/40">
+                              <CheckCircle2 className="h-3 w-3" />
+                              <span>Visto</span>
+                            </span>
+                          )}
+                          <button
+                            onClick={(e) => toggleBookmark(track.id, e)}
+                            className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-slate-300 transition-colors"
+                          >
+                            <Bookmark className={cn("h-3.5 w-3.5", bookmarkedTrackIds.includes(track.id) && "fill-emerald-400 text-emerald-400")} />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Episode index / mini-title */}
+                      <span className="text-[11px] font-bold text-slate-400 block mb-1 uppercase tracking-widest">
+                        Trilha 0{i + 1} • {track.stepsCount} Etapas
+                      </span>
+
+                      {/* Title */}
+                      <h3 className="font-black text-xl text-white uppercase tracking-tight group-hover:text-emerald-400 transition-colors leading-snug mb-3">
+                        {track.title}
+                      </h3>
+
+                      {/* Description */}
+                      <p className="text-xs text-slate-400 font-medium leading-relaxed line-clamp-3">
+                        {track.description}
+                      </p>
+                    </div>
+
+                    {/* Bottom Action Area */}
+                    <div className="pt-4 border-t border-slate-800/80 space-y-3">
+                      <div className="flex items-center justify-between text-[11px] font-bold text-slate-400">
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="h-3.5 w-3.5 text-slate-500" />
+                          <span>{track.duration}</span>
+                        </span>
+                        <span className="text-emerald-400 font-semibold">Quiz incluso</span>
+                      </div>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleStartTrack(track.id);
+                        }}
+                        className={cn(
+                          "w-full py-3.5 rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg",
+                          isCompleted
+                            ? "bg-slate-800 hover:bg-slate-700 text-slate-200"
+                            : "bg-emerald-500 hover:bg-emerald-400 text-slate-950 group-hover:shadow-emerald-500/25"
+                        )}
+                      >
+                        <Play className="h-3.5 w-3.5 fill-current" />
+                        <span>{isCompleted ? "Rever Episódios" : "Assistir Agora"}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               );
             })}
           </div>
         </div>
 
-        {/* Grade de 3 Cards por Linha */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {filteredTracks.map((track, i) => {
-            const isCompleted = completedTrackIds.includes(track.id);
+        {/* =========================================================
+            4. FILTROS POR CATEGORIA & CATÁLOGO COMPLETO
+            ========================================================= */}
+        <div className="space-y-6 pt-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400 block">
+                Catálogo da Plataforma
+              </span>
+              <h2 className="text-xl md:text-2xl font-black uppercase tracking-tight text-white">
+                Todas as Produções em Libras
+              </h2>
+            </div>
 
-            return (
-              <motion.div
-                key={track.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05, duration: 0.4 }}
-                whileHover={{ y: -6 }}
-                className="group flex flex-col"
-              >
-                <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm hover:shadow-2xl hover:border-primary/40 transition-all duration-300 flex flex-col justify-between flex-1 relative overflow-hidden group-hover:ring-4 group-hover:ring-primary/5 min-h-[340px]">
-                  <div>
-                    {/* Topo: Categoria + Status Concluído */}
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-slate-100 text-slate-600 border border-slate-200 group-hover:bg-primary/10 group-hover:text-primary group-hover:border-primary/20 transition-colors">
-                        {track.category}
-                      </span>
+            {/* Chips de Categorias */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+              {categories.map((cat) => {
+                const isSelected = activeCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className={cn(
+                      "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap shrink-0 border",
+                      isSelected
+                        ? "bg-emerald-500 text-slate-950 border-emerald-500 shadow-lg shadow-emerald-500/20 scale-[1.03]"
+                        : "bg-slate-900 text-slate-400 border-slate-800 hover:bg-slate-800 hover:text-white"
+                    )}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
-                      {isCompleted && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-wider border border-emerald-200">
-                          <CheckCircle2 className="h-3.5 w-3.5" />
-                          <span>Concluída</span>
+          {/* Grid Responsivo de 3 Cards por Linha */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {filteredTracks.map((track, i) => {
+              const isCompleted = completedTrackIds.includes(track.id);
+              const gradientClass = CARD_GRADIENTS[i % CARD_GRADIENTS.length];
+              const accentClass = ACCENT_COLORS[i % ACCENT_COLORS.length];
+
+              return (
+                <motion.div
+                  key={track.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05, duration: 0.4 }}
+                  className="group flex flex-col"
+                >
+                  <div className={cn(
+                    "rounded-[2.5rem] p-7 border border-slate-800/80 shadow-xl transition-all duration-300 flex flex-col justify-between flex-1 relative overflow-hidden bg-gradient-to-b hover:border-emerald-500/50 hover:shadow-2xl hover:shadow-emerald-500/10 min-h-[350px]",
+                    gradientClass
+                  )}>
+                    <div>
+                      {/* Top Badges */}
+                      <div className="flex items-center justify-between mb-4">
+                        <span className={cn("px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border", accentClass)}>
+                          {track.category}
                         </span>
-                      )}
+
+                        {isCompleted && (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-wider border border-emerald-500/30">
+                            <CheckCircle2 className="h-3.5 w-3.5" />
+                            <span>Concluída</span>
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Título */}
+                      <h3 className="font-black text-xl text-white uppercase tracking-tight group-hover:text-emerald-400 transition-colors leading-snug mb-3">
+                        {track.title}
+                      </h3>
+
+                      {/* Descrição */}
+                      <p className="text-xs md:text-sm text-slate-400 font-medium leading-relaxed mb-6 line-clamp-3">
+                        {track.description}
+                      </p>
                     </div>
 
-                    {/* Título da Trilha */}
-                    <h3 className="font-black text-xl text-slate-900 uppercase tracking-tight group-hover:text-primary transition-colors leading-snug mb-3">
-                      {track.title}
-                    </h3>
+                    {/* Rodapé do Card */}
+                    <div className="space-y-4 pt-4 border-t border-slate-800/80">
+                      <div className="flex items-center justify-between text-[11px] font-bold text-slate-400">
+                        <span>{track.stepsCount} etapas • {track.duration}</span>
+                        <span className="text-emerald-400">Libras • Legendas</span>
+                      </div>
 
-                    {/* Descrição */}
-                    <p className="text-xs md:text-sm text-slate-500 font-medium leading-relaxed mb-6 line-clamp-3">
-                      {track.description}
-                    </p>
-                  </div>
-
-                  {/* Rodapé do Card com badges mínimos e Ação */}
-                  <div className="space-y-4 pt-4 border-t border-slate-100">
-                    <div className="flex items-center justify-between text-[11px] font-bold text-slate-400">
-                      <span>{track.stepsCount} etapas • {track.duration}</span>
-                      <span>Libras • Legendas • Texto</span>
+                      <button
+                        onClick={() => handleStartTrack(track.id)}
+                        className={cn(
+                          "w-full py-4 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2.5 transition-all shadow-lg",
+                          isCompleted
+                            ? "bg-slate-800 hover:bg-slate-700 text-slate-200"
+                            : "bg-emerald-500 hover:bg-emerald-400 text-slate-950 hover:scale-[1.02] shadow-emerald-500/20"
+                        )}
+                      >
+                        <Play className="h-4 w-4 fill-current" />
+                        <span>{isCompleted ? "Reassistir Trilha" : "Assistir Trilha"}</span>
+                      </button>
                     </div>
-
-                    <button
-                      onClick={() => handleStartTrack(track.id)}
-                      className={cn(
-                        "w-full py-4 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md group-hover:shadow-lg",
-                        isCompleted
-                          ? "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                          : "bg-primary text-white hover:bg-primary/90 group-hover:scale-[1.02]"
-                      )}
-                    >
-                      <span>{isCompleted ? "Rever Trilha" : "Iniciar Trilha"}</span>
-                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
                   </div>
-                </div>
-              </motion.div>
-            );
-          })}
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </div>
     );
   }
 
   // =========================================================
-  // VIEW 2: AMBIENTE DA TRILHA POR DENTRO (JORNADA INTERATIVA)
+  // VIEW 2: STREAMING THEATRE (MODO CINEMA & EPISÓDIOS)
   // Conecta Trilha → Glossário → Minuto → Caso Real → Quiz
   // =========================================================
   const totalStages = activeTrack.steps.length + 1; // steps + quiz
@@ -318,29 +615,33 @@ export function TracksSection() {
   const currentStep = !isQuizStage ? activeTrack.steps[currentStepIndex] : null;
 
   return (
-    <div className="space-y-8 mb-20 animate-in fade-in duration-500 w-full max-w-6xl mx-auto">
-      {/* 1. Barra Superior com Voltar e Título */}
-      <div className="bg-white/95 backdrop-blur-md p-5 md:p-6 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div className="space-y-8 mb-20 animate-in fade-in duration-500 w-full max-w-6xl mx-auto text-white">
+      {/* 1. TOP CINEMA NAV: Voltar ao Catálogo e Status da Série */}
+      <div className="bg-slate-950/90 backdrop-blur-xl p-5 md:p-6 rounded-[2rem] border border-slate-800 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
         <button
-          onClick={handleBackToTracks}
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-slate-100 hover:bg-primary hover:text-white text-slate-700 font-black text-xs uppercase tracking-wider transition-all shadow-sm group w-full sm:w-auto justify-center"
+          onClick={handleBackToCatalog}
+          className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-slate-900 hover:bg-emerald-500 hover:text-slate-950 text-slate-300 font-black text-xs uppercase tracking-wider transition-all border border-slate-800 w-full sm:w-auto justify-center group"
         >
           <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-          <span>Voltar para Trilhas</span>
+          <span>Voltar ao Catálogo</span>
         </button>
 
         <div className="text-center sm:text-right">
-          <span className="text-[10px] font-black uppercase tracking-widest text-primary block">
-            {activeTrack.category} • {activeTrack.duration}
-          </span>
-          <h2 className="text-lg md:text-xl font-black text-slate-900 uppercase tracking-tight">
+          <div className="flex items-center justify-center sm:justify-end gap-2 text-[10px] font-black uppercase tracking-widest text-emerald-400">
+            <span>Temporada 1</span>
+            <span>•</span>
+            <span>{activeTrack.category}</span>
+            <span>•</span>
+            <span>{activeTrack.duration}</span>
+          </div>
+          <h2 className="text-lg md:text-2xl font-black text-white uppercase tracking-tight">
             {activeTrack.title}
           </h2>
         </div>
       </div>
 
-      {/* 2. Stepper Visual das Etapas */}
-      <div className="bg-white p-4 md:p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+      {/* 2. DRAWER DE EPISÓDIOS / CAPÍTULOS (ESTILO STREAMING EPISODE SELECTOR) */}
+      <div className="bg-slate-900/90 backdrop-blur-xl p-4 md:p-5 rounded-[2rem] border border-slate-800 shadow-xl">
         <div className="flex items-center justify-between gap-2 overflow-x-auto pb-2 scrollbar-none">
           {activeTrack.steps.map((step, idx) => {
             const isStepActive = currentStepIndex === idx;
@@ -351,25 +652,25 @@ export function TracksSection() {
                 key={idx}
                 onClick={() => setCurrentStepIndex(idx)}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all shrink-0 border",
+                  "flex items-center gap-2.5 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all shrink-0 border",
                   isStepActive
-                    ? "bg-primary text-white border-primary shadow-md scale-105"
+                    ? "bg-emerald-500 text-slate-950 border-emerald-500 shadow-lg shadow-emerald-500/20 scale-105"
                     : isStepCompleted
-                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                    : "bg-slate-50 text-slate-400 border-slate-200 hover:bg-slate-100"
+                    ? "bg-emerald-950/60 text-emerald-400 border-emerald-500/30 hover:bg-emerald-900/60"
+                    : "bg-slate-950 text-slate-400 border-slate-800 hover:bg-slate-800 hover:text-slate-200"
                 )}
               >
                 {isStepCompleted ? (
-                  <Check className="h-3.5 w-3.5" />
+                  <Check className="h-3.5 w-3.5 text-emerald-400" />
                 ) : (
-                  <span>0{idx + 1}</span>
+                  <span className="font-mono text-[11px] opacity-80">0{idx + 1}</span>
                 )}
                 <span>
-                  {step.type === "video" && "Vídeo"}
-                  {step.type === "concepts" && "Conceitos"}
-                  {step.type === "pill" && "Minuto"}
-                  {step.type === "case" && "Na Prática"}
-                  {step.type === "territory" && "Território"}
+                  {step.type === "video" && "Ep. 1: O Vídeo"}
+                  {step.type === "concepts" && "Ep. 2: Conceitos"}
+                  {step.type === "pill" && "Ep. 3: Minuto"}
+                  {step.type === "case" && "Ep. 4: Na Prática"}
+                  {step.type === "territory" && "Ep. 5: Território"}
                 </span>
               </button>
             );
@@ -379,25 +680,25 @@ export function TracksSection() {
           <button
             onClick={() => setCurrentStepIndex(activeTrack.steps.length)}
             className={cn(
-              "flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all shrink-0 border",
+              "flex items-center gap-2.5 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all shrink-0 border",
               isQuizStage
-                ? "bg-primary text-white border-primary shadow-md scale-105"
+                ? "bg-emerald-500 text-slate-950 border-emerald-500 shadow-lg shadow-emerald-500/20 scale-105"
                 : isQuizCompleted
-                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                : "bg-slate-50 text-slate-400 border-slate-200 hover:bg-slate-100"
+                ? "bg-emerald-950/60 text-emerald-400 border-emerald-500/30"
+                : "bg-slate-950 text-slate-400 border-slate-800 hover:bg-slate-800"
             )}
           >
             {isQuizCompleted ? <Check className="h-3.5 w-3.5" /> : <Brain className="h-3.5 w-3.5" />}
-            <span>Quiz Final</span>
+            <span>Ep. 6: Quiz Final</span>
           </button>
         </div>
       </div>
 
-      {/* 3. CONTEÚDO DINÂMICO DA ETAPA ATIVA */}
-      <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-6 md:p-12 space-y-8">
+      {/* 3. SALA DE EXIBIÇÃO CINEMA / CONTEÚDO DO CAPÍTULO */}
+      <div className="bg-slate-950 rounded-[2.5rem] border border-slate-800/80 shadow-2xl p-6 md:p-12 space-y-8 relative overflow-hidden">
         <AnimatePresence mode="wait">
           {/* =========================================================
-              ETAPA 1: VÍDEO PRINCIPAL & APRESENTAÇÃO EM LIBRAS
+              ETAPA 1: O VÍDEO PRINCIPAL EM LIBRAS (MODO CINEMA)
               ========================================================= */}
           {currentStep?.type === "video" && (
             <motion.div
@@ -408,19 +709,22 @@ export function TracksSection() {
               className="space-y-6"
             >
               <div className="space-y-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary">
-                  Etapa 01 • Introdução Visual
-                </span>
-                <h3 className="text-2xl md:text-3xl font-black text-slate-900 uppercase tracking-tight">
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-1 rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-black text-[10px] uppercase tracking-widest">
+                    Episódio 01 • O Conceito em Libras
+                  </span>
+                  <span className="text-xs text-slate-500 font-bold">• Produção LISSA</span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">
                   {currentStep.title}
                 </h3>
-                <p className="text-sm text-slate-500 font-medium">
+                <p className="text-sm text-slate-400 font-medium">
                   {currentStep.subtitle}
                 </p>
               </div>
 
-              {/* Player do Vídeo Principal */}
-              <div className="rounded-[2.5rem] overflow-hidden bg-slate-950 aspect-video shadow-2xl border border-slate-800 relative">
+              {/* Player Cinemático de Alta Qualidade */}
+              <div className="rounded-[2.5rem] overflow-hidden bg-black aspect-video shadow-2xl border border-slate-800 relative ring-1 ring-white/10">
                 <iframe
                   src={getEmbedUrl(currentStep.videoUrl)}
                   className="w-full h-full object-cover"
@@ -430,23 +734,24 @@ export function TracksSection() {
                 />
               </div>
 
-              {/* Texto explicativo em linguagem clara */}
-              <div className="p-6 md:p-8 rounded-[2rem] bg-slate-50 border border-slate-100 space-y-3">
-                <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
-                  Resumo Didático em Português
-                </span>
-                <p className="text-sm md:text-base text-slate-700 font-medium leading-relaxed">
+              {/* Sinopse / Resumo Didático */}
+              <div className="p-6 md:p-8 rounded-[2rem] bg-slate-900/90 border border-slate-800 space-y-3">
+                <div className="flex items-center gap-2 text-emerald-400 text-xs font-black uppercase tracking-wider">
+                  <BookOpen className="h-4 w-4" />
+                  <span>Sinopse Didática em Português</span>
+                </div>
+                <p className="text-sm md:text-base text-slate-300 font-medium leading-relaxed">
                   {currentStep.content}
                 </p>
               </div>
 
-              {/* Ação: Próxima Etapa */}
+              {/* Botão Próximo Episódio */}
               <div className="flex justify-end pt-4">
                 <button
                   onClick={handleNextStep}
-                  className="px-8 py-4 rounded-2xl bg-primary text-white font-black text-xs uppercase tracking-wider hover:bg-primary/90 transition-all shadow-lg hover:scale-[1.02] flex items-center gap-2"
+                  className="px-8 py-4 rounded-2xl bg-emerald-500 text-slate-950 font-black text-xs uppercase tracking-wider hover:bg-emerald-400 transition-all shadow-xl shadow-emerald-500/20 hover:scale-105 flex items-center gap-2"
                 >
-                  <span>Avançar para Etapa 2: Conheça os Conceitos</span>
+                  <span>Próximo Episódio: Conheça os Conceitos</span>
                   <ArrowRight className="h-4 w-4" />
                 </button>
               </div>
@@ -454,7 +759,7 @@ export function TracksSection() {
           )}
 
           {/* =========================================================
-              ETAPA 2: CONHEÇA OS CONCEITOS (CONEXÃO COM O GLOSSÁRIO)
+              ETAPA 2: OS SINAIS DA CIÊNCIA (GLOSSÁRIO EM CENA)
               ========================================================= */}
           {currentStep?.type === "concepts" && (
             <motion.div
@@ -465,49 +770,49 @@ export function TracksSection() {
               className="space-y-6"
             >
               <div className="space-y-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary">
-                  Etapa 02 • Conexão com o Glossário Científico
+                <span className="px-3 py-1 rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-black text-[10px] uppercase tracking-widest inline-block">
+                  Episódio 02 • Conexão com o Glossário
                 </span>
-                <h3 className="text-2xl md:text-3xl font-black text-slate-900 uppercase tracking-tight">
+                <h3 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">
                   {currentStep.title}
                 </h3>
-                <p className="text-sm text-slate-500 font-medium">
-                  {currentStep.subtitle} — Veja como estes termos são sinalizados e definidos oficialmente.
+                <p className="text-sm text-slate-400 font-medium">
+                  {currentStep.subtitle} — Como estes termos são sinalizados e definidos oficialmente na ciência.
                 </p>
               </div>
 
-              {/* Cards Interativos dos Termos do Glossário */}
+              {/* Cards Escuros Translúcidos dos Termos */}
               <div className="grid md:grid-cols-3 gap-6 pt-4">
                 {currentStep.conceptTerms?.map((termItem, tidx) => (
                   <div
                     key={tidx}
-                    className="p-6 rounded-[2rem] bg-slate-50 border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-4 hover:border-primary/40 hover:shadow-md transition-all"
+                    className="p-6 rounded-[2rem] bg-slate-900/90 border border-slate-800 shadow-xl flex flex-col justify-between space-y-4 hover:border-emerald-500/40 transition-all duration-300"
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="px-3 py-1 rounded-xl bg-primary text-white font-mono text-[11px] font-black">
+                        <span className="px-3 py-1 rounded-xl bg-emerald-500 text-slate-950 font-mono text-[11px] font-black">
                           {termItem.codeId || `#0${tidx + 1}`}
                         </span>
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                           Libras Científica
                         </span>
                       </div>
 
-                      <h4 className="text-base font-black uppercase tracking-tight text-slate-900 leading-snug">
+                      <h4 className="text-base font-black uppercase tracking-tight text-white leading-snug">
                         {termItem.term}
                       </h4>
 
-                      <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                      <p className="text-xs text-slate-400 font-medium leading-relaxed">
                         {termItem.definition}
                       </p>
                     </div>
 
-                    <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 space-y-1.5">
-                      <div className="flex items-center gap-1.5 text-primary text-[10px] font-black uppercase tracking-wider">
+                    <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5">
+                      <div className="flex items-center gap-1.5 text-emerald-400 text-[10px] font-black uppercase tracking-wider">
                         <Ear className="h-3.5 w-3.5" />
                         <span>Sinal em Libras</span>
                       </div>
-                      <p className="text-xs text-slate-700 font-medium leading-relaxed">
+                      <p className="text-xs text-slate-300 font-medium leading-relaxed">
                         {termItem.signStrategy}
                       </p>
                     </div>
@@ -516,18 +821,18 @@ export function TracksSection() {
               </div>
 
               {/* Ações */}
-              <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+              <div className="flex items-center justify-between pt-6 border-t border-slate-800">
                 <button
                   onClick={handlePrevStep}
-                  className="px-6 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-xs uppercase tracking-wider transition-all"
+                  className="px-6 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-slate-300 font-black text-xs uppercase tracking-wider transition-all border border-slate-800"
                 >
-                  ← Etapa Anterior
+                  ← Episódio Anterior
                 </button>
                 <button
                   onClick={handleNextStep}
-                  className="px-8 py-4 rounded-2xl bg-primary text-white font-black text-xs uppercase tracking-wider hover:bg-primary/90 transition-all shadow-lg hover:scale-[1.02] flex items-center gap-2"
+                  className="px-8 py-4 rounded-2xl bg-emerald-500 text-slate-950 font-black text-xs uppercase tracking-wider hover:bg-emerald-400 transition-all shadow-xl shadow-emerald-500/20 hover:scale-105 flex items-center gap-2"
                 >
-                  <span>Avançar para Etapa 3: Minuto do Conhecimento</span>
+                  <span>Próximo Episódio: Minuto do Conhecimento</span>
                   <ArrowRight className="h-4 w-4" />
                 </button>
               </div>
@@ -535,7 +840,7 @@ export function TracksSection() {
           )}
 
           {/* =========================================================
-              ETAPA 3: MINUTO DO CONHECIMENTO (CONEXÃO COM PÍLULAS)
+              ETAPA 3: MINUTO DO CONHECIMENTO (PÍLULA VERTICAL 9:16)
               ========================================================= */}
           {currentStep?.type === "pill" && currentStep.pill && (
             <motion.div
@@ -546,21 +851,21 @@ export function TracksSection() {
               className="space-y-6"
             >
               <div className="space-y-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary">
-                  Etapa 03 • Conexão com o Minuto do Conhecimento
+                <span className="px-3 py-1 rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-black text-[10px] uppercase tracking-widest inline-block">
+                  Episódio 03 • Minuto do Conhecimento
                 </span>
-                <h3 className="text-2xl md:text-3xl font-black text-slate-900 uppercase tracking-tight">
+                <h3 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">
                   {currentStep.title}
                 </h3>
-                <p className="text-sm text-slate-500 font-medium">
-                  {currentStep.subtitle} — Uma pílula em vídeo explicando uma questão prática.
+                <p className="text-sm text-slate-400 font-medium">
+                  {currentStep.subtitle} — Uma pílula cinematográfica rápida de aplicação direta.
                 </p>
               </div>
 
-              {/* Visualizador da Pílula */}
+              {/* Visualizador da Pílula Vertical Estilo Reels/Shorts */}
               <div className="grid md:grid-cols-12 gap-8 items-center pt-2">
                 <div className="md:col-span-6 flex justify-center">
-                  <div className="w-full max-w-[340px] aspect-[9/16] rounded-[2.5rem] overflow-hidden bg-slate-950 shadow-2xl border border-slate-800 relative">
+                  <div className="w-full max-w-[340px] aspect-[9/16] rounded-[2.5rem] overflow-hidden bg-black shadow-2xl border border-slate-800 relative ring-1 ring-white/10">
                     <iframe
                       src={getEmbedUrl(currentStep.pill.videoUrl)}
                       className="w-full h-full object-cover"
@@ -573,26 +878,26 @@ export function TracksSection() {
 
                 <div className="md:col-span-6 space-y-6">
                   <div className="space-y-2">
-                    <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-wider">
+                    <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-black uppercase tracking-wider">
                       Duração: {currentStep.pill.duration}
                     </span>
-                    <h4 className="text-xl md:text-2xl font-black text-slate-800 uppercase tracking-tight">
+                    <h4 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight">
                       {currentStep.pill.title}
                     </h4>
                   </div>
 
-                  <div className="p-6 rounded-[2rem] bg-slate-50 border border-slate-100 space-y-2">
+                  <div className="p-6 rounded-[2rem] bg-slate-900 border border-slate-800 space-y-2">
                     <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
                       Apoio Estratégico
                     </span>
-                    <p className="text-sm text-slate-700 font-medium leading-relaxed">
+                    <p className="text-sm text-slate-300 font-medium leading-relaxed">
                       {currentStep.pill.supportText}
                     </p>
                   </div>
 
-                  <div className="p-6 rounded-[2rem] bg-emerald-50/70 border border-emerald-200/80 space-y-2 text-emerald-800">
-                    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                  <div className="p-6 rounded-[2rem] bg-emerald-950/60 border border-emerald-500/40 space-y-2 text-emerald-200">
+                    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald-400">
+                      <CheckCircle2 className="h-4 w-4" />
                       <span>Aplicação Prática no Dia a Dia</span>
                     </div>
                     <p className="text-sm font-medium leading-relaxed">
@@ -603,18 +908,18 @@ export function TracksSection() {
               </div>
 
               {/* Ações */}
-              <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+              <div className="flex items-center justify-between pt-6 border-t border-slate-800">
                 <button
                   onClick={handlePrevStep}
-                  className="px-6 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-xs uppercase tracking-wider transition-all"
+                  className="px-6 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-slate-300 font-black text-xs uppercase tracking-wider transition-all border border-slate-800"
                 >
-                  ← Etapa Anterior
+                  ← Episódio Anterior
                 </button>
                 <button
                   onClick={handleNextStep}
-                  className="px-8 py-4 rounded-2xl bg-primary text-white font-black text-xs uppercase tracking-wider hover:bg-primary/90 transition-all shadow-lg hover:scale-[1.02] flex items-center gap-2"
+                  className="px-8 py-4 rounded-2xl bg-emerald-500 text-slate-950 font-black text-xs uppercase tracking-wider hover:bg-emerald-400 transition-all shadow-xl shadow-emerald-500/20 hover:scale-105 flex items-center gap-2"
                 >
-                  <span>Avançar para Etapa 4: Na Vida Real</span>
+                  <span>Próximo Episódio: Na Vida Real</span>
                   <ArrowRight className="h-4 w-4" />
                 </button>
               </div>
@@ -633,27 +938,27 @@ export function TracksSection() {
               className="space-y-6"
             >
               <div className="space-y-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary">
-                  Etapa 04 • Na Vida Real (Situação-Problema)
+                <span className="px-3 py-1 rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-black text-[10px] uppercase tracking-widest inline-block">
+                  Episódio 04 • Na Vida Real (Caso Interativo)
                 </span>
-                <h3 className="text-2xl md:text-3xl font-black text-slate-900 uppercase tracking-tight">
+                <h3 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">
                   {currentStep.title}
                 </h3>
-                <p className="text-sm text-slate-500 font-medium">
+                <p className="text-sm text-slate-400 font-medium">
                   {currentStep.subtitle}
                 </p>
               </div>
 
               {/* Card da Situação Problema */}
-              <div className="p-8 rounded-[2.5rem] bg-gradient-to-br from-slate-50 to-primary/5 border border-slate-200/80 space-y-4">
-                <div className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-slate-600">
-                  <HelpCircle className="h-4 w-4 text-primary" />
+              <div className="p-8 rounded-[2.5rem] bg-gradient-to-br from-slate-900 via-slate-900/90 to-emerald-950/40 border border-slate-800 space-y-4 shadow-xl">
+                <div className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald-400">
+                  <HelpCircle className="h-4 w-4" />
                   <span>O Caso de Estudo</span>
                 </div>
-                <p className="text-base md:text-lg font-medium text-slate-800 leading-relaxed italic">
+                <p className="text-base md:text-lg font-medium text-slate-200 leading-relaxed italic">
                   "{currentStep.caseStudy.context}"
                 </p>
-                <h4 className="text-base md:text-xl font-black text-slate-900 pt-2">
+                <h4 className="text-base md:text-xl font-black text-white pt-2">
                   {currentStep.caseStudy.question}
                 </h4>
               </div>
@@ -671,20 +976,20 @@ export function TracksSection() {
                           "w-full text-left p-6 rounded-[2rem] border transition-all duration-300 flex items-start gap-4",
                           isSelected
                             ? opt.isCorrect
-                              ? "bg-emerald-50 border-emerald-500 ring-2 ring-emerald-500/20 shadow-md"
-                              : "bg-rose-50 border-rose-500 ring-2 ring-rose-500/20 shadow-md"
-                            : "bg-white border-slate-200 hover:border-primary/40 hover:bg-slate-50"
+                              ? "bg-emerald-950/80 border-emerald-500 ring-2 ring-emerald-500/30 shadow-lg"
+                              : "bg-rose-950/80 border-rose-500 ring-2 ring-rose-500/30 shadow-lg"
+                            : "bg-slate-900/80 border-slate-800 hover:border-slate-700 hover:bg-slate-800/80"
                         )}
                       >
                         <div className={cn(
                           "w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs",
                           isSelected
-                            ? opt.isCorrect ? "bg-emerald-600 text-white" : "bg-rose-600 text-white"
-                            : "border border-slate-300 text-slate-400"
+                            ? opt.isCorrect ? "bg-emerald-500 text-slate-950 font-black" : "bg-rose-500 text-white"
+                            : "border border-slate-700 text-slate-400"
                         )}>
                           {isSelected ? (opt.isCorrect ? "✓" : "✕") : ""}
                         </div>
-                        <span className="text-sm md:text-base font-semibold text-slate-800 leading-relaxed">
+                        <span className="text-sm md:text-base font-semibold text-slate-200 leading-relaxed">
                           {opt.text}
                         </span>
                       </button>
@@ -695,11 +1000,11 @@ export function TracksSection() {
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: "auto" }}
                           className={cn(
-                            "p-5 rounded-2xl text-xs md:text-sm font-medium leading-relaxed",
-                            opt.isCorrect ? "bg-emerald-100/70 text-emerald-900" : "bg-rose-100/70 text-rose-900"
+                            "p-5 rounded-2xl text-xs md:text-sm font-medium leading-relaxed border",
+                            opt.isCorrect ? "bg-emerald-950/70 border-emerald-500/40 text-emerald-200" : "bg-rose-950/70 border-rose-500/40 text-rose-200"
                           )}
                         >
-                          <strong>{opt.isCorrect ? "Correto! " : "Atenção: "}</strong>
+                          <strong className="block mb-1">{opt.isCorrect ? "✓ Decisão Correta: " : "✕ Ponto de Atenção: "}</strong>
                           {opt.explanation}
                         </motion.div>
                       )}
@@ -709,24 +1014,24 @@ export function TracksSection() {
               </div>
 
               {/* Ações */}
-              <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+              <div className="flex items-center justify-between pt-6 border-t border-slate-800">
                 <button
                   onClick={handlePrevStep}
-                  className="px-6 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-xs uppercase tracking-wider transition-all"
+                  className="px-6 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-slate-300 font-black text-xs uppercase tracking-wider transition-all border border-slate-800"
                 >
-                  ← Etapa Anterior
+                  ← Episódio Anterior
                 </button>
                 <button
                   onClick={handleNextStep}
                   disabled={selectedCaseOption === null}
                   className={cn(
-                    "px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-wider transition-all shadow-lg flex items-center gap-2",
+                    "px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-wider transition-all shadow-xl flex items-center gap-2",
                     selectedCaseOption !== null
-                      ? "bg-primary text-white hover:bg-primary/90 hover:scale-[1.02]"
-                      : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                      ? "bg-emerald-500 text-slate-950 hover:bg-emerald-400 hover:scale-105 shadow-emerald-500/20"
+                      : "bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700"
                   )}
                 >
-                  <span>Avançar para Etapa 5: No Seu Território</span>
+                  <span>Próximo Episódio: No Seu Território</span>
                   <ArrowRight className="h-4 w-4" />
                 </button>
               </div>
@@ -734,7 +1039,7 @@ export function TracksSection() {
           )}
 
           {/* =========================================================
-              ETAPA 5: O QUE ACONTECE NO SEU TERRITÓRIO? (REFLEXÃO)
+              ETAPA 5: CONEXÃO COM O TERRITÓRIO (REFLEXÃO)
               ========================================================= */}
           {currentStep?.type === "territory" && currentStep.territoryReflection && (
             <motion.div
@@ -745,24 +1050,24 @@ export function TracksSection() {
               className="space-y-6"
             >
               <div className="space-y-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary">
-                  Etapa 05 • Conexão Territorial
+                <span className="px-3 py-1 rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-black text-[10px] uppercase tracking-widest inline-block">
+                  Episódio 05 • Conexão com o Território
                 </span>
-                <h3 className="text-2xl md:text-3xl font-black text-slate-900 uppercase tracking-tight">
+                <h3 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">
                   {currentStep.title}
                 </h3>
-                <p className="text-sm text-slate-500 font-medium">
-                  {currentStep.subtitle} — A ciência aplicada à sua vivência.
+                <p className="text-sm text-slate-400 font-medium">
+                  {currentStep.subtitle} — Como este tema se manifesta onde você vive?
                 </p>
               </div>
 
               {/* Pergunta Reflexiva */}
-              <div className="p-8 rounded-[2.5rem] bg-slate-50 border border-slate-200/80 space-y-5">
-                <div className="flex items-center gap-2.5 text-primary text-xs font-black uppercase tracking-wider">
+              <div className="p-8 rounded-[2.5rem] bg-slate-900 border border-slate-800 space-y-5 shadow-xl">
+                <div className="flex items-center gap-2.5 text-emerald-400 text-xs font-black uppercase tracking-wider">
                   <MapPin className="h-5 w-5" />
-                  <span>Pergunta Reflexiva Territorial</span>
+                  <span>Reflexão Territorial</span>
                 </div>
-                <h4 className="text-lg md:text-2xl font-black text-slate-800 leading-snug">
+                <h4 className="text-lg md:text-2xl font-black text-white leading-snug">
                   {currentStep.territoryReflection.prompt}
                 </h4>
 
@@ -776,12 +1081,12 @@ export function TracksSection() {
                         className={cn(
                           "w-full text-left p-5 rounded-2xl border transition-all text-sm md:text-base font-semibold leading-relaxed flex items-center justify-between",
                           isSelected
-                            ? "bg-primary text-white border-primary shadow-md"
-                            : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
+                            ? "bg-emerald-500 text-slate-950 border-emerald-500 font-bold shadow-lg"
+                            : "bg-slate-950 text-slate-300 border-slate-800 hover:bg-slate-800/80"
                         )}
                       >
                         <span>{opt}</span>
-                        {isSelected && <Check className="h-5 w-5 text-white" />}
+                        {isSelected && <Check className="h-5 w-5 text-slate-950" />}
                       </button>
                     );
                   })}
@@ -791,25 +1096,25 @@ export function TracksSection() {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-5 rounded-2xl bg-white border border-primary/20 text-xs md:text-sm text-slate-600 font-medium leading-relaxed"
+                    className="p-5 rounded-2xl bg-emerald-950/60 border border-emerald-500/30 text-xs md:text-sm text-emerald-200 font-medium leading-relaxed"
                   >
-                    <strong className="text-primary block mb-1">💡 Conexão LISSA:</strong>
+                    <strong className="text-emerald-400 block mb-1">💡 Conexão LISSA:</strong>
                     {currentStep.territoryReflection.insight}
                   </motion.div>
                 )}
               </div>
 
               {/* Ações */}
-              <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+              <div className="flex items-center justify-between pt-6 border-t border-slate-800">
                 <button
                   onClick={handlePrevStep}
-                  className="px-6 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-xs uppercase tracking-wider transition-all"
+                  className="px-6 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-slate-300 font-black text-xs uppercase tracking-wider transition-all border border-slate-800"
                 >
-                  ← Etapa Anterior
+                  ← Episódio Anterior
                 </button>
                 <button
                   onClick={handleNextStep}
-                  className="px-8 py-4 rounded-2xl bg-primary text-white font-black text-xs uppercase tracking-wider hover:bg-primary/90 transition-all shadow-lg hover:scale-[1.02] flex items-center gap-2"
+                  className="px-8 py-4 rounded-2xl bg-emerald-500 text-slate-950 font-black text-xs uppercase tracking-wider hover:bg-emerald-400 transition-all shadow-xl shadow-emerald-500/20 hover:scale-105 flex items-center gap-2"
                 >
                   <span>Ir para o Quiz Final</span>
                   <Brain className="h-4 w-4" />
@@ -831,16 +1136,16 @@ export function TracksSection() {
             >
               {!isQuizCompleted ? (
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+                  <div className="flex items-center justify-between pb-4 border-b border-slate-800">
                     <div>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-primary block">
-                        Avaliação de Fixação
+                      <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400 block">
+                        Episódio 06 • Fixação & Certificação
                       </span>
-                      <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
-                        Teste seus Conhecimentos
+                      <h3 className="text-2xl font-black text-white uppercase tracking-tight">
+                        Quiz da Temporada
                       </h3>
                     </div>
-                    <span className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-black text-xs">
+                    <span className="px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-emerald-400 font-black text-xs font-mono">
                       Questão {currentQuestionIndex + 1} de {activeTrack.quiz.length}
                     </span>
                   </div>
@@ -852,7 +1157,7 @@ export function TracksSection() {
 
                     return (
                       <div className="space-y-6">
-                        <h4 className="text-lg md:text-2xl font-black text-slate-800 leading-snug">
+                        <h4 className="text-lg md:text-2xl font-black text-white leading-snug">
                           {q.question}
                         </h4>
 
@@ -870,18 +1175,18 @@ export function TracksSection() {
                                   "w-full text-left p-5 rounded-2xl border transition-all text-sm md:text-base font-semibold leading-relaxed flex items-start gap-4",
                                   selectedAnswer !== null
                                     ? isCorrect
-                                      ? "bg-emerald-50 border-emerald-500 text-emerald-900 ring-2 ring-emerald-500/20 shadow-sm"
+                                      ? "bg-emerald-950/80 border-emerald-500 text-emerald-200 ring-2 ring-emerald-500/20 shadow-md"
                                       : isChosen
-                                      ? "bg-rose-50 border-rose-500 text-rose-900 ring-2 ring-rose-500/20 shadow-sm"
-                                      : "bg-slate-50 text-slate-400 border-slate-200 opacity-60"
-                                    : "bg-white text-slate-700 border-slate-200 hover:border-primary/40 hover:bg-slate-50"
+                                      ? "bg-rose-950/80 border-rose-500 text-rose-200 ring-2 ring-rose-500/20 shadow-md"
+                                      : "bg-slate-900 text-slate-500 border-slate-800 opacity-60"
+                                    : "bg-slate-900 text-slate-200 border-slate-800 hover:border-slate-700 hover:bg-slate-800"
                                 )}
                               >
                                 <span className={cn(
                                   "w-7 h-7 rounded-xl flex items-center justify-center shrink-0 font-bold text-xs",
                                   selectedAnswer !== null
-                                    ? isCorrect ? "bg-emerald-600 text-white" : isChosen ? "bg-rose-600 text-white" : "bg-slate-200 text-slate-500"
-                                    : "bg-slate-100 text-slate-600"
+                                    ? isCorrect ? "bg-emerald-500 text-slate-950 font-black" : isChosen ? "bg-rose-500 text-white" : "bg-slate-800 text-slate-500"
+                                    : "bg-slate-800 text-slate-300"
                                 )}>
                                   {String.fromCharCode(65 + optIdx)}
                                 </span>
@@ -896,9 +1201,9 @@ export function TracksSection() {
                           <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-xs md:text-sm text-slate-700 leading-relaxed font-medium"
+                            className="p-5 rounded-2xl bg-slate-900 border border-slate-800 text-xs md:text-sm text-slate-300 leading-relaxed font-medium"
                           >
-                            <strong>Explicação:</strong> {q.explanation}
+                            <strong className="text-emerald-400 block mb-1">Explicação Científica:</strong> {q.explanation}
                           </motion.div>
                         )}
 
@@ -908,13 +1213,13 @@ export function TracksSection() {
                             onClick={handleNextQuestion}
                             disabled={selectedAnswer === null}
                             className={cn(
-                              "px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-wider transition-all shadow-lg flex items-center gap-2",
+                              "px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-wider transition-all shadow-xl flex items-center gap-2",
                               selectedAnswer !== null
-                                ? "bg-primary text-white hover:bg-primary/90 hover:scale-[1.02]"
-                                : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                                ? "bg-emerald-500 text-slate-950 hover:bg-emerald-400 hover:scale-105 shadow-emerald-500/20"
+                                : "bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700"
                             )}
                           >
-                            <span>{currentQuestionIndex < activeTrack.quiz.length - 1 ? "Próxima Questão" : "Finalizar Trilha"}</span>
+                            <span>{currentQuestionIndex < activeTrack.quiz.length - 1 ? "Próxima Questão" : "Concluir Trilha"}</span>
                             <ArrowRight className="h-4 w-4" />
                           </button>
                         </div>
@@ -929,35 +1234,35 @@ export function TracksSection() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="text-center py-12 space-y-6"
                 >
-                  <div className="w-24 h-24 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center shadow-xl border-4 border-white">
+                  <div className="w-24 h-24 rounded-full bg-emerald-500/20 text-emerald-400 border-2 border-emerald-500/40 mx-auto flex items-center justify-center shadow-2xl shadow-emerald-500/30">
                     <CheckCircle2 className="h-12 w-12" />
                   </div>
 
                   <div className="space-y-2">
-                    <span className="text-xs font-black uppercase tracking-[0.2em] text-emerald-600">
-                      Trilha Concluída ✓
+                    <span className="text-xs font-black uppercase tracking-[0.2em] text-emerald-400">
+                      Série Concluída com Sucesso ✓
                     </span>
-                    <h3 className="text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tight">
-                      Parabéns! Você concluiu {activeTrack.title}.
+                    <h3 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tight">
+                      Parabéns! Você completou {activeTrack.title}.
                     </h3>
-                    <p className="text-sm md:text-base text-slate-500 font-medium max-w-lg mx-auto leading-relaxed">
-                      Você avançou por todas as etapas pedagógicas, explorou os termos em Libras e aplicou os conceitos na prática territorial.
+                    <p className="text-sm md:text-base text-slate-400 font-medium max-w-lg mx-auto leading-relaxed">
+                      Você maratonou todos os episódios pedagógicos, explorou os sinais da ciência e venceu o desafio territorial.
                     </p>
                   </div>
 
-                  <div className="inline-flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                    <Trophy className="h-6 w-6 text-amber-500" />
-                    <span className="text-sm font-black text-slate-700">
-                      Acertos no Quiz: {quizScore} de {activeTrack.quiz.length}
+                  <div className="inline-flex items-center gap-4 p-4 rounded-2xl bg-slate-900 border border-slate-800">
+                    <Trophy className="h-6 w-6 text-amber-400" />
+                    <span className="text-sm font-black text-white">
+                      Desempenho no Quiz: {quizScore} de {activeTrack.quiz.length} acertos
                     </span>
                   </div>
 
                   <div className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
                     <button
-                      onClick={handleBackToTracks}
-                      className="px-8 py-4 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-xs uppercase tracking-wider transition-all w-full sm:w-auto"
+                      onClick={handleBackToCatalog}
+                      className="px-8 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 text-slate-300 font-black text-xs uppercase tracking-wider transition-all border border-slate-800 w-full sm:w-auto"
                     >
-                      Voltar para as Trilhas
+                      Voltar ao Catálogo
                     </button>
 
                     {(() => {
@@ -968,9 +1273,9 @@ export function TracksSection() {
                       return (
                         <button
                           onClick={() => handleStartTrack(nextTrack.id)}
-                          className="px-8 py-4 rounded-2xl bg-primary text-white hover:bg-primary/90 font-black text-xs uppercase tracking-wider transition-all shadow-lg hover:scale-[1.02] flex items-center justify-center gap-2 w-full sm:w-auto"
+                          className="px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider transition-all shadow-xl shadow-emerald-500/20 hover:scale-105 flex items-center justify-center gap-2 w-full sm:w-auto"
                         >
-                          <span>Iniciar Próxima Trilha: {nextTrack.title}</span>
+                          <span>Maratonar Próxima Trilha: {nextTrack.title}</span>
                           <ArrowRight className="h-4 w-4" />
                         </button>
                       );
