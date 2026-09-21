@@ -122,7 +122,7 @@ export default function LaboratorioPage({ params }: { params?: { estudio?: strin
             <motion.div 
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="flex-1 container px-4 py-12 z-10"
+                className="flex-1 w-full max-w-[1780px] mx-auto px-4 sm:px-6 md:px-8 py-8 z-10"
             >
                 {/* Navegação Superior */}
                 <div className="flex items-center justify-between mb-12">

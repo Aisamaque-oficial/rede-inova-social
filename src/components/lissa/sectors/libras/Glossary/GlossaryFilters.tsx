@@ -375,7 +375,7 @@ export function GlossaryFilters() {
           </div>
 
           {/* Lista Rolável de Termos */}
-          <div className="max-h-[660px] overflow-y-auto pr-1 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-200">
+          <div className="max-h-[760px] overflow-y-auto pr-1 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-200">
             {filteredTerms.length === 0 ? (
               <div className="p-8 text-center space-y-2 text-slate-400">
                 <p className="text-xs font-semibold">Nenhum termo encontrado.</p>
@@ -397,7 +397,7 @@ export function GlossaryFilters() {
                     key={t.id || t.term || index}
                     onClick={() => setActiveTermIndex(index)}
                     className={cn(
-                      "w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center justify-between gap-2.5 border group",
+                      "w-full text-left p-3.5 rounded-2xl transition-all duration-200 flex items-center justify-between gap-2.5 border group",
                       isSelected
                         ? "bg-primary text-white border-primary shadow-md scale-[1.01]"
                         : "bg-slate-50/70 hover:bg-white text-slate-700 border-slate-100 hover:border-primary/30 hover:shadow-sm"
@@ -416,7 +416,7 @@ export function GlossaryFilters() {
 
                       {/* Nome do Termo */}
                       <span className={cn(
-                        "text-xs font-black uppercase tracking-tight truncate leading-tight",
+                        "text-xs font-black uppercase tracking-tight line-clamp-2 leading-snug",
                         isSelected ? "text-white" : "text-slate-800 group-hover:text-primary"
                       )}>
                         {t.term}
@@ -460,7 +460,7 @@ export function GlossaryFilters() {
             ========================================================= */}
         <div className="lg:col-span-8 xl:col-span-9 space-y-4">
           {activeTerm ? (
-            <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-6 md:p-8 space-y-6">
+            <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-6 md:p-10 space-y-8 rounded-[3rem]">
               {/* Barra de Controle do Termo Ativo */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
                 <div className="flex items-center gap-3">
@@ -527,7 +527,7 @@ export function GlossaryFilters() {
                   ÁREA CENTRAL: LADO A LADO OU EXPANDIDA CONFORME ESCOLHA
                   ========================================================= */}
               <div className={cn(
-                "gap-6",
+                "gap-8",
                 displayMode === "bilang" ? "grid grid-cols-1 xl:grid-cols-12 items-stretch" : "block"
               )}>
                 {/* LADO ESQUERDO: VÍDEO EM LIBRAS */}
@@ -572,12 +572,12 @@ export function GlossaryFilters() {
                     </div>
 
                     {/* Box da Estratégia em Libras */}
-                    <div className="p-4 md:p-5 rounded-2xl bg-primary/5 border border-primary/15 space-y-2">
-                      <div className="flex items-center gap-2 text-primary font-black text-xs uppercase tracking-wider">
+                    <div className="p-6 rounded-[2rem] bg-primary/5 border border-primary/15 space-y-3">
+                      <div className="flex items-center gap-2.5 text-primary font-black text-xs uppercase tracking-wider">
                         <Ear className="h-4 w-4 shrink-0" />
                         <span>Estratégia Linguística em Libras</span>
                       </div>
-                      <p className="text-xs text-slate-700 font-medium leading-relaxed">
+                      <p className="text-xs md:text-sm text-slate-700 font-medium leading-relaxed">
                         {activeTerm.signStrategy || activeTerm.sign_strategy || "Sinalização técnica acompanhada de datilologia e expressão facial condizente com a gravidade sanitária."}
                       </p>
                     </div>
@@ -587,43 +587,43 @@ export function GlossaryFilters() {
                 {/* LADO DIREITO: TEXTO EM PORTUGUÊS (LIMPO, ESTRUTURADO E DIRETO) */}
                 {(displayMode === "bilang" || displayMode === "text_only") && (
                   <div className={cn(
-                    "p-6 md:p-7 rounded-[2rem] bg-slate-50/90 border border-slate-200/80 flex flex-col justify-between space-y-5",
+                    "p-7 md:p-9 rounded-[2.5rem] bg-slate-50/90 border border-slate-200/80 flex flex-col justify-between space-y-6",
                     displayMode === "bilang" ? "xl:col-span-6 mt-4 xl:mt-0" : "w-full"
                   )}>
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                       {/* Cabeçalho do Texto em Português */}
-                      <div className="flex items-center justify-between pb-3 border-b-2 border-primary/20">
+                      <div className="flex items-center justify-between pb-4 border-b-2 border-primary/20">
                         <div>
-                          <span className="text-[10px] font-black uppercase tracking-widest text-primary block">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-primary block mb-1">
                             Definição em Português
                           </span>
-                          <h4 className="text-lg md:text-xl font-black text-slate-800 uppercase tracking-tight">
+                          <h4 className="text-xl md:text-2xl font-black text-slate-800 uppercase tracking-tight">
                             {activeTerm.term}
                           </h4>
                         </div>
-                        <span className="px-3 py-1 rounded-full bg-white text-slate-600 text-[10px] font-bold uppercase tracking-wider border border-slate-200 shadow-sm">
+                        <span className="px-3.5 py-1.5 rounded-full bg-white text-slate-700 text-[11px] font-black uppercase tracking-wider border border-slate-200 shadow-sm">
                           ANVISA / MAPA
                         </span>
                       </div>
 
                       {/* Definição Técnica */}
-                      <div className="space-y-1.5">
+                      <div className="space-y-2">
                         <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
                           Conceito Oficial
                         </span>
-                        <p className="text-xs md:text-sm font-medium leading-relaxed text-slate-800">
+                        <p className="text-sm md:text-base font-medium leading-relaxed text-slate-800">
                           {activeTerm.definition || activeTerm.description}
                         </p>
                       </div>
 
                       {/* Contexto e Aplicação */}
                       {activeTerm.context && (
-                        <div className="space-y-1.5 pt-3 border-t border-slate-200/60">
+                        <div className="space-y-2 pt-4 border-t border-slate-200/60">
                           <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block flex items-center gap-1.5">
-                            <Compass className="h-3 w-3 text-primary" />
-                            <span>Contexto Sanitário e Aplicação</span>
+                            <Compass className="h-3.5 w-3.5 text-primary" />
+                            <span>Contexto Sanitário e Aplicação Prática</span>
                           </span>
-                          <p className="text-xs font-medium leading-relaxed text-slate-600">
+                          <p className="text-xs md:text-sm font-medium leading-relaxed text-slate-600">
                             {activeTerm.context}
                           </p>
                         </div>

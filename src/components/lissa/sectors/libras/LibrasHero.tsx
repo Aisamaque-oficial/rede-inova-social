@@ -49,7 +49,7 @@ export function LibrasHero({ isStudio }: LibrasHeroProps) {
             transition: { staggerChildren: 0.1, delayChildren: 0.2 }
           }
         }}
-        className="max-w-7xl mx-auto relative z-10"
+        className="w-full max-w-[1720px] mx-auto relative z-10"
       >
         <div className="grid lg:grid-cols-12 gap-16 items-start">
           <div className="lg:col-span-7 space-y-10">

@@ -34,7 +34,7 @@ export function LissaWrapper({ title, icon: Icon, children }: LissaWrapperProps)
         </div>
       </div>
 
-      <Card className="bg-white/60 backdrop-blur-2xl rounded-[4rem] p-8 md:p-16 shadow-[0_30px_100px_rgba(0,0,0,0.05)] border-none ring-1 ring-white overflow-hidden">
+      <Card className="bg-white/60 backdrop-blur-2xl rounded-[3rem] md:rounded-[4rem] p-4 sm:p-6 md:p-8 lg:p-10 shadow-[0_30px_100px_rgba(0,0,0,0.05)] border-none ring-1 ring-white overflow-hidden w-full">
         {children}
       </Card>
     </div>

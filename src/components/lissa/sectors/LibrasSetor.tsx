@@ -44,10 +44,10 @@ function LibrasContent({ isStudio }: LibrasSetorProps) {
   const { activeTab } = useLibras();
 
   return (
-    <div className="animate-in fade-in duration-1000 -mx-8 md:-mx-16 mt-[-4rem] overflow-hidden bg-[#faf9f6]">
+    <div className="animate-in fade-in duration-1000 -mx-4 sm:-mx-6 md:-mx-8 lg:-mx-10 mt-[-2.5rem] overflow-hidden bg-[#faf9f6]">
       <LibrasHero isStudio={isStudio} />
 
-      <div className="max-w-7xl mx-auto px-8 md:px-16 -mt-32 pb-32 relative z-20">
+      <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-6 md:px-8 -mt-32 pb-32 relative z-20">
         {/* Navegação por Abas */}
         <LibrasNavigation />
 
