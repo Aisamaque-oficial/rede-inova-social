@@ -28,7 +28,12 @@ export function GlossaryFilters() {
       </div>
       
       {filters.map((filter) => {
-        const isActive = activeModuleId === filter.id;
+        const isActive = activeModuleId === filter.id ||
+          (filter.id === '1' && activeModuleId === 'fundamentacao') ||
+          (filter.id === '2' && activeModuleId === 'imunologico-digestivo') ||
+          (filter.id === '3' && activeModuleId === 'rotulagem-tecnica') ||
+          (filter.id === '4' && activeModuleId === 'analise-critica') ||
+          (filter.id === '5' && activeModuleId === 'soberania-alimentar');
         return (
           <button
             key={filter.id}

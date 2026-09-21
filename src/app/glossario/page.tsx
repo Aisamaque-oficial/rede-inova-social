@@ -203,12 +203,40 @@ export default function GlossarioPage() {
                       </p>
 
                       <div className="space-y-4">
+                        {term.context && (
+                          <div className="bg-[#fcfbf9] p-5 rounded-2xl border border-slate-100">
+                            <div className="flex items-center gap-2 text-slate-400 mb-2">
+                              <Quote className="h-4 w-4 text-primary" />
+                              <span className="text-[10px] font-black uppercase tracking-[0.2em]">
+                                Contexto
+                              </span>
+                            </div>
+                            <p className="text-xs font-medium text-slate-600 leading-relaxed italic">
+                              {term.context}
+                            </p>
+                          </div>
+                        )}
+
+                        {term.signStrategy && (
+                          <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                            <div className="flex items-center gap-2 text-slate-400 mb-2">
+                              <Ear className="h-4 w-4 text-slate-400" />
+                              <span className="text-[10px] font-black uppercase tracking-[0.2em]">
+                                Estratégia de Sinalização
+                              </span>
+                            </div>
+                            <p className="text-xs font-medium text-slate-500 leading-relaxed">
+                              {term.signStrategy}
+                            </p>
+                          </div>
+                        )}
+
                         {term.examples && term.examples.length > 0 && (
                           <div className="bg-[#fcfbf9] p-5 rounded-2xl border border-slate-100">
                             <div className="flex items-center gap-2 text-slate-400 mb-3">
                               <Quote className="h-4 w-4" />
                               <span className="text-[10px] font-black uppercase tracking-[0.2em]">
-                                Contexto
+                                Exemplos
                               </span>
                             </div>
                             <ul className="space-y-3">
@@ -227,10 +255,10 @@ export default function GlossarioPage() {
                           </div>
                         )}
 
-                        {term.related && term.related.length > 0 && (
+                        {((term.tags && term.tags.length > 0) || (term.related && term.related.length > 0)) && (
                           <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-50">
                             <Hash className="h-3.5 w-3.5 text-slate-300" />
-                            {term.related.map((rel: any, idx: number) => (
+                            {(term.tags || term.related || []).map((rel: any, idx: number) => (
                               <Badge
                                 key={idx}
                                 variant="secondary"
@@ -264,11 +292,18 @@ export default function GlossarioPage() {
                   <div className="absolute top-0 right-0 py-1.5 px-3 bg-primary text-white text-[9px] font-black uppercase tracking-widest rounded-bl-xl z-10 shadow-lg">
                     Tradução em Libras
                   </div>
-                  <div className="aspect-[9/16] rounded-[2rem] overflow-hidden bg-slate-900 border-4 border-slate-900 relative">
+                  <div className="aspect-video md:aspect-[9/16] rounded-[2rem] overflow-hidden bg-slate-900 border-4 border-slate-900 relative">
                     <iframe
-                      src={`${activeVideoUrl.replace("watch?v=", "embed/")}?autoplay=1&mute=1&loop=1&controls=0`}
-                      className="absolute inset-0 w-full h-[150%] top-1/2 -translate-y-1/2 scale-150 pointer-events-none"
-                      allow="autoplay; encrypted-media"
+                      src={
+                        activeVideoUrl.includes("youtu.be/")
+                          ? `https://www.youtube.com/embed/${activeVideoUrl.split("youtu.be/")[1]?.split(/[?&#]/)[0]}?autoplay=1&controls=1&rel=0`
+                          : activeVideoUrl.includes("watch?v=")
+                          ? `https://www.youtube.com/embed/${activeVideoUrl.split("watch?v=")[1]?.split(/[?&#]/)[0]}?autoplay=1&controls=1&rel=0`
+                          : activeVideoUrl
+                      }
+                      className="absolute inset-0 w-full h-full"
+                      allow="autoplay; encrypted-media; fullscreen"
+                      allowFullScreen
                       title="Libras Video"
                     />
                   </div>

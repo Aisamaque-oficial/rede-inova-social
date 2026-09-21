@@ -12,14 +12,14 @@ export function CategoryGrid() {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-2 gap-4">
       {librasGlossary.map((eixo, i) => {
-        const isActive = activeModuleId === eixo.id;
+        const isActive = activeModuleId === eixo.id || String(activeModuleId) === String(eixo.numericId);
         return (
           <motion.button
             key={eixo.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            onClick={() => { setActiveModuleId(eixo.id); setTermSearch(''); }}
+            onClick={() => { setActiveModuleId(String(eixo.numericId || eixo.id)); setTermSearch(''); }}
             className={cn(
               "group p-6 rounded-[2rem] text-left transition-all duration-500 border h-full flex flex-col justify-between overflow-hidden relative",
               isActive 

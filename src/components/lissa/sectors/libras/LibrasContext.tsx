@@ -65,33 +65,15 @@ export function LibrasProvider({ children }: { children: ReactNode }) {
     async function loadGlossary() {
       setIsGlossaryLoading(true);
       try {
-        const data = await librasService.getGlossaryByAxis(
-          activeModuleId === 'todos' ? 'todos' : Number(activeModuleId)
-        );
-
-        let finalData = data;
+        const data = await librasService.getGlossaryByAxis(activeModuleId);
+        setGlossaryTerms(data);
         
-        // Fallback to mock data if database returns empty
-        if (data.length === 0) {
-          let mockTerms: any[] = [];
-          librasGlossary.forEach((axis: any, index: number) => {
-            const axisId = index + 1;
-            if (activeModuleId === 'todos' || Number(activeModuleId) === axisId) {
-              mockTerms = mockTerms.concat((axis.terms || []).map((t: any) => ({
-                ...t,
-                eixoTitle: axis.title,
-                eixoEmoji: axis.emoji
-              })));
-            }
+        // Auto-select first term of the axis if none currently matches
+        if (data.length > 0) {
+          setActiveTermKey(prev => {
+            if (prev && data.some(t => t.term === prev)) return prev;
+            return data[0].term;
           });
-          finalData = mockTerms;
-        }
-
-        setGlossaryTerms(finalData);
-        
-        // Auto-select first term of the axis
-        if (finalData.length > 0) {
-          setActiveTermKey(finalData[0].term);
         } else {
           setActiveTermKey(null);
         }
@@ -105,25 +87,37 @@ export function LibrasProvider({ children }: { children: ReactNode }) {
     loadGlossary();
   }, [activeModuleId]);
 
+  const axisSlugOrId = String(activeModuleId).toLowerCase();
   const currentModule = activeModuleId === 'todos' 
-    ? { id: 'todos', title: 'Todos os Termos' }
+    ? { id: 'todos', title: 'Todos os Termos', emoji: '📚' }
     : {
         id: activeModuleId,
-        title: activeModuleId === '1' ? 'Fundamentação' :
-               activeModuleId === '2' ? 'Imunológico-Digestivo' :
-               activeModuleId === '3' ? 'Rotulagem Técnica' :
-               activeModuleId === '4' ? 'Análise Crítica' :
-               activeModuleId === '5' ? 'Soberania Alimentar' :
+        title: (axisSlugOrId === '1' || axisSlugOrId === 'fundamentacao') ? 'Fundamentação' :
+               (axisSlugOrId === '2' || axisSlugOrId === 'imunologico-digestivo') ? 'Imunológico-Digestivo' :
+               (axisSlugOrId === '3' || axisSlugOrId === 'rotulagem-tecnica') ? 'Rotulagem Técnica' :
+               (axisSlugOrId === '4' || axisSlugOrId === 'analise-critica') ? 'Análise Crítica' :
+               (axisSlugOrId === '5' || axisSlugOrId === 'soberania-alimentar') ? 'Soberania Alimentar' :
                'Conceito Técnico',
-        emoji: activeModuleId === '1' ? '🤟' :
-               activeModuleId === '2' ? '🧬' :
-               activeModuleId === '3' ? '🏷️' :
-               activeModuleId === '4' ? '⚖️' :
-               activeModuleId === '5' ? '🌽' :
+        emoji: (axisSlugOrId === '1' || axisSlugOrId === 'fundamentacao') ? '🤟' :
+               (axisSlugOrId === '2' || axisSlugOrId === 'imunologico-digestivo') ? '🧬' :
+               (axisSlugOrId === '3' || axisSlugOrId === 'rotulagem-tecnica') ? '🏷️' :
+               (axisSlugOrId === '4' || axisSlugOrId === 'analise-critica') ? '⚖️' :
+               (axisSlugOrId === '5' || axisSlugOrId === 'soberania-alimentar') ? '🌽' :
                '🔖'
       };
 
-  const activeTermObj = glossaryTerms.find(t => t.term === activeTermKey) || null;
+  // Filter terms according to termSearch if present
+  const filteredGlossaryTerms = glossaryTerms.filter(t => {
+    if (!termSearch || termSearch.trim() === '') return true;
+    const query = termSearch.toLowerCase().trim();
+    return (t.term || '').toLowerCase().includes(query) ||
+           (t.description || '').toLowerCase().includes(query) ||
+           (t.definition || '').toLowerCase().includes(query) ||
+           (t.context || '').toLowerCase().includes(query) ||
+           (t.tags || []).some((tag: string) => tag.toLowerCase().includes(query));
+  });
+
+  const activeTermObj = filteredGlossaryTerms.find(t => t.term === activeTermKey) || filteredGlossaryTerms[0] || null;
 
   return (
     <LibrasContext.Provider value={{
@@ -135,7 +129,7 @@ export function LibrasProvider({ children }: { children: ReactNode }) {
       setActiveTermKey,
       termSearch,
       setTermSearch,
-      glossaryTerms,
+      glossaryTerms: filteredGlossaryTerms,
       minutes,
       tracks,
       isLoading,
