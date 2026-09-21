@@ -22,9 +22,8 @@ import {
   Compass,
   CheckCircle2,
   List,
-  Eye,
-  Volume2,
-  ExternalLink
+  Columns,
+  Maximize2
 } from "lucide-react";
 
 export function GlossaryFilters() {
@@ -33,8 +32,7 @@ export function GlossaryFilters() {
   const [selectedAxisId, setSelectedAxisId] = useState<string | null>(null);
   const [activeTermIndex, setActiveTermIndex] = useState<number>(0);
   const [termSearchQuery, setTermSearchQuery] = useState("");
-  const [viewMode, setViewMode] = useState<"libras" | "texto">("libras");
-  const [isTextModalOpen, setIsTextModalOpen] = useState(false);
+  const [displayMode, setDisplayMode] = useState<"bilang" | "video_only" | "text_only">("bilang");
 
   // Eixos list with guaranteed numericId
   const eixosList = useMemo(() => {
@@ -61,11 +59,12 @@ export function GlossaryFilters() {
   const rawTerms = useMemo(() => {
     if (!selectedAxisId) return [];
     if (selectedAxisId === "todos") {
-      return eixosList.flatMap(e => (e.terms || []).map(t => ({ 
+      return eixosList.flatMap(e => (e.terms || []).map((t, idx) => ({ 
         ...t, 
         axisTitle: e.title, 
         axisEmoji: e.emoji, 
-        axisNum: e.numericId 
+        axisNum: e.numericId,
+        codeId: `${e.numericId}${String.fromCharCode(65 + (idx % 26))}${idx >= 26 ? Math.floor(idx / 26) : ""}`
       })));
     }
     if (!currentEixo) return [];
@@ -91,11 +90,10 @@ export function GlossaryFilters() {
     });
   }, [rawTerms, termSearchQuery]);
 
-  // Reset active term index when changing axis or when list changes
+  // Reset active term index when changing axis
   useEffect(() => {
     setActiveTermIndex(0);
-    setIsTextModalOpen(false);
-    setViewMode("libras");
+    setDisplayMode("bilang");
   }, [selectedAxisId]);
 
   // Keep index valid
@@ -107,8 +105,7 @@ export function GlossaryFilters() {
     setSelectedAxisId(axisId);
     setTermSearchQuery("");
     setActiveTermIndex(0);
-    setIsTextModalOpen(false);
-    setViewMode("libras");
+    setDisplayMode("bilang");
     if (typeof window !== "undefined") {
       window.scrollTo({ top: 380, behavior: "smooth" });
     }
@@ -118,7 +115,6 @@ export function GlossaryFilters() {
     setSelectedAxisId(null);
     setTermSearchQuery("");
     setActiveTermIndex(0);
-    setIsTextModalOpen(false);
     if (typeof window !== "undefined") {
       window.scrollTo({ top: 320, behavior: "smooth" });
     }
@@ -169,12 +165,11 @@ export function GlossaryFilters() {
 
   // ==========================================
   // VIEW 1: HUB PRINCIPAL COM OS 6 GRIDS
-  // (Aprovado pelo usuário - clean e sem poluição)
   // ==========================================
   if (!selectedAxisId) {
     return (
       <div className="space-y-8 mb-16 animate-in fade-in duration-500">
-        {/* Banner de Boas-Vindas Didático */}
+        {/* Banner Didático de Boas-Vindas */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/95 backdrop-blur-md p-8 md:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
           <div className="space-y-2.5">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
@@ -185,7 +180,7 @@ export function GlossaryFilters() {
               Glossário de Inocuidade dos Alimentos
             </h3>
             <p className="text-xs md:text-sm text-slate-500 font-medium max-w-2xl leading-relaxed">
-              Para iniciar, clique em um dos 6 eixos temáticos abaixo. Dentro de cada eixo você encontrará a lista completa de termos, vídeos de sinalização em Libras e textos didáticos em português.
+              Para iniciar, clique em um dos 6 eixos temáticos abaixo. Dentro de cada eixo você encontrará a lista de termos com a sinalização em Libras e o texto didático explicativo em português lado a lado.
             </p>
           </div>
 
@@ -268,8 +263,7 @@ export function GlossaryFilters() {
   }
 
   // =========================================================================
-  // VIEW 2: INTERIOR DO EIXO — ESTRUTURA BILÍNGUE (LISTA + VISUALIZADOR)
-  // Inspirado diretamente no Glossário Bilíngue de Apoio Didático
+  // VIEW 2: AMBIENTE BILÍNGUE DO EIXO (VÍDEO E TEXTO EM PORTUGUÊS LADO A LADO)
   // =========================================================================
   const isAllView = selectedAxisId === "todos";
   const axisNumber = currentEixo?.numericId || 1;
@@ -281,7 +275,7 @@ export function GlossaryFilters() {
     <div className="space-y-6 mb-20 animate-in fade-in duration-500">
       {/* 1. Barra Superior de Navegação */}
       <div className="bg-white/95 backdrop-blur-md p-4 md:p-5 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-        {/* Botão de Voltar para Libras Científica */}
+        {/* Botão de Voltar para os Eixos */}
         <button
           onClick={handleBackToHub}
           className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-slate-100 hover:bg-primary hover:text-white text-slate-700 font-black text-xs uppercase tracking-wider transition-all shadow-sm group w-full sm:w-auto justify-center"
@@ -344,23 +338,23 @@ export function GlossaryFilters() {
 
         <div className="flex items-center gap-3">
           <span className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-black uppercase tracking-wider">
-            {rawTerms.length} termos
+            {rawTerms.length} termos no eixo
           </span>
         </div>
       </div>
 
-      {/* 3. ESTRUTURA PRINCIPAL: LISTA DE TERMOS À ESQUERDA + VISUALIZADOR BILÍNGUE À DIREITA */}
+      {/* 3. ESTRUTURA PRINCIPAL: LISTA À ESQUERDA + ÁREA BILÍNGUE LADO A LADO À DIREITA */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* =========================================================
-            COLUNA DA ESQUERDA: LISTA DE NOMES/TERMOS DO EIXO
+            COLUNA DA ESQUERDA: LISTA DE TERMOS DO EIXO (Menu Lateral)
             ========================================================= */}
-        <div className="lg:col-span-4 bg-white rounded-[2.5rem] border border-slate-100 p-6 shadow-sm space-y-4">
+        <div className="lg:col-span-4 xl:col-span-3 bg-white rounded-[2.5rem] border border-slate-100 p-5 shadow-sm space-y-4">
           {/* Topo da lista: Busca interna */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
+          <div className="space-y-2.5">
+            <div className="flex items-center justify-between px-1">
               <span className="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
                 <List className="h-4 w-4 text-primary" />
-                <span>Lista de Termos ({filteredTerms.length})</span>
+                <span>Lista ({filteredTerms.length})</span>
               </span>
               {termSearchQuery && (
                 <button 
@@ -373,19 +367,19 @@ export function GlossaryFilters() {
             </div>
 
             <div className="relative">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
               <input
                 type="text"
                 value={termSearchQuery}
                 onChange={(e) => setTermSearchQuery(e.target.value)}
                 placeholder="Filtrar termo..."
-                className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="w-full pl-8 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               />
             </div>
           </div>
 
           {/* Lista Rolável de Termos */}
-          <div className="max-h-[640px] overflow-y-auto pr-1 space-y-2 scrollbar-thin scrollbar-thumb-slate-200">
+          <div className="max-h-[660px] overflow-y-auto pr-1 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-200">
             {filteredTerms.length === 0 ? (
               <div className="p-8 text-center space-y-2 text-slate-400">
                 <p className="text-xs font-semibold">Nenhum termo encontrado.</p>
@@ -393,7 +387,7 @@ export function GlossaryFilters() {
                   onClick={() => setTermSearchQuery("")}
                   className="text-[10px] font-black text-primary uppercase"
                 >
-                  Ver todos os termos
+                  Ver todos
                 </button>
               </div>
             ) : (
@@ -405,22 +399,18 @@ export function GlossaryFilters() {
                 return (
                   <button
                     key={t.id || t.term || index}
-                    onClick={() => {
-                      setActiveTermIndex(index);
-                      setIsTextModalOpen(false);
-                      setViewMode("libras");
-                    }}
+                    onClick={() => setActiveTermIndex(index)}
                     className={cn(
-                      "w-full text-left p-3.5 rounded-2xl transition-all duration-200 flex items-center justify-between gap-3 border group",
+                      "w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center justify-between gap-2.5 border group",
                       isSelected
                         ? "bg-primary text-white border-primary shadow-md scale-[1.01]"
                         : "bg-slate-50/70 hover:bg-white text-slate-700 border-slate-100 hover:border-primary/30 hover:shadow-sm"
                     )}
                   >
-                    <div className="flex items-center gap-3 min-w-0">
-                      {/* Código Estilizado (ex: 1A, 1B, 1C...) */}
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      {/* Código Estilizado (1A, 1B, 1C...) */}
                       <span className={cn(
-                        "px-2.5 py-1 rounded-lg text-[10px] font-mono font-black shrink-0 tracking-wider",
+                        "px-2 py-0.5 rounded-md text-[10px] font-mono font-black shrink-0 tracking-wider",
                         isSelected
                           ? "bg-white/20 text-white"
                           : "bg-white text-slate-600 border border-slate-200 group-hover:border-primary/40 group-hover:text-primary"
@@ -438,7 +428,7 @@ export function GlossaryFilters() {
                     </div>
 
                     {/* Indicador de Vídeo */}
-                    <div className="shrink-0 flex items-center gap-1">
+                    <div className="shrink-0 flex items-center">
                       {hasVideo ? (
                         <span 
                           title="Vídeo demonstrativo disponível"
@@ -447,17 +437,17 @@ export function GlossaryFilters() {
                             isSelected ? "bg-white text-emerald-600" : "bg-emerald-100 text-emerald-700"
                           )}
                         >
-                          <Play className="h-2.5 w-2.5 fill-current" />
+                          <Play className="h-2 w-2 fill-current" />
                         </span>
                       ) : (
                         <span 
-                          title="Em fase de gravação"
+                          title="Em gravação"
                           className={cn(
                             "p-1.5 rounded-full flex items-center justify-center",
-                            isSelected ? "bg-white/20 text-white" : "bg-slate-200 text-slate-500"
+                            isSelected ? "bg-white/20 text-white" : "bg-slate-200 text-slate-400"
                           )}
                         >
-                          <Clock className="h-2.5 w-2.5" />
+                          <Clock className="h-2 w-2" />
                         </span>
                       )}
                     </div>
@@ -469,197 +459,210 @@ export function GlossaryFilters() {
         </div>
 
         {/* =========================================================
-            COLUNA DA DIREITA: VISUALIZADOR BILÍNGUE (LIBRAS / TEXTO)
-            Inspirado exatamente no modelo do print IFSC Palhoça
+            COLUNA DA DIREITA: VISUALIZADOR BILÍNGUE LADO A LADO
+            Vídeo de Libras e Texto em Português convivendo em harmonia
             ========================================================= */}
-        <div className="lg:col-span-8 space-y-4">
+        <div className="lg:col-span-8 xl:col-span-9 space-y-4">
           {activeTerm ? (
-            <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-lg p-6 md:p-8 space-y-6 relative overflow-hidden">
+            <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-6 md:p-8 space-y-6">
               {/* Barra de Controle do Termo Ativo */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
                 <div className="flex items-center gap-3">
-                  <span className="px-3 py-1 rounded-xl bg-primary text-white font-mono text-xs font-black tracking-wider">
+                  <span className="px-3.5 py-1.5 rounded-xl bg-primary text-white font-mono text-xs font-black tracking-wider shadow-sm">
                     {activeTerm.codeId || `${axisNumber}${String.fromCharCode(65 + (safeActiveIndex % 26))}`}
                   </span>
-                  <h3 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight">
-                    {activeTerm.term}
-                  </h3>
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">
+                      Termo Científico
+                    </span>
+                    <h3 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight">
+                      {activeTerm.term}
+                    </h3>
+                  </div>
                 </div>
 
-                {/* Seletores de Visualização Bilíngue */}
-                <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-2xl self-start sm:self-auto">
+                {/* Seletores de Modo de Visualização */}
+                <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-2xl self-start sm:self-auto">
                   <button
-                    onClick={() => { setViewMode("libras"); setIsTextModalOpen(false); }}
+                    onClick={() => setDisplayMode("bilang")}
+                    title="Ver Vídeo em Libras e Texto em Português lado a lado"
                     className={cn(
-                      "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-all",
-                      viewMode === "libras" && !isTextModalOpen
+                      "px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all",
+                      displayMode === "bilang"
+                        ? "bg-white text-primary shadow-sm"
+                        : "text-slate-600 hover:text-slate-900"
+                    )}
+                  >
+                    <Columns className="h-3.5 w-3.5" />
+                    <span>Lado a Lado</span>
+                  </button>
+
+                  <button
+                    onClick={() => setDisplayMode("video_only")}
+                    title="Expandir Vídeo em Libras"
+                    className={cn(
+                      "px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all",
+                      displayMode === "video_only"
                         ? "bg-white text-primary shadow-sm"
                         : "text-slate-600 hover:text-slate-900"
                     )}
                   >
                     <Video className="h-3.5 w-3.5" />
-                    <span>Libras</span>
+                    <span className="hidden sm:inline">Só Vídeo</span>
                   </button>
 
                   <button
-                    onClick={() => { setViewMode("texto"); setIsTextModalOpen(true); }}
+                    onClick={() => setDisplayMode("text_only")}
+                    title="Expandir Texto em Português"
                     className={cn(
-                      "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-all",
-                      viewMode === "texto" || isTextModalOpen
-                        ? "bg-primary text-white shadow-sm"
+                      "px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all",
+                      displayMode === "text_only"
+                        ? "bg-white text-primary shadow-sm"
                         : "text-slate-600 hover:text-slate-900"
                     )}
                   >
                     <FileText className="h-3.5 w-3.5" />
-                    <span>Texto em Português</span>
+                    <span className="hidden sm:inline">Só Texto</span>
                   </button>
                 </div>
               </div>
 
-              {/* Área Central de Visualização (Vídeo + Botão de Texto ou Modal sobreposto) */}
-              <div className="relative rounded-[2rem] overflow-hidden bg-slate-950 aspect-video shadow-inner border border-slate-800 flex items-center justify-center">
-                {activeTerm.videoUrl || activeTerm.video_url ? (
-                  <iframe
-                    src={getEmbedUrl(activeTerm.videoUrl || activeTerm.video_url)}
-                    className="w-full h-full object-cover"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    title={activeTerm.term}
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-white space-y-4">
-                    <div className="w-16 h-16 rounded-3xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary">
-                      <Play className="h-8 w-8 fill-primary/30" />
+              {/* =========================================================
+                  ÁREA CENTRAL: LADO A LADO OU EXPANDIDA CONFORME ESCOLHA
+                  ========================================================= */}
+              <div className={cn(
+                "gap-6",
+                displayMode === "bilang" ? "grid grid-cols-1 xl:grid-cols-12 items-stretch" : "block"
+              )}>
+                {/* LADO ESQUERDO: VÍDEO EM LIBRAS */}
+                {(displayMode === "bilang" || displayMode === "video_only") && (
+                  <div className={cn(
+                    "space-y-4 flex flex-col justify-between",
+                    displayMode === "bilang" ? "xl:col-span-6" : "w-full"
+                  )}>
+                    {/* Container do Player de Vídeo */}
+                    <div className="rounded-[2rem] overflow-hidden bg-slate-950 aspect-video shadow-inner border border-slate-800 flex items-center justify-center relative group">
+                      {activeTerm.videoUrl || activeTerm.video_url ? (
+                        <iframe
+                          src={getEmbedUrl(activeTerm.videoUrl || activeTerm.video_url)}
+                          className="w-full h-full object-cover"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          title={activeTerm.term}
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-white space-y-3">
+                          <div className="w-14 h-14 rounded-2xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary shadow-md">
+                            <Play className="h-7 w-7 fill-primary/30" />
+                          </div>
+                          <div className="space-y-1 max-w-sm">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                              Vídeo em Produção
+                            </span>
+                            <h4 className="text-base font-black uppercase tracking-tight">
+                              Mediação em Libras
+                            </h4>
+                            <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                              O sinal gravado está sendo preparado para este termo. Acompanhe a estratégia de sinalização abaixo.
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Tag do Código no Player */}
+                      <div className="absolute top-3 left-3 z-10 px-3 py-1 rounded-lg bg-black/60 backdrop-blur-md text-white font-mono text-[10px] font-black uppercase tracking-wider border border-white/10">
+                        {activeTerm.codeId || `${axisNumber}${String.fromCharCode(65 + (safeActiveIndex % 26))}`} • Libras
+                      </div>
                     </div>
-                    <div className="space-y-1.5 max-w-md">
-                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
-                        Vídeo em Gravação
-                      </span>
-                      <h4 className="text-lg font-black uppercase tracking-tight">
-                        Mediação em Libras em Produção
-                      </h4>
-                      <p className="text-xs text-slate-400 leading-relaxed font-medium">
-                        As gravações dos sinais estão sendo preparadas pela equipe técnica. Você já pode consultar a estratégia linguística e o texto didático completo em português.
+
+                    {/* Box da Estratégia em Libras */}
+                    <div className="p-4 md:p-5 rounded-2xl bg-primary/5 border border-primary/15 space-y-2">
+                      <div className="flex items-center gap-2 text-primary font-black text-xs uppercase tracking-wider">
+                        <Ear className="h-4 w-4 shrink-0" />
+                        <span>Estratégia Linguística em Libras</span>
+                      </div>
+                      <p className="text-xs text-slate-700 font-medium leading-relaxed">
+                        {activeTerm.signStrategy || activeTerm.sign_strategy || "Sinalização técnica acompanhada de datilologia e expressão facial condizente com a gravidade sanitária."}
                       </p>
                     </div>
                   </div>
                 )}
 
-                {/* Botão de Atalho "Texto em Português" na parte inferior do vídeo (Igual ao print 3) */}
-                <button
-                  onClick={() => setIsTextModalOpen(true)}
-                  className="absolute bottom-4 right-4 z-20 px-4 py-2.5 rounded-full bg-primary/95 hover:bg-primary text-white text-xs font-black uppercase tracking-wider shadow-xl backdrop-blur-md flex items-center gap-2 border border-white/20 hover:scale-105 transition-all"
-                >
-                  <FileText className="h-3.5 w-3.5" />
-                  <span>Texto em Português</span>
-                </button>
-              </div>
-
-              {/* CARD SOBREPOSTO / MODAL DE "TEXTO EM PORTUGUÊS" (Inspirado no print 4) */}
-              <AnimatePresence>
-                {isTextModalOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: 15 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: 15 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute inset-4 z-30 bg-white rounded-[2rem] p-6 md:p-8 shadow-2xl border border-slate-200 overflow-y-auto space-y-5"
-                  >
-                    {/* Header do Card de Texto com botão X verde/ciano idêntico ao print 4 */}
-                    <div className="flex items-start justify-between gap-4 pb-3 border-b-2 border-primary/20">
-                      <div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-primary block mb-1">
-                          Definição Didática Bilíngue • Português
+                {/* LADO DIREITO: TEXTO EM PORTUGUÊS (LIMPO, ESTRUTURADO E DIRETO) */}
+                {(displayMode === "bilang" || displayMode === "text_only") && (
+                  <div className={cn(
+                    "p-6 md:p-7 rounded-[2rem] bg-slate-50/90 border border-slate-200/80 flex flex-col justify-between space-y-5",
+                    displayMode === "bilang" ? "xl:col-span-6 mt-4 xl:mt-0" : "w-full"
+                  )}>
+                    <div className="space-y-4">
+                      {/* Cabeçalho do Texto em Português */}
+                      <div className="flex items-center justify-between pb-3 border-b-2 border-primary/20">
+                        <div>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-primary block">
+                            Definição em Português
+                          </span>
+                          <h4 className="text-lg md:text-xl font-black text-slate-800 uppercase tracking-tight">
+                            {activeTerm.term}
+                          </h4>
+                        </div>
+                        <span className="px-3 py-1 rounded-full bg-white text-slate-600 text-[10px] font-bold uppercase tracking-wider border border-slate-200 shadow-sm">
+                          ANVISA / MAPA
                         </span>
-                        <h4 className="text-xl md:text-2xl font-black text-primary uppercase tracking-tight">
-                          {activeTerm.term}
-                        </h4>
                       </div>
 
-                      <button
-                        onClick={() => setIsTextModalOpen(false)}
-                        className="p-2 rounded-xl bg-primary text-white hover:bg-primary/90 transition-all font-black text-xs shadow-md"
-                        title="Fechar texto"
-                      >
-                        <X className="h-5 w-5" />
-                      </button>
-                    </div>
-
-                    {/* Conteúdo Didático em Português */}
-                    <div className="space-y-4 text-slate-700 leading-relaxed text-xs md:text-sm">
-                      <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">
-                          Definição Técnica Oficial (ANVISA / MAPA / Legislação)
+                      {/* Definição Técnica */}
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+                          Conceito Oficial
                         </span>
-                        <p className="font-medium leading-relaxed text-slate-800">
+                        <p className="text-xs md:text-sm font-medium leading-relaxed text-slate-800">
                           {activeTerm.definition || activeTerm.description}
                         </p>
                       </div>
 
+                      {/* Contexto e Aplicação */}
                       {activeTerm.context && (
-                        <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                          <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">
-                            Contexto de Aplicação Sanitária
+                        <div className="space-y-1.5 pt-3 border-t border-slate-200/60">
+                          <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block flex items-center gap-1.5">
+                            <Compass className="h-3 w-3 text-primary" />
+                            <span>Contexto Sanitário e Aplicação</span>
                           </span>
-                          <p className="font-medium leading-relaxed text-slate-600">
+                          <p className="text-xs font-medium leading-relaxed text-slate-600">
                             {activeTerm.context}
                           </p>
                         </div>
                       )}
 
-                      {(activeTerm.signStrategy || activeTerm.sign_strategy) && (
-                        <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10">
-                          <span className="text-[10px] font-black uppercase tracking-wider text-primary block mb-1">
-                            Estratégia Linguística em Libras
-                          </span>
-                          <p className="font-medium leading-relaxed text-slate-700">
-                            {activeTerm.signStrategy || activeTerm.sign_strategy}
-                          </p>
+                      {/* Tags Temáticas */}
+                      {activeTerm.tags && activeTerm.tags.length > 0 && (
+                        <div className="pt-2">
+                          <div className="flex flex-wrap gap-1.5">
+                            {activeTerm.tags.map((tag: string, tidx: number) => (
+                              <span 
+                                key={tidx}
+                                className="px-2.5 py-1 rounded-lg bg-white text-slate-600 text-[9px] font-bold uppercase tracking-wider border border-slate-200"
+                              >
+                                #{tag}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>
 
-                    {/* Botão para voltar ao vídeo */}
-                    <div className="pt-3 border-t border-slate-100 flex justify-end">
-                      <button
-                        onClick={() => setIsTextModalOpen(false)}
-                        className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black uppercase tracking-wider transition-all"
-                      >
-                        Fechar e Voltar ao Vídeo
-                      </button>
+                    <div className="pt-3 border-t border-slate-200/60 text-[10px] text-slate-400 font-semibold flex items-center justify-between">
+                      <span>Inocuidade e Segurança dos Alimentos</span>
+                      <span>Rede Inova Social</span>
                     </div>
-                  </motion.div>
+                  </div>
                 )}
-              </AnimatePresence>
-
-              {/* Informações Resumidas e Estratégia de Libras */}
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="p-5 rounded-2xl bg-primary/5 border border-primary/10 space-y-2">
-                  <div className="flex items-center gap-2 text-primary font-black text-xs uppercase tracking-wider">
-                    <Ear className="h-4 w-4" />
-                    <span>Estratégia em Libras</span>
-                  </div>
-                  <p className="text-xs text-slate-700 font-medium leading-relaxed">
-                    {activeTerm.signStrategy || activeTerm.sign_strategy || "Sinalização acompanhada de datilologia e expressão facial correspondente ao conceito técnico."}
-                  </p>
-                </div>
-
-                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
-                  <div className="flex items-center gap-2 text-slate-700 font-black text-xs uppercase tracking-wider">
-                    <Compass className="h-4 w-4 text-primary" />
-                    <span>Aplicação Prática</span>
-                  </div>
-                  <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                    {activeTerm.context || "Utilizado em rotinas operacionais padrão (POP) e controle sanitário de alimentos."}
-                  </p>
-                </div>
               </div>
 
               {/* Controles Inferiores: Termo Anterior e Próximo Termo */}
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                 <button
                   onClick={handlePrevTerm}
-                  className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-all"
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-all shadow-sm"
                 >
                   <ChevronLeft className="h-4 w-4" />
                   <span>Termo Anterior</span>
@@ -671,7 +674,7 @@ export function GlossaryFilters() {
 
                 <button
                   onClick={handleNextTerm}
-                  className="px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary/90 text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-all shadow-md"
+                  className="px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary/90 text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-all shadow-md hover:scale-[1.02]"
                 >
                   <span>Próximo Termo</span>
                   <ChevronRight className="h-4 w-4" />
