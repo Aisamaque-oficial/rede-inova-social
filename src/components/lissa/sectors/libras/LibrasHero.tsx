@@ -60,7 +60,7 @@ export function LibrasHero({ isStudio }: LibrasHeroProps) {
             >
               <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md px-6 py-2 rounded-full border border-white/10">
                 <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/80">Laboratório Virtual de Libras do LISSA</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/80">Laboratório Virtual de Libras Científica do LISSA</span>
               </div>
 
               <h1 className="text-6xl md:text-8xl font-black text-white tracking-tighter uppercase italic leading-none flex flex-wrap gap-x-6">
@@ -68,7 +68,7 @@ export function LibrasHero({ isStudio }: LibrasHeroProps) {
               </h1>
               
               <p className="text-lg md:text-xl text-slate-300 max-w-2xl font-medium leading-relaxed">
-                A democratização da ciência começa pelo acesso linguístico. Explore conteúdos científicos sobre alimentação e segurança alimentar em Libras.
+                Ambiente bilíngue de mediação e divulgação científica em Libras e Língua Portuguesa nas áreas de alimentação e segurança alimentar.
               </p>
             </motion.div>
 

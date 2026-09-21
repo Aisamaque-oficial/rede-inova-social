@@ -4739,6 +4739,71 @@ export const librasGlossary: any[] = [
     "description": "Distinção comparativa e regulatória entre produtos que parecem equivalentes, mas possuem identidade e composição diferentes.",
     "terms": [
       {
+        "id": "term-crit-san-fs",
+        "term": "Segurança dos alimentos ≠ Segurança alimentar e nutricional",
+        "definition": "Distinção epistemológica e prática fundamental: Segurança dos alimentos (Food Safety) refere-se à inocuidade e higiene microbiológica/física/química. Segurança Alimentar e Nutricional (SAN / Food Security) é a realização do direito humano ao acesso regular, permanente e soberano a alimentos saudáveis.",
+        "description": "Distinção epistemológica e prática fundamental: Segurança dos alimentos (Food Safety) refere-se à inocuidade e higiene microbiológica/física/química. Segurança Alimentar e Nutricional (SAN / Food Security) é a realização do direito humano ao acesso regular, permanente e soberano a alimentos saudáveis.",
+        "practice": "Enquanto a fiscalização sanitária (ANVISA/MAPA) audita a Segurança dos Alimentos nas cozinhas e indústrias, as políticas públicas de SAN (MDS/CONSEA) combatem a fome e garantem abastecimento justo e soberania alimentar.",
+        "example": "Um alimento pode ser estéril e seguro microbiologicamente (Food Safety), mas uma família pode não ter dinheiro para comprá-lo, vivenciando insegurança alimentar grave (SAN).",
+        "context": "Não são termos sinônimos. Confundir os dois enfraquece tanto a vigilância sanitária quanto as lutas sociais e políticas públicas de soberania alimentar.",
+        "signStrategy": "Comparação conceitual clara: Mão 1 sinaliza ALIMENTO INÓCUO/PROTEGIDO (saúde higiênica). Mão 2 sinaliza DIREITO HUMANO À COMIDA / COMBATE À FOME (acesso social e soberania).",
+        "sign_strategy": "Comparação conceitual clara: Mão 1 sinaliza ALIMENTO INÓCUO/PROTEGIDO (saúde higiênica). Mão 2 sinaliza DIREITO HUMANO À COMIDA / COMBATE À FOME (acesso social e soberania).",
+        "videoUrl": "",
+        "video_url": "",
+        "isComparison": true,
+        "comparisonData": {
+          "titleA": "Segurança dos Alimentos (Food Safety)",
+          "titleB": "Segurança Alimentar e Nutricional (SAN)",
+          "rows": [
+            {
+              "label": "Foco Central",
+              "valA": "Inocuidade, ausência de perigos biológicos, químicos e físicos no alimento.",
+              "valB": "Direito humano, acesso físico e econômico regular e permanente à comida de verdade."
+            },
+            {
+              "label": "Órgãos e Diretrizes",
+              "valA": "ANVISA, MAPA, Codex Alimentarius, Vigilância Sanitária Municipal e Estadual.",
+              "valB": "MDS, CONSEA, Lei Orgânica de Segurança Alimentar e Nutricional (LOSAN), FAO/ONU."
+            },
+            {
+              "label": "Escopo de Ação",
+              "valA": "Boas práticas de manipulação, pasteurização, refrigeração, controle de pragas e contaminantes.",
+              "valB": "Agricultura familiar, renda básica, combate à fome, soberania alimentar e abastecimento popular."
+            },
+            {
+              "label": "Relação Prática",
+              "valA": "Garante que a comida que chega ao prato não transmita infecções ou intoxicações.",
+              "valB": "Garante que haja comida nutritiva no prato de todas as pessoas, sem distinção de renda."
+            }
+          ]
+        },
+        "linguisticMediation": {
+          "type": "Explicação Conceitual",
+          "formUsed": "Contraste espacial bimanuais com sinais de ALIMENTO LIMPO/INÓCUO no espaço à esquerda e DIREITO À COMIDA/SOBERANIA no espaço à direita.",
+          "linguisticNote": "Diferenciação morfológica e discursiva essencial para evitar sinonimização indevida na interpretação simultânea.",
+          "validation": "Equipe de mediadores surdos e consultoria linguística do LISSA"
+        },
+        "relatedConcepts": [
+          "Segurança dos alimentos",
+          "Segurança alimentar e nutricional",
+          "Inocuidade dos alimentos",
+          "Alimento seguro",
+          "Soberania alimentar"
+        ],
+        "sources": {
+          "regulatory": "LOSAN (Lei nº 11.346/2006) e Resoluções ANVISA/MAPA",
+          "scientific": "FAO/OMS (2020). Trade and Food Standards; Maluf, R. (2007). Segurança Alimentar e Nutricional.",
+          "updatedAt": "Setembro de 2026"
+        },
+        "tags": [
+          "Conceito Chave",
+          "Distinção Teórica",
+          "Food Safety vs SAN",
+          "Direito Humano"
+        ],
+        "axis_id": 4
+      },
+      {
         "id": "term-crit-1",
         "term": "Leite × bebida láctea",
         "definition": "O leite é a secreção pura da ordenha sem adição de soro. A bebida láctea é uma mistura formulada com soro de leite (mínimo 51% de base láctea), frequentemente com gordura vegetal, amido e aromas.",

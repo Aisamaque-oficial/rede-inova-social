@@ -11,8 +11,8 @@ export function LibrasNavigation() {
 
   const tabs: { id: LibrasTab; label: string; icon: any }[] = [
     { id: 'glossary', label: 'Glossário', icon: BookOpen },
-    { id: 'pills', label: 'Minuto do Conhecimento', icon: Zap },
-    { id: 'tracks', label: 'Trilhas', icon: Map },
+    { id: 'pills', label: 'Ciência em Libras', icon: Zap },
+    { id: 'tracks', label: 'Trilhas de Aprendizagem', icon: Map },
   ];
 
   return (
