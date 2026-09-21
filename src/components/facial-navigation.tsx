@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 import { Loader2, CameraOff, X } from "lucide-react";
 
 interface FacialNavigationProps {
@@ -14,7 +13,7 @@ export default function FacialNavigation({ onClose }: FacialNavigationProps) {
   const [isModelLoading, setIsModelLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const faceLandmarkerRef = useRef<FaceLandmarker | null>(null);
+  const faceLandmarkerRef = useRef<any>(null);
   const animationFrameId = useRef<number>(0);
   const lastVideoTime = useRef<number>(-1);
   const lastBlinkTime = useRef<number>(0);
@@ -33,6 +32,7 @@ export default function FacialNavigation({ onClose }: FacialNavigationProps) {
 
     async function initModel() {
       try {
+        const { FilesetResolver, FaceLandmarker } = await import("@mediapipe/tasks-vision");
         const vision = await FilesetResolver.forVisionTasks(
           "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
         );

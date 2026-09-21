@@ -80,45 +80,83 @@ export default function GlossarioPage() {
         </div>
       </div>
 
-      {/* ── SEARCH & FILTERS ── */}
-      <div className="max-w-7xl mx-auto px-8 md:px-16 -mt-10 relative z-20">
+      {/* ── SEARCH & 6-AXIS GRID ── */}
+      <div className="max-w-7xl mx-auto px-8 md:px-16 -mt-10 relative z-20 space-y-6">
+        {/* Barra de Pesquisa */}
         <div className="bg-white rounded-[2.5rem] p-6 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] border border-slate-100 flex flex-col md:flex-row gap-4 items-center">
           <div className="relative flex-1 w-full">
             <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300" />
             <input
               type="text"
-              placeholder="Pesquisar por termo ou definição..."
+              placeholder="Pesquisar por termo, conceito ou definição técnica..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full bg-slate-50 border-none rounded-2xl pl-14 pr-6 py-4 text-slate-700 font-bold placeholder:text-slate-400 placeholder:font-medium focus:ring-2 focus:ring-primary/20 transition-all text-base"
             />
           </div>
-          <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 hide-scrollbar pt-2 md:pt-0 shrink-0">
-            <button
-              onClick={() => setActiveEixoFilter("todos")}
-              className={`px-5 py-3 rounded-xl font-black text-xs uppercase tracking-tight whitespace-nowrap transition-colors ${
-                activeEixoFilter === "todos"
-                  ? "bg-slate-800 text-white"
-                  : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-              }`}
-            >
-              Todos ({allTerms.length})
-            </button>
-            {eixos.map((eixo) => (
+          <button
+            onClick={() => { setActiveEixoFilter("todos"); setSearchTerm(""); }}
+            className={`px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest whitespace-nowrap transition-all border shrink-0 flex items-center gap-2 ${
+              activeEixoFilter === "todos"
+                ? "bg-[#0b1421] text-white border-[#0b1421] shadow-lg scale-105"
+                : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+            }`}
+          >
+            <span>Ver Todos os Termos ({allTerms.length})</span>
+          </button>
+        </div>
+
+        {/* Grid Interativo dos 6 Eixos */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {eixos.map((eixo) => {
+            const count = allTerms.filter(t => Number(t.axis_id) === eixo.id).length;
+            const isActive = activeEixoFilter === eixo.id;
+            return (
               <button
                 key={eixo.id}
-                onClick={() => setActiveEixoFilter(eixo.id)}
-                className={`flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs uppercase tracking-tight whitespace-nowrap transition-colors ${
-                  activeEixoFilter === eixo.id
-                    ? "bg-primary text-white shadow-lg shadow-primary/20"
-                    : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                onClick={() => {
+                  setActiveEixoFilter(isActive ? "todos" : eixo.id);
+                }}
+                className={`p-6 rounded-[2.5rem] text-left transition-all duration-300 border flex flex-col justify-between relative overflow-hidden group min-h-[160px] ${
+                  isActive
+                    ? "bg-white border-primary shadow-xl ring-2 ring-primary/20 scale-[1.02]"
+                    : "bg-white/80 border-slate-100 hover:bg-white hover:border-primary/30 hover:shadow-lg"
                 }`}
               >
-                <span>{eixo.emoji}</span>
-                {eixo.title}
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <span className="text-3xl p-2 rounded-2xl bg-slate-50 group-hover:scale-110 transition-transform">
+                        {eixo.emoji}
+                      </span>
+                      <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${
+                        isActive
+                          ? "bg-primary/10 text-primary border-primary/20"
+                          : "bg-slate-100 text-slate-500 border-slate-200"
+                      }`}>
+                        Eixo 0{eixo.id}
+                      </span>
+                    </div>
+                    <span className={`text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full ${
+                      isActive ? "bg-primary text-white" : "bg-slate-100 text-slate-600"
+                    }`}>
+                      {count} termos
+                    </span>
+                  </div>
+                  <h4 className={`font-black text-base uppercase tracking-tight leading-tight mb-1 ${
+                    isActive ? "text-primary" : "text-slate-800 group-hover:text-primary transition-colors"
+                  }`}>
+                    {eixo.title}
+                  </h4>
+                </div>
+                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[9px] font-black uppercase tracking-wider">
+                  <span className={isActive ? "text-primary font-bold" : "text-slate-400 group-hover:text-slate-600"}>
+                    {isActive ? "✓ Eixo Ativo — Exibindo termos" : "Clique para abrir este eixo →"}
+                  </span>
+                </div>
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </div>
 

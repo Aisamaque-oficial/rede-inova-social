@@ -1,22 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
-import webPush from 'web-push';
-import { db } from '@/lib/firebase-admin'; // We need firebase-admin for backend, or we can use regular firebase if we want (but firebase-admin is better for server).
-
-const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
-
-// Configure Web Push (VAPID) safely for build time
-try {
-  if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
-    webPush.setVapidDetails(
-      'mailto:contato@redeinovasocial.com.br',
-      process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-      process.env.VAPID_PRIVATE_KEY
-    );
-  }
-} catch (e) {
-  console.warn("VAPID keys not configured properly, web push will not work.");
-}
+// Notifications handler - dynamic dispatch
 
 export async function POST(req: Request) {
   try {
