@@ -127,8 +127,8 @@ export function ASCOMActivitiesBoard({ sector, forcedSectorId, isGlobal = false 
   };
 
   const columns = [
-    { id: 'pendente', label: 'Monitoramento & Execução', icon: Clock, color: 'text-blue-500', bg: 'bg-blue-50/10' },
-    { id: 'concluida', label: 'Validação & Conclusão', icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-50/10' }
+    { id: 'pendente', label: 'Monitoramento e Execução', icon: Clock, color: 'text-blue-500', bg: 'bg-blue-50/10' },
+    { id: 'concluida', label: 'Validação e Conclusão', icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-50/10' }
   ];
 
   if (isLoading) {

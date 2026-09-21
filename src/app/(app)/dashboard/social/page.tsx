@@ -14,7 +14,7 @@ export default function SocialDashboardPage() {
 
   return (
     <OperationalDashboardLayout
-      title="Painel Social & Territorial"
+      title="Painel Social e Territorial"
       subtitle="Gestão de campo, articulação e diagnósticos regionais"
       sector="SOCIAL"
       stats={stats}

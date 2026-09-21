@@ -244,7 +244,7 @@ export default function PerfilPage() {
                         <div className="bg-white/5 p-6 space-y-3">
                             <div className="flex items-center gap-3 text-xs">
                                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                                <span className="font-bold opacity-70">Conta Ativa & Verificada</span>
+                                <span className="font-bold opacity-70">Conta Ativa e Verificada</span>
                             </div>
                             <div className="flex items-center gap-3 text-xs">
                                 <Globe className="w-4 h-4 text-blue-400" />
@@ -338,7 +338,7 @@ export default function PerfilPage() {
                         <CardHeader className="p-8 pb-0">
                             <CardTitle className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-3">
                                 <Lock className="w-5 h-5 text-red-500" />
-                                Segurança & Acesso
+                                Segurança e Acesso
                             </CardTitle>
                             <CardDescription className="text-[9px] font-bold uppercase text-slate-400 tracking-widest mt-1">Troque sua senha periodicamente</CardDescription>
                         </CardHeader>

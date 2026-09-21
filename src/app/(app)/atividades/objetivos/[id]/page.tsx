@@ -120,7 +120,7 @@ export default function SectorObjectivesPage() {
               "text-5xl font-black italic tracking-tighter uppercase leading-none",
               colorMode === 'light' ? "text-slate-950" : "text-foreground"
             )}>
-                Objetivos & <span className="text-primary NOT-italic font-black">Resultados</span>
+                Objetivos e <span className="text-primary NOT-italic font-black">Resultados</span>
             </h1>
             <p className={cn(
               "text-lg font-bold italic leading-relaxed max-w-3xl",

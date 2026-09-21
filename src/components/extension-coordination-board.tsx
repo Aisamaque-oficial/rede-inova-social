@@ -152,7 +152,7 @@ export default function ExtensionCoordinationBoard() {
                <CardHeader className="p-10 border-b border-white/5 relative bg-gradient-to-br from-primary/20 to-transparent">
                   <div className="flex items-center gap-3 text-primary mb-2">
                     <CheckCircle2 className="h-4 w-4" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Missão & Valores</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest">Missão e Valores</span>
                   </div>
                   <CardTitle className="text-4xl font-headline italic uppercase tracking-tighter">Missão <span className="text-primary">Institucional</span></CardTitle>
                </CardHeader>
@@ -592,7 +592,7 @@ export default function ExtensionCoordinationBoard() {
               <Button 
                 onClick={handleTaskAnalysis} 
                 className="rounded-xl bg-primary text-black hover:bg-primary/90 shadow-lg shadow-primary/20 uppercase font-black text-[10px] px-8"
-              >Finalizar Análise & Concluir</Button>
+              >Finalizar Análise e Concluir</Button>
             </div>
           </div>
         </DialogContent>

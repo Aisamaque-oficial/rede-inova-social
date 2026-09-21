@@ -129,7 +129,7 @@ export default function GlobalActivityTable({ initialSector }: GlobalActivityTab
                 </div>
                 <div>
                    <h3 className="text-lg font-black font-headline italic tracking-tighter uppercase text-slate-800 leading-none">
-                       {sectorFilter !== 'todos' ? `Atribuições: ${sectorFilter}` : "Central de Atribuições & Fluxos"}
+                       {sectorFilter !== 'todos' ? `Atribuições: ${sectorFilter}` : "Central de Atribuições e Fluxos"}
                    </h3>
                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
                        {sectorFilter !== 'todos' ? `Gestão setorial de responsabilidades` : "Gestão de responsabilidades e transparência total"}

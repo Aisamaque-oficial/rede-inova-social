@@ -21,8 +21,8 @@ import { cn } from "@/lib/utils";
 const NUCLEOS = [
   { id: 'all', label: 'Todos', icon: LayoutGrid, color: 'text-primary' },
   { id: 'executivo', label: 'Coordenação Executiva', icon: Settings, color: 'text-amber-500' },
-  { id: 'suporte', label: 'Suporte & Articulação', icon: Boxes, color: 'text-purple-500' },
-  { id: 'acessibilidade', label: 'Acessibilidade & Inclusão', icon: FlaskConical, color: 'text-emerald-500' },
+  { id: 'suporte', label: 'Suporte e Articulação', icon: Boxes, color: 'text-purple-500' },
+  { id: 'acessibilidade', label: 'Acessibilidade e Inclusão', icon: FlaskConical, color: 'text-emerald-500' },
   { id: 'movimentos', label: 'Movimentos Sociais', icon: Users, color: 'text-rose-500' }
 ];
 
@@ -55,14 +55,14 @@ export function TeamGrid() {
       categories.push('executivo');
     }
 
-    // Suporte & Articulação
+    // Suporte e Articulação
     if (role.includes('suporte técnico') || 
         role.includes('suporte no planejamento') || 
         role.includes('articulação dos movimentos')) {
       categories.push('suporte');
     }
 
-    // Acessibilidade & Inclusão
+    // Acessibilidade e Inclusão
     // Note: User explicitly listed members for this nucleus
     const accessibilityMembers = ['ilana', 'bruna', 'sara', 'aisamaque', 'shirlene', 'behatryz'];
     if (role.includes('núcleo de acessibilidade') || 

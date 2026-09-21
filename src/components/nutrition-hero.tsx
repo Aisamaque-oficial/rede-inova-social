@@ -58,7 +58,7 @@ export default function NutritionHero() {
                                 className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest mb-6"
                             >
                                 <Leaf className="w-3 h-3 text-emerald-500" />
-                                Construção Coletiva & Território
+                                Construção Coletiva e Território
                             </motion.div>
                             
                             <h1 className="text-4xl md:text-7xl font-black tracking-tighter text-white mb-6 font-headline leading-[0.9] italic group-hover:scale-[1.01] transition-transform duration-700 uppercase">

@@ -133,7 +133,7 @@ export default function CoordenacaoGeralPage() {
             value="governanca" 
             className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-4 data-[state=active]:border-primary rounded-none px-2 pb-5 h-auto text-sm font-black uppercase tracking-[0.25em] text-slate-400 data-[state=active]:text-slate-800 transition-all"
           >
-            Aprovações & Governança
+            Aprovações e Governança
           </TabsTrigger>
           <TabsTrigger 
             value="monitor" 

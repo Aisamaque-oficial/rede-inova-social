@@ -67,14 +67,14 @@ const TRACK_THEMES = [
     bgGradient: "from-[#2D2622] via-[#38302B] to-[#221C18]",
     badgeBg: "bg-stone-200/90 text-stone-900 border-stone-300/40",
     accentLight: "bg-stone-100 text-stone-800 border-stone-200",
-    tag: "Rotulagem & Lupa Frontal",
+    tag: "Rotulagem e Lupa Frontal",
     icon: BookOpen
   },
   {
     bgGradient: "from-[#1F2F3D] via-[#283A4A] to-[#17242E]",
     badgeBg: "bg-sky-100/90 text-sky-900 border-sky-300/40",
     accentLight: "bg-sky-50 text-sky-800 border-sky-200",
-    tag: "Mediação & Sinais da Ciência",
+    tag: "Mediação e Sinais da Ciência",
     icon: Ear
   }
 ];
@@ -445,7 +445,7 @@ export function TracksSection() {
             <div className="flex flex-wrap items-center gap-2">
               <span className="px-3.5 py-1.5 rounded-full bg-amber-400 text-stone-950 font-black text-[11px] uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
                 <Sprout className="h-3.5 w-3.5" />
-                <span>Temporada 1 • Alimentação & Território</span>
+                <span>Temporada 1 • Alimentação e Território</span>
               </span>
               <span className="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-stone-200 border border-white/20 font-bold text-[11px] uppercase">
                 {billboardTrack.category}
@@ -775,7 +775,7 @@ export function TracksSection() {
                           <Clock className="h-3.5 w-3.5" />
                           <span>{track.stepsCount} etapas • {track.duration}</span>
                         </span>
-                        <span className="text-blue-800 font-semibold">Libras & Legendas</span>
+                        <span className="text-blue-800 font-semibold">Libras e Legendas</span>
                       </div>
 
                       <button
@@ -870,7 +870,7 @@ export function TracksSection() {
   }
 
   // =========================================================
-  // VIEW 2: SALA DE ESTUDO & PERCURSO PEDAGÓGICO
+  // VIEW 2: SALA DE ESTUDO E PERCURSO PEDAGÓGICO
   // Conecta Trilha → Glossário → Minuto → Caso Real → Quiz
   // =========================================================
   const totalStages = activeTrack.steps.length + 1;
@@ -880,7 +880,7 @@ export function TracksSection() {
   return (
     <div className="space-y-8 mb-20 animate-in fade-in duration-500 w-full max-w-5xl mx-auto text-slate-800">
       
-      {/* 1. BARRA SUPERIOR: VOLTAR AO CATÁLOGO & STATUS */}
+      {/* 1. BARRA SUPERIOR: VOLTAR AO CATÁLOGO E STATUS */}
       <div className="bg-white p-5 md:p-6 rounded-[2rem] border border-stone-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
         <button
           onClick={handleBackToCatalog}

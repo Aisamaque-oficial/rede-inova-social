@@ -150,7 +150,7 @@ export default function ConfigsPage() {
                   <CardHeader className="p-10 pb-4">
                       <div className="flex items-center gap-4 mb-2">
                           <Type className="h-6 w-6 text-primary" />
-                          <CardTitle className="text-2xl font-black italic tracking-tighter uppercase text-card-foreground">Texto & Escala</CardTitle>
+                          <CardTitle className="text-2xl font-black italic tracking-tighter uppercase text-card-foreground">Texto e Escala</CardTitle>
                       </div>
                       <CardDescription className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
                           Ajuste o tamanho global das letras
