@@ -23,13 +23,13 @@ import {
   Film,
   ChevronRight,
   ChevronLeft,
-  Plus,
-  Volume2,
-  Layers,
-  Tv,
-  Info,
+  Bookmark,
+  Smartphone,
+  QrCode,
+  X,
   Share2,
-  Bookmark
+  Tv,
+  CheckCheck
 } from "lucide-react";
 import { librasTracks } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
@@ -53,14 +53,19 @@ const ACCENT_COLORS = [
   "text-violet-400 border-violet-500/30 bg-violet-500/10"
 ];
 
+interface TrackProgressItem {
+  trackId: string;
+  currentStepIndex: number;
+  totalSteps: number;
+  completed: boolean;
+  updatedAt: number;
+}
+
 export function TracksSection() {
   // Active track being viewed/studied (null = catalog view)
   const [activeTrackId, setActiveTrackId] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>("Todas");
   
-  // Featured track for the billboard hero (defaults to first track)
-  const [billboardTrackId, setBillboardTrackId] = useState<string>(librasTracks[0]?.id || "trilha-1");
-
   // Track step management (0 to steps.length)
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   
@@ -78,25 +83,102 @@ export function TracksSection() {
   const [completedTrackIds, setCompletedTrackIds] = useState<string[]>([]);
   const [bookmarkedTrackIds, setBookmarkedTrackIds] = useState<string[]>([]);
 
+  // Track progress map: { [trackId]: TrackProgressItem }
+  const [trackProgressMap, setTrackProgressMap] = useState<Record<string, TrackProgressItem>>({});
+  
+  // Last active track for the billboard hero
+  const [lastActiveTrackId, setLastActiveTrackId] = useState<string>(librasTracks[0]?.id || "trilha-1");
+
+  // QR Code Continuity Modal
+  const [showQrModal, setShowQrModal] = useState<boolean>(false);
+  const [qrSyncUrl, setQrSyncUrl] = useState<string>("");
+  const [copiedLink, setCopiedLink] = useState<boolean>(false);
+
   // Horizontal carousel scroll ref
   const carouselRef = useRef<HTMLDivElement>(null);
+  const continueRef = useRef<HTMLDivElement>(null);
 
+  // 1. Initial Load & URL Sync Check
   useEffect(() => {
     if (typeof window !== "undefined") {
       try {
+        // Read completed tracks
         const storedCompleted = localStorage.getItem("lissa_completed_tracks");
         if (storedCompleted) {
           setCompletedTrackIds(JSON.parse(storedCompleted));
         }
+
+        // Read bookmarks
         const storedBookmarks = localStorage.getItem("lissa_bookmarked_tracks");
         if (storedBookmarks) {
           setBookmarkedTrackIds(JSON.parse(storedBookmarks));
+        }
+
+        // Read detailed progress per track
+        const storedProgress = localStorage.getItem("lissa_track_progress_v2");
+        let parsedProgress: Record<string, TrackProgressItem> = {};
+        if (storedProgress) {
+          parsedProgress = JSON.parse(storedProgress);
+          setTrackProgressMap(parsedProgress);
+        }
+
+        // Read last active track
+        const storedLastActive = localStorage.getItem("lissa_last_active_track");
+        if (storedLastActive) {
+          setLastActiveTrackId(storedLastActive);
+        } else {
+          // Find most recently updated track
+          const entries = Object.values(parsedProgress).sort((a, b) => b.updatedAt - a.updatedAt);
+          if (entries.length > 0 && entries[0].trackId) {
+            setLastActiveTrackId(entries[0].trackId);
+          }
+        }
+
+        // Check if user came via QR Code or sync URL (e.g. ?syncTrack=trilha-1&syncStep=2)
+        const params = new URLSearchParams(window.location.search);
+        const syncTrack = params.get("syncTrack");
+        const syncStep = params.get("syncStep");
+        if (syncTrack && librasTracks.some(t => t.id === syncTrack)) {
+          const stepNum = syncStep ? parseInt(syncStep, 10) : 0;
+          handleStartTrack(syncTrack, isNaN(stepNum) ? 0 : stepNum);
         }
       } catch (e) {
         console.error("Error reading storage:", e);
       }
     }
   }, []);
+
+  // Save detailed progress to localStorage
+  const updateProgress = (trackId: string, stepIndex: number, completed = false) => {
+    const track = librasTracks.find(t => t.id === trackId);
+    if (!track) return;
+
+    const total = track.steps.length + 1; // steps + quiz
+    const updatedItem: TrackProgressItem = {
+      trackId,
+      currentStepIndex: stepIndex,
+      totalSteps: total,
+      completed,
+      updatedAt: Date.now()
+    };
+
+    const newMap = {
+      ...trackProgressMap,
+      [trackId]: updatedItem
+    };
+
+    setTrackProgressMap(newMap);
+    setLastActiveTrackId(trackId);
+
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem("lissa_track_progress_v2", JSON.stringify(newMap));
+        localStorage.setItem("lissa_last_active_track", trackId);
+      } catch (e) {
+        console.error("Error saving track progress:", e);
+      }
+    }
+  };
 
   const saveTrackCompletion = (trackId: string) => {
     if (!completedTrackIds.includes(trackId)) {
@@ -110,6 +192,7 @@ export function TracksSection() {
         }
       }
     }
+    updateProgress(trackId, 6, true);
   };
 
   const toggleBookmark = (trackId: string, e?: React.MouseEvent) => {
@@ -131,9 +214,28 @@ export function TracksSection() {
     return librasTracks.find(t => t.id === activeTrackId) || null;
   }, [activeTrackId]);
 
+  // Tracks in progress (Continuar Assistindo)
+  const tracksInProgress = useMemo(() => {
+    return librasTracks.filter(track => {
+      const prog = trackProgressMap[track.id];
+      const isCompleted = completedTrackIds.includes(track.id);
+      return prog && prog.currentStepIndex > 0 && !isCompleted;
+    }).sort((a, b) => {
+      const progA = trackProgressMap[a.id]?.updatedAt || 0;
+      const progB = trackProgressMap[b.id]?.updatedAt || 0;
+      return progB - progA;
+    });
+  }, [trackProgressMap, completedTrackIds]);
+
+  // Featured billboard track: prioritize active in-progress track, or last active, or first track
   const billboardTrack = useMemo(() => {
-    return librasTracks.find(t => t.id === billboardTrackId) || librasTracks[0];
-  }, [billboardTrackId]);
+    if (tracksInProgress.length > 0) {
+      return tracksInProgress[0];
+    }
+    return librasTracks.find(t => t.id === lastActiveTrackId) || librasTracks[0];
+  }, [tracksInProgress, lastActiveTrackId]);
+
+  const billboardProgress = billboardTrack ? trackProgressMap[billboardTrack.id] : null;
 
   const categories = ["Todas", "Alimentação", "Segurança Alimentar", "Agricultura Familiar", "Saúde", "Ciência"];
 
@@ -144,16 +246,24 @@ export function TracksSection() {
 
   const progressPercentage = Math.round((completedTrackIds.length / librasTracks.length) * 100);
 
-  // Reset steps and questions when entering a track
-  const handleStartTrack = (trackId: string, stepIndex = 0) => {
+  // Open track at a specific step (or where user left off)
+  const handleStartTrack = (trackId: string, stepIndex?: number) => {
+    const savedProg = trackProgressMap[trackId];
+    const resumeStep = stepIndex !== undefined 
+      ? stepIndex 
+      : (savedProg && !completedTrackIds.includes(trackId) ? savedProg.currentStepIndex : 0);
+
     setActiveTrackId(trackId);
-    setCurrentStepIndex(stepIndex);
+    setCurrentStepIndex(resumeStep);
     setSelectedCaseOption(null);
     setSelectedTerritoryOption(null);
     setCurrentQuestionIndex(0);
     setSelectedAnswer(null);
     setQuizScore(0);
     setIsQuizCompleted(false);
+
+    updateProgress(trackId, resumeStep, completedTrackIds.includes(trackId));
+
     if (typeof window !== "undefined") {
       window.scrollTo({ top: 200, behavior: "smooth" });
     }
@@ -172,9 +282,11 @@ export function TracksSection() {
     if (!activeTrack) return;
     const totalSteps = activeTrack.steps.length;
     if (currentStepIndex < totalSteps) {
-      setCurrentStepIndex(prev => prev + 1);
+      const nextIdx = currentStepIndex + 1;
+      setCurrentStepIndex(nextIdx);
       setSelectedCaseOption(null);
       setSelectedTerritoryOption(null);
+      updateProgress(activeTrack.id, nextIdx);
       if (typeof window !== "undefined") {
         window.scrollTo({ top: 220, behavior: "smooth" });
       }
@@ -183,10 +295,22 @@ export function TracksSection() {
 
   const handlePrevStep = () => {
     if (currentStepIndex > 0) {
-      setCurrentStepIndex(prev => prev - 1);
+      const prevIdx = currentStepIndex - 1;
+      setCurrentStepIndex(prevIdx);
+      if (activeTrack) {
+        updateProgress(activeTrack.id, prevIdx);
+      }
       if (typeof window !== "undefined") {
         window.scrollTo({ top: 220, behavior: "smooth" });
       }
+    }
+  };
+
+  // Switch step directly from episode bar
+  const handleJumpToStep = (stepIdx: number) => {
+    setCurrentStepIndex(stepIdx);
+    if (activeTrack) {
+      updateProgress(activeTrack.id, stepIdx);
     }
   };
 
@@ -229,15 +353,47 @@ export function TracksSection() {
   };
 
   // Carousel scroll
-  const scrollCarousel = (direction: "left" | "right") => {
-    if (carouselRef.current) {
-      const { scrollLeft, clientWidth } = carouselRef.current;
+  const scrollCarousel = (ref: React.RefObject<HTMLDivElement | null>, direction: "left" | "right") => {
+    if (ref.current) {
+      const { scrollLeft, clientWidth } = ref.current;
       const scrollAmount = clientWidth * 0.75;
-      carouselRef.current.scrollTo({
+      ref.current.scrollTo({
         left: direction === "left" ? scrollLeft - scrollAmount : scrollLeft + scrollAmount,
         behavior: "smooth"
       });
     }
+  };
+
+  // Generate QR Code Continuity Link
+  const handleOpenQrSync = (trackId: string, stepIndex = 0) => {
+    if (typeof window !== "undefined") {
+      const origin = window.location.origin;
+      const pathname = window.location.pathname;
+      const url = `${origin}${pathname}?syncTrack=${encodeURIComponent(trackId)}&syncStep=${stepIndex}#trilhas`;
+      setQrSyncUrl(url);
+      setCopiedLink(false);
+      setShowQrModal(true);
+    }
+  };
+
+  const handleCopySyncLink = () => {
+    if (typeof navigator !== "undefined" && qrSyncUrl) {
+      navigator.clipboard.writeText(qrSyncUrl);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2500);
+    }
+  };
+
+  // Step names helper
+  const getStepName = (stepIdx: number, track: any) => {
+    if (stepIdx >= track.steps.length) return "Quiz Final";
+    const st = track.steps[stepIdx];
+    if (st.type === "video") return "Ep. 1: O Conceito";
+    if (st.type === "concepts") return "Ep. 2: Os Sinais da Ciência";
+    if (st.type === "pill") return "Ep. 3: Minuto do Conhecimento";
+    if (st.type === "case") return "Ep. 4: Na Prática";
+    if (st.type === "territory") return "Ep. 5: Conexão Territorial";
+    return `Ep. ${stepIdx + 1}`;
   };
 
   // =========================================================
@@ -245,7 +401,7 @@ export function TracksSection() {
   // =========================================================
   if (!activeTrackId || !activeTrack) {
     return (
-      <div className="space-y-12 mb-20 animate-in fade-in duration-700 w-full text-white">
+      <div className="space-y-12 mb-20 animate-in fade-in duration-700 w-full text-white relative">
         
         {/* =========================================================
             1. CINEMATIC BILLBOARD HERO (O GRANDE DESTAQUE)
@@ -294,24 +450,36 @@ export function TracksSection() {
               {billboardTrack.description}
             </p>
 
-            {/* Quick Metadata */}
-            <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
+            {/* Quick Metadata & Resumo de Onde Parou */}
+            <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-400">
               <span className="text-emerald-400 font-black">99% de Relevância</span>
               <span>•</span>
               <span>{billboardTrack.duration} de imersão</span>
               <span>•</span>
               <span>{billboardTrack.stepsCount} episódios + quiz</span>
+              {billboardProgress && billboardProgress.currentStepIndex > 0 && !completedTrackIds.includes(billboardTrack.id) && (
+                <>
+                  <span>•</span>
+                  <span className="text-emerald-300 font-black bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-500/40">
+                    Você parou no {getStepName(billboardProgress.currentStepIndex, billboardTrack)}
+                  </span>
+                </>
+              )}
             </div>
 
-            {/* Action Buttons (Play & More Info) */}
+            {/* Action Buttons (Play / Continuar & More Info) */}
             <div className="flex flex-wrap items-center gap-3.5 pt-2">
               <button
                 onClick={() => handleStartTrack(billboardTrack.id)}
-                className="px-8 py-4 rounded-2xl bg-white hover:bg-slate-200 text-slate-950 font-black text-sm uppercase tracking-wider flex items-center gap-2.5 shadow-xl hover:scale-105 transition-all duration-300"
+                className="px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm uppercase tracking-wider flex items-center gap-2.5 shadow-xl shadow-emerald-500/20 hover:scale-105 transition-all duration-300"
               >
                 <Play className="h-5 w-5 fill-slate-950" />
                 <span>
-                  {completedTrackIds.includes(billboardTrack.id) ? "Reassistir Trilha" : "Assistir Agora"}
+                  {completedTrackIds.includes(billboardTrack.id)
+                    ? "Reassistir Trilha"
+                    : billboardProgress && billboardProgress.currentStepIndex > 0
+                    ? `Continuar: ${getStepName(billboardProgress.currentStepIndex, billboardTrack)}`
+                    : "Assistir Agora"}
                 </span>
               </button>
 
@@ -327,12 +495,138 @@ export function TracksSection() {
                 <Bookmark className={cn("h-4 w-4", bookmarkedTrackIds.includes(billboardTrack.id) && "fill-emerald-400")} />
                 <span>{bookmarkedTrackIds.includes(billboardTrack.id) ? "Na Minha Lista" : "Minha Lista"}</span>
               </button>
+
+              {/* Botão para levar para o celular sem login */}
+              <button
+                onClick={() => handleOpenQrSync(billboardTrack.id, billboardProgress?.currentStepIndex || 0)}
+                className="px-5 py-4 rounded-2xl bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/15 text-slate-300 hover:text-white font-black text-xs uppercase tracking-wider flex items-center gap-2 transition-all"
+                title="Continuar no celular via QR Code"
+              >
+                <Smartphone className="h-4 w-4 text-emerald-400" />
+                <span className="hidden sm:inline">Continuar no Celular</span>
+                <span className="sm:hidden">Celular</span>
+              </button>
             </div>
           </div>
         </div>
 
         {/* =========================================================
-            2. BARRA DE STATUS / RESUMO DO ALUNO (ESTILO STREAMING)
+            2. FILEIRA EXCLUSIVA: CONTINUAR ASSISTINDO (QUANDO HÁ TRILHAS EM ANDAMENTO)
+            ========================================================= */}
+        {tracksInProgress.length > 0 && (
+          <div className="space-y-4 animate-in fade-in duration-500">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="w-2.5 h-6 bg-emerald-400 rounded-full shadow-lg shadow-emerald-400/50" />
+                <h2 className="text-xl md:text-2xl font-black uppercase tracking-tight text-white flex items-center gap-2">
+                  <span>Continuar Assistindo</span>
+                  <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    Sem Cadastro
+                  </span>
+                </h2>
+              </div>
+
+              <div className="hidden md:flex items-center gap-2">
+                <button
+                  onClick={() => scrollCarousel(continueRef, "left")}
+                  className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 transition-all hover:scale-105"
+                  aria-label="Rolar para a esquerda"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => scrollCarousel(continueRef, "right")}
+                  className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 transition-all hover:scale-105"
+                  aria-label="Rolar para a direita"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Carrossel Continuar Assistindo */}
+            <div 
+              ref={continueRef}
+              className="flex items-stretch gap-5 overflow-x-auto pb-4 pt-2 scrollbar-none snap-x snap-mandatory"
+            >
+              {tracksInProgress.map((track, i) => {
+                const prog = trackProgressMap[track.id];
+                const stepIdx = prog?.currentStepIndex || 0;
+                const total = track.steps.length + 1;
+                const stepPercent = Math.round((stepIdx / total) * 100);
+                const stepTitle = getStepName(stepIdx, track);
+
+                return (
+                  <div
+                    key={track.id}
+                    onClick={() => handleStartTrack(track.id, stepIdx)}
+                    className="snap-start shrink-0 w-[300px] sm:w-[340px] group cursor-pointer"
+                  >
+                    <div className="rounded-[2rem] p-6 border border-slate-800 hover:border-emerald-500/50 bg-gradient-to-b from-slate-900 to-slate-950 shadow-xl transition-all duration-300 hover:scale-[1.02] flex flex-col justify-between h-[280px] relative overflow-hidden">
+                      
+                      {/* Top Badges */}
+                      <div className="flex items-center justify-between">
+                        <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                          {track.category}
+                        </span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenQrSync(track.id, stepIdx);
+                          }}
+                          className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-slate-300"
+                          title="Levar para o celular via QR Code"
+                        >
+                          <Smartphone className="h-3.5 w-3.5 text-emerald-400" />
+                        </button>
+                      </div>
+
+                      {/* Content */}
+                      <div>
+                        <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-widest block mb-1">
+                          Próximo: {stepTitle}
+                        </span>
+                        <h3 className="font-black text-lg text-white uppercase tracking-tight group-hover:text-emerald-400 transition-colors leading-snug">
+                          {track.title}
+                        </h3>
+                        <p className="text-xs text-slate-400 line-clamp-2 mt-1">
+                          {track.description}
+                        </p>
+                      </div>
+
+                      {/* Bottom Progress Bar estilo Netflix */}
+                      <div className="space-y-2 pt-2">
+                        <div className="flex items-center justify-between text-[11px] font-bold">
+                          <span className="text-slate-400">Etapa {stepIdx + 1} de {total}</span>
+                          <span className="text-emerald-400 font-mono">{stepPercent}%</span>
+                        </div>
+                        <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                          <div 
+                            style={{ width: `${stepPercent}%` }}
+                            className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full"
+                          />
+                        </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleStartTrack(track.id, stepIdx);
+                          }}
+                          className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 mt-2 shadow-lg shadow-emerald-500/20"
+                        >
+                          <Play className="h-3 w-3 fill-current" />
+                          <span>Continuar de Onde Parou</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* =========================================================
+            3. BARRA DE STATUS / RESUMO DO ALUNO
             ========================================================= */}
         <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 p-6 md:p-8 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
           <div className="flex items-center gap-4">
@@ -341,7 +635,7 @@ export function TracksSection() {
             </div>
             <div>
               <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">
-                Sua Jornada de Maratonista Científico
+                Sua Jornada de Maratonista Científico • Salvo neste navegador
               </span>
               <h3 className="text-lg font-black text-white uppercase tracking-tight">
                 {completedTrackIds.length} de {librasTracks.length} Trilhas Concluídas
@@ -366,7 +660,7 @@ export function TracksSection() {
         </div>
 
         {/* =========================================================
-            3. CARROSSEL HORIZONTAL: EM ALTA NA TEMPORADA 1
+            4. CARROSSEL HORIZONTAL: EM ALTA NA TEMPORADA 1
             ========================================================= */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -380,14 +674,14 @@ export function TracksSection() {
             {/* Setas de rolagem do carrossel */}
             <div className="hidden md:flex items-center gap-2">
               <button
-                onClick={() => scrollCarousel("left")}
+                onClick={() => scrollCarousel(carouselRef, "left")}
                 className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 transition-all hover:scale-105"
                 aria-label="Rolar para a esquerda"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
               <button
-                onClick={() => scrollCarousel("right")}
+                onClick={() => scrollCarousel(carouselRef, "right")}
                 className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 transition-all hover:scale-105"
                 aria-label="Rolar para a direita"
               >
@@ -403,14 +697,16 @@ export function TracksSection() {
           >
             {librasTracks.map((track, i) => {
               const isCompleted = completedTrackIds.includes(track.id);
-              const isSelectedBillboard = billboardTrackId === track.id;
+              const isSelectedBillboard = billboardTrack.id === track.id;
               const gradientClass = CARD_GRADIENTS[i % CARD_GRADIENTS.length];
               const accentClass = ACCENT_COLORS[i % ACCENT_COLORS.length];
+              const prog = trackProgressMap[track.id];
+              const hasProgress = prog && prog.currentStepIndex > 0 && !isCompleted;
 
               return (
                 <div
                   key={track.id}
-                  onClick={() => setBillboardTrackId(track.id)}
+                  onClick={() => setLastActiveTrackId(track.id)}
                   className="snap-start shrink-0 w-[290px] sm:w-[320px] md:w-[350px] group cursor-pointer"
                 >
                   <div className={cn(
@@ -431,12 +727,16 @@ export function TracksSection() {
                         </span>
 
                         <div className="flex items-center gap-2">
-                          {isCompleted && (
+                          {isCompleted ? (
                             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-black border border-emerald-500/40">
                               <CheckCircle2 className="h-3 w-3" />
                               <span>Visto</span>
                             </span>
-                          )}
+                          ) : hasProgress ? (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 text-[10px] font-bold border border-cyan-500/30">
+                              Ep. {prog.currentStepIndex + 1}
+                            </span>
+                          ) : null}
                           <button
                             onClick={(e) => toggleBookmark(track.id, e)}
                             className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-slate-300 transition-colors"
@@ -481,11 +781,19 @@ export function TracksSection() {
                           "w-full py-3.5 rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg",
                           isCompleted
                             ? "bg-slate-800 hover:bg-slate-700 text-slate-200"
+                            : hasProgress
+                            ? "bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black shadow-emerald-500/25"
                             : "bg-emerald-500 hover:bg-emerald-400 text-slate-950 group-hover:shadow-emerald-500/25"
                         )}
                       >
                         <Play className="h-3.5 w-3.5 fill-current" />
-                        <span>{isCompleted ? "Rever Episódios" : "Assistir Agora"}</span>
+                        <span>
+                          {isCompleted
+                            ? "Rever Episódios"
+                            : hasProgress
+                            ? `Continuar (Ep. ${prog.currentStepIndex + 1})`
+                            : "Assistir Agora"}
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -496,7 +804,7 @@ export function TracksSection() {
         </div>
 
         {/* =========================================================
-            4. FILTROS POR CATEGORIA & CATÁLOGO COMPLETO
+            5. FILTROS POR CATEGORIA & CATÁLOGO COMPLETO
             ========================================================= */}
         <div className="space-y-6 pt-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -537,6 +845,8 @@ export function TracksSection() {
               const isCompleted = completedTrackIds.includes(track.id);
               const gradientClass = CARD_GRADIENTS[i % CARD_GRADIENTS.length];
               const accentClass = ACCENT_COLORS[i % ACCENT_COLORS.length];
+              const prog = trackProgressMap[track.id];
+              const hasProgress = prog && prog.currentStepIndex > 0 && !isCompleted;
 
               return (
                 <motion.div
@@ -557,12 +867,16 @@ export function TracksSection() {
                           {track.category}
                         </span>
 
-                        {isCompleted && (
+                        {isCompleted ? (
                           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-wider border border-emerald-500/30">
                             <CheckCircle2 className="h-3.5 w-3.5" />
                             <span>Concluída</span>
                           </span>
-                        )}
+                        ) : hasProgress ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 text-[10px] font-bold border border-cyan-500/30">
+                            Parou no Ep. {prog.currentStepIndex + 1}
+                          </span>
+                        ) : null}
                       </div>
 
                       {/* Título */}
@@ -593,7 +907,13 @@ export function TracksSection() {
                         )}
                       >
                         <Play className="h-4 w-4 fill-current" />
-                        <span>{isCompleted ? "Reassistir Trilha" : "Assistir Trilha"}</span>
+                        <span>
+                          {isCompleted
+                            ? "Reassistir Trilha"
+                            : hasProgress
+                            ? `Continuar (Ep. ${prog.currentStepIndex + 1})`
+                            : "Assistir Trilha"}
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -602,6 +922,65 @@ export function TracksSection() {
             })}
           </div>
         </div>
+
+        {/* =========================================================
+            MODAL: CONTINUAR NO CELULAR VIA QR CODE (SEM CADASTRO)
+            ========================================================= */}
+        <AnimatePresence>
+          {showQrModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl space-y-6 text-center relative"
+              >
+                <button
+                  onClick={() => setShowQrModal(false)}
+                  className="absolute top-6 right-6 p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+
+                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mx-auto">
+                  <Smartphone className="h-7 w-7" />
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-xl font-black uppercase text-white tracking-tight">
+                    Continuar no Celular
+                  </h3>
+                  <p className="text-xs text-slate-400 font-medium leading-relaxed">
+                    Aponte a câmera do seu smartphone para o QR Code abaixo para abrir exatamente de onde você parou, sem criar conta nem digitar senha.
+                  </p>
+                </div>
+
+                {/* QR Code gerado dinamicamente */}
+                <div className="p-4 bg-white rounded-3xl inline-block shadow-xl border-4 border-emerald-500/20 mx-auto">
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrSyncUrl)}&color=0b0f17`}
+                    alt="QR Code de Continuidade"
+                    className="w-48 h-48 rounded-xl"
+                  />
+                </div>
+
+                <div className="space-y-3 pt-2">
+                  <button
+                    onClick={handleCopySyncLink}
+                    className="w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all border border-slate-700"
+                  >
+                    {copiedLink ? <CheckCheck className="h-4 w-4 text-emerald-400" /> : <Share2 className="h-4 w-4" />}
+                    <span>{copiedLink ? "Link Copiado com Sucesso!" : "Copiar Link de Acesso"}</span>
+                  </button>
+
+                  <p className="text-[11px] text-slate-500">
+                    Seu progresso fica salvo com total privacidade.
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     );
   }
@@ -626,17 +1005,28 @@ export function TracksSection() {
           <span>Voltar ao Catálogo</span>
         </button>
 
-        <div className="text-center sm:text-right">
-          <div className="flex items-center justify-center sm:justify-end gap-2 text-[10px] font-black uppercase tracking-widest text-emerald-400">
-            <span>Temporada 1</span>
-            <span>•</span>
-            <span>{activeTrack.category}</span>
-            <span>•</span>
-            <span>{activeTrack.duration}</span>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => handleOpenQrSync(activeTrack.id, currentStepIndex)}
+            className="p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-emerald-400 border border-slate-800 transition-colors flex items-center gap-2 text-xs font-bold"
+            title="Levar para o celular via QR Code"
+          >
+            <Smartphone className="h-4 w-4 text-emerald-400" />
+            <span className="hidden sm:inline">Passar para Celular</span>
+          </button>
+
+          <div className="text-center sm:text-right">
+            <div className="flex items-center justify-center sm:justify-end gap-2 text-[10px] font-black uppercase tracking-widest text-emerald-400">
+              <span>Temporada 1</span>
+              <span>•</span>
+              <span>{activeTrack.category}</span>
+              <span>•</span>
+              <span>{activeTrack.duration}</span>
+            </div>
+            <h2 className="text-lg md:text-2xl font-black text-white uppercase tracking-tight">
+              {activeTrack.title}
+            </h2>
           </div>
-          <h2 className="text-lg md:text-2xl font-black text-white uppercase tracking-tight">
-            {activeTrack.title}
-          </h2>
         </div>
       </div>
 
@@ -650,7 +1040,7 @@ export function TracksSection() {
             return (
               <button
                 key={idx}
-                onClick={() => setCurrentStepIndex(idx)}
+                onClick={() => handleJumpToStep(idx)}
                 className={cn(
                   "flex items-center gap-2.5 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all shrink-0 border",
                   isStepActive
@@ -678,7 +1068,7 @@ export function TracksSection() {
 
           {/* Botão do Quiz */}
           <button
-            onClick={() => setCurrentStepIndex(activeTrack.steps.length)}
+            onClick={() => handleJumpToStep(activeTrack.steps.length)}
             className={cn(
               "flex items-center gap-2.5 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all shrink-0 border",
               isQuizStage
@@ -862,7 +1252,7 @@ export function TracksSection() {
                 </p>
               </div>
 
-              {/* Visualizador da Pílula Vertical Estilo Reels/Shorts */}
+              {/* Visualizador da Pílula Vertical */}
               <div className="grid md:grid-cols-12 gap-8 items-center pt-2">
                 <div className="md:col-span-6 flex justify-center">
                   <div className="w-full max-w-[340px] aspect-[9/16] rounded-[2.5rem] overflow-hidden bg-black shadow-2xl border border-slate-800 relative ring-1 ring-white/10">
@@ -1272,7 +1662,7 @@ export function TracksSection() {
 
                       return (
                         <button
-                          onClick={() => handleStartTrack(nextTrack.id)}
+                          onClick={() => handleStartTrack(nextTrack.id, 0)}
                           className="px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider transition-all shadow-xl shadow-emerald-500/20 hover:scale-105 flex items-center justify-center gap-2 w-full sm:w-auto"
                         >
                           <span>Maratonar Próxima Trilha: {nextTrack.title}</span>
@@ -1287,6 +1677,63 @@ export function TracksSection() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* MODAL QR CODE NA SALA DE EXIBIÇÃO */}
+      <AnimatePresence>
+        {showQrModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl space-y-6 text-center relative"
+            >
+              <button
+                onClick={() => setShowQrModal(false)}
+                className="absolute top-6 right-6 p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+
+              <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mx-auto">
+                <Smartphone className="h-7 w-7" />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-xl font-black uppercase text-white tracking-tight">
+                  Continuar no Celular
+                </h3>
+                <p className="text-xs text-slate-400 font-medium leading-relaxed">
+                  Aponte a câmera do seu smartphone para o QR Code abaixo para abrir exatamente de onde você parou, sem criar conta nem digitar senha.
+                </p>
+              </div>
+
+              {/* QR Code gerado dinamicamente */}
+              <div className="p-4 bg-white rounded-3xl inline-block shadow-xl border-4 border-emerald-500/20 mx-auto">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrSyncUrl)}&color=0b0f17`}
+                  alt="QR Code de Continuidade"
+                  className="w-48 h-48 rounded-xl"
+                />
+              </div>
+
+              <div className="space-y-3 pt-2">
+                <button
+                  onClick={handleCopySyncLink}
+                  className="w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all border border-slate-700"
+                >
+                  {copiedLink ? <CheckCheck className="h-4 w-4 text-emerald-400" /> : <Share2 className="h-4 w-4" />}
+                  <span>{copiedLink ? "Link Copiado com Sucesso!" : "Copiar Link de Acesso"}</span>
+                </button>
+
+                <p className="text-[11px] text-slate-500">
+                  Seu progresso fica salvo com total privacidade.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
