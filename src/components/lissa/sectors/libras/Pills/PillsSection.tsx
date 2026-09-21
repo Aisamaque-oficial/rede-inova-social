@@ -15,7 +15,10 @@ import {
   Volume2, 
   VolumeX,
   Sparkles,
-  Info
+  Info,
+  ExternalLink,
+  Flame,
+  ArrowRight
 } from "lucide-react";
 import { useLibras } from "../LibrasContext";
 import { cn } from "@/lib/utils";
@@ -24,7 +27,6 @@ export function PillsSection() {
   const { minutes } = useLibras();
   const [selectedPillIndex, setSelectedPillIndex] = useState<number | null>(null);
   const [isMuted, setIsMuted] = useState(false);
-  const [showInfoOverlay, setShowInfoOverlay] = useState(true);
   const carouselRef = useRef<HTMLDivElement>(null);
 
   // Background gradients for thumbnails
@@ -42,13 +44,13 @@ export function PillsSection() {
   // Carousel scroll functions
   const scrollLeft = () => {
     if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: -340, behavior: "smooth" });
+      carouselRef.current.scrollBy({ left: -380, behavior: "smooth" });
     }
   };
 
   const scrollRight = () => {
     if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: 340, behavior: "smooth" });
+      carouselRef.current.scrollBy({ left: 380, behavior: "smooth" });
     }
   };
 
@@ -99,11 +101,11 @@ export function PillsSection() {
   const nextPill = selectedPillIndex !== null ? (selectedPillIndex < minutes.length - 1 ? minutes[selectedPillIndex + 1] : minutes[0]) : null;
 
   return (
-    <div className="space-y-8 pt-6 pb-16 animate-in fade-in duration-700">
+    <div className="space-y-8 pt-4 pb-20 animate-in fade-in duration-700 w-full">
       {/* =========================================================
           CABEÇALHO COM CONTROLES DE NAVEGAÇÃO DO CARROSSEL
           ========================================================= */}
-      <div className="bg-white/95 backdrop-blur-md p-6 md:p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-white/95 backdrop-blur-md p-6 md:p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 w-full">
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
             <Zap className="h-3.5 w-3.5" />
@@ -117,19 +119,19 @@ export function PillsSection() {
           </p>
         </div>
 
-        {/* Botões de Avanço do Carrossel (Idênticos ao print do g1) */}
-        <div className="flex items-center gap-2 self-start md:self-center">
+        {/* Botões de Avanço do Carrossel */}
+        <div className="flex items-center gap-3 self-start md:self-center">
           <button
             onClick={scrollLeft}
             title="Rolar vídeos para esquerda"
-            className="p-3 rounded-full bg-slate-100 hover:bg-primary hover:text-white text-slate-700 transition-all shadow-sm active:scale-95"
+            className="p-3.5 rounded-full bg-slate-100 hover:bg-primary hover:text-white text-slate-700 transition-all shadow-sm active:scale-95"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
           <button
             onClick={scrollRight}
             title="Rolar vídeos para direita"
-            className="p-3 rounded-full bg-slate-100 hover:bg-primary hover:text-white text-slate-700 transition-all shadow-sm active:scale-95"
+            className="p-3.5 rounded-full bg-slate-100 hover:bg-primary hover:text-white text-slate-700 transition-all shadow-sm active:scale-95"
           >
             <ChevronRight className="h-5 w-5" />
           </button>
@@ -138,11 +140,11 @@ export function PillsSection() {
 
       {/* =========================================================
           CARROSSEL HORIZONTAL DE VÍDEOS VERTICAIS (SHORTS/REELS)
-          Inspirado diretamente na disposição do print 1 (G1 Vídeos Curtos)
+          Cards maiores e mais amplos para preencher melhor a tela
           ========================================================= */}
       <div 
         ref={carouselRef}
-        className="flex gap-5 overflow-x-auto pb-6 pt-2 px-2 scrollbar-none snap-x scroll-smooth"
+        className="flex gap-6 overflow-x-auto pb-8 pt-3 px-2 scrollbar-none snap-x scroll-smooth w-full"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {minutes.map((pill, i) => {
@@ -152,42 +154,41 @@ export function PillsSection() {
           return (
             <motion.div
               key={pill.id || i}
-              whileHover={{ scale: 1.03, y: -4 }}
+              whileHover={{ scale: 1.04, y: -6 }}
               transition={{ duration: 0.25 }}
               onClick={() => setSelectedPillIndex(i)}
-              className="relative w-56 sm:w-64 aspect-[9/16] shrink-0 snap-start rounded-[2rem] overflow-hidden cursor-pointer shadow-md hover:shadow-2xl transition-all duration-300 group border border-slate-200/80 select-none bg-slate-950"
+              className="relative w-64 sm:w-72 lg:w-80 aspect-[9/16] shrink-0 snap-start rounded-[2.5rem] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300 group border border-slate-200/80 select-none bg-slate-950"
             >
-              {/* Background gradient / simulated frame */}
+              {/* Background gradient */}
               <div className={cn("absolute inset-0 bg-gradient-to-br transition-opacity duration-300", grad)}>
-                {/* Visual accents */}
                 <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_50%_30%,#ffffff_0%,transparent_60%)]" />
               </div>
 
               {/* Top Row: Duration badge + Topic badge */}
-              <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between pointer-events-none">
-                <span className="px-3 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-wider shadow-sm border border-white/10 flex items-center gap-1">
-                  <Clock className="h-3 w-3 text-primary" />
+              <div className="absolute top-5 left-5 right-5 z-10 flex items-center justify-between pointer-events-none">
+                <span className="px-3.5 py-1.5 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] font-black uppercase tracking-wider shadow-sm border border-white/10 flex items-center gap-1.5">
+                  <Clock className="h-3.5 w-3.5 text-primary" />
                   <span>{duration}</span>
                 </span>
 
-                <span className="px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white text-[9px] font-bold uppercase tracking-wider">
-                  #{i + 1}
+                <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-wider border border-white/10">
+                  Pílula 0{i + 1}
                 </span>
               </div>
 
               {/* Center Play Button Overlay */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-md border border-white/40 flex items-center justify-center text-white shadow-2xl group-hover:scale-115 group-hover:bg-primary group-hover:border-primary transition-all duration-300">
-                  <Play className="h-6 w-6 fill-current translate-x-0.5" />
+                <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md border border-white/40 flex items-center justify-center text-white shadow-2xl group-hover:scale-115 group-hover:bg-primary group-hover:border-primary transition-all duration-300">
+                  <Play className="h-7 w-7 fill-current translate-x-0.5" />
                 </div>
               </div>
 
               {/* Bottom Details with gradient overlay */}
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent p-5 pt-16 flex flex-col justify-end pointer-events-none">
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary mb-1 drop-shadow-sm">
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent p-6 pt-20 flex flex-col justify-end pointer-events-none">
+                <span className="text-[11px] font-black uppercase tracking-widest text-primary mb-1.5 drop-shadow-sm">
                   {pill.category || "Segurança Alimentar"}
                 </span>
-                <h3 className="font-black text-sm sm:text-base leading-snug text-white drop-shadow-md line-clamp-3">
+                <h3 className="font-black text-base sm:text-lg leading-snug text-white drop-shadow-md line-clamp-3">
                   {pill.title}
                 </h3>
               </div>
@@ -197,63 +198,52 @@ export function PillsSection() {
       </div>
 
       {/* =========================================================
-          MODAL EM FORMATO MAIOR (EXATAMENTE COMO NO PRINT 3)
-          Player imersivo 9:16 com navegação pelos vídeos vizinhos
+          MODAL EM FORMATO MAIOR (AMPLIADO PARA PREENCHER O ESPAÇO)
+          Inspirado no print 3, mas preenchendo generosamente a tela
           ========================================================= */}
       <AnimatePresence>
         {selectedPillIndex !== null && currentPill && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-8 select-none">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 md:p-8 select-none">
             {/* Dark immersive backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedPillIndex(null)}
-              className="absolute inset-0 bg-black/95 backdrop-blur-2xl"
+              className="absolute inset-0 bg-black/95 backdrop-blur-3xl"
             />
 
             {/* Top Close Button */}
             <button
               onClick={() => setSelectedPillIndex(null)}
-              className="absolute top-5 right-5 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all backdrop-blur-md border border-white/20 shadow-xl"
+              className="absolute top-6 right-6 z-50 p-3.5 rounded-full bg-white/10 hover:bg-white/25 text-white transition-all backdrop-blur-md border border-white/20 shadow-2xl"
               title="Fechar (Esc)"
             >
               <X className="h-6 w-6" />
             </button>
 
-            {/* Controles de Som e Info no Topo */}
-            <div className="absolute top-5 left-5 z-50 flex items-center gap-2">
+            {/* Top Audio toggle */}
+            <div className="absolute top-6 left-6 z-50 flex items-center gap-3">
               <button
                 onClick={() => setIsMuted(!isMuted)}
-                className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all backdrop-blur-md border border-white/20 shadow-xl"
+                className="p-3.5 rounded-full bg-white/10 hover:bg-white/25 text-white transition-all backdrop-blur-md border border-white/20 shadow-2xl"
                 title={isMuted ? "Ativar som" : "Desativar som"}
               >
-                {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
-              </button>
-
-              <button
-                onClick={() => setShowInfoOverlay(!showInfoOverlay)}
-                className={cn(
-                  "p-3 rounded-full transition-all backdrop-blur-md border border-white/20 shadow-xl",
-                  showInfoOverlay ? "bg-primary text-white" : "bg-white/10 hover:bg-white/20 text-white"
-                )}
-                title="Alternar legenda/informações"
-              >
-                <Info className="h-5 w-5" />
+                {isMuted ? <VolumeX className="h-6 w-6 text-amber-400" /> : <Volume2 className="h-6 w-6 text-white" />}
               </button>
             </div>
 
-            {/* Container Principal de Visualização e Navegação */}
-            <div className="relative z-40 flex items-center justify-center gap-4 md:gap-8 w-full max-w-6xl h-full max-h-[92vh]">
-              {/* VÍDEO ANTERIOR (Preview translúcido à esquerda, como no print 3) */}
+            {/* Container Principal de Visualização Ampliado (Preenche a tela de ponta a ponta) */}
+            <div className="relative z-40 flex items-center justify-center gap-6 md:gap-10 w-full max-w-[1700px] h-full max-h-[92vh]">
+              {/* VÍDEO ANTERIOR (Preview translúcido amplo à esquerda) */}
               {prevPill && (
                 <div 
                   onClick={handlePrevVideo}
-                  className="hidden lg:flex flex-col items-center justify-center opacity-30 hover:opacity-75 transition-all cursor-pointer scale-90 shrink-0 w-44 aspect-[9/16] rounded-[2rem] overflow-hidden bg-slate-900 border border-white/10 relative shadow-2xl"
+                  className="hidden xl:flex flex-col justify-end opacity-35 hover:opacity-80 transition-all cursor-pointer scale-95 shrink-0 w-64 2xl:w-80 h-[78vh] rounded-[2.5rem] overflow-hidden bg-slate-900 border border-white/15 relative shadow-2xl group"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-4 flex flex-col justify-end">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-primary">Anterior</span>
-                    <h4 className="text-xs font-black text-white line-clamp-2">{prevPill.title}</h4>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-6 flex flex-col justify-end">
+                    <span className="text-[11px] font-black uppercase tracking-widest text-primary mb-1">← Vídeo Anterior</span>
+                    <h4 className="text-sm font-black text-white leading-snug line-clamp-2">{prevPill.title}</h4>
                   </div>
                 </div>
               )}
@@ -261,23 +251,38 @@ export function PillsSection() {
               {/* Botão de Navegação Esquerda */}
               <button
                 onClick={handlePrevVideo}
-                className="p-3.5 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur-md border border-white/20 shadow-2xl transition-all active:scale-95 shrink-0"
+                className="p-4 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur-md border border-white/25 shadow-2xl transition-all active:scale-95 shrink-0"
                 title="Vídeo Anterior (Seta Esquerda)"
               >
-                <ChevronLeft className="h-6 w-6" />
+                <ChevronLeft className="h-7 w-7" />
               </button>
 
-              {/* VÍDEO CENTRAL EM FORMATO MAIOR (O Protagonista em 9:16) */}
+              {/* VÍDEO CENTRAL EM FORMATO MAIOR (O Protagonista Ampliado) */}
               <motion.div
                 key={currentPill.id || selectedPillIndex}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.25 }}
-                className="w-full max-w-[420px] aspect-[9/16] max-h-[85vh] rounded-[2.5rem] overflow-hidden relative shadow-[0_0_80px_rgba(0,0,0,0.8)] border border-white/20 bg-slate-950 flex flex-col justify-between"
+                className="w-full max-w-[540px] 2xl:max-w-[600px] h-[88vh] rounded-[3rem] overflow-hidden relative shadow-[0_0_100px_rgba(0,0,0,0.9)] border border-white/25 bg-slate-950 flex flex-col justify-between"
               >
-                {/* Player do Vídeo */}
-                <div className="absolute inset-0 bg-slate-950">
+                {/* Top Overlay inside card */}
+                <div className="relative z-30 p-6 flex items-center justify-between pointer-events-none bg-gradient-to-b from-black/90 via-black/50 to-transparent">
+                  <div className="flex items-center gap-2.5">
+                    <span className="px-3.5 py-1.5 rounded-full bg-primary text-white text-[11px] font-black uppercase tracking-wider shadow-md">
+                      Pílula 0{selectedPillIndex + 1}
+                    </span>
+                    <span className="px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-black uppercase tracking-wider border border-white/15">
+                      {currentPill.category || "SAN"}
+                    </span>
+                  </div>
+                  <span className="text-xs font-black text-white/80">
+                    {selectedPillIndex + 1} de {minutes.length}
+                  </span>
+                </div>
+
+                {/* Player Central (Ocupa o corpo do card com flexibilidade) */}
+                <div className="relative flex-1 w-full flex items-center justify-center bg-slate-950 overflow-hidden">
                   {currentPill.videoUrl ? (
                     <iframe
                       src={getEmbedUrl(currentPill.videoUrl, isMuted)}
@@ -288,17 +293,17 @@ export function PillsSection() {
                     />
                   ) : (
                     <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-gradient-to-br from-slate-950 via-slate-900 to-primary/30 text-white space-y-4">
-                      <div className="w-16 h-16 rounded-3xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary shadow-xl">
-                        <Play className="h-8 w-8 fill-primary/30" />
+                      <div className="w-20 h-20 rounded-3xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary shadow-2xl">
+                        <Play className="h-10 w-10 fill-primary/30" />
                       </div>
-                      <div className="space-y-1 max-w-xs">
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                      <div className="space-y-2 max-w-sm">
+                        <span className="text-xs font-black uppercase tracking-[0.2em] text-primary">
                           Minuto do Conhecimento
                         </span>
-                        <h4 className="text-lg font-black uppercase tracking-tight">
+                        <h4 className="text-xl font-black uppercase tracking-tight">
                           {currentPill.title}
                         </h4>
-                        <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                        <p className="text-xs text-slate-300 leading-relaxed font-medium">
                           Vídeo em produção. Confira a aplicação prática abaixo.
                         </p>
                       </div>
@@ -306,66 +311,45 @@ export function PillsSection() {
                   )}
                 </div>
 
-                {/* Top Overlay Badge */}
-                <div className="relative z-20 p-5 flex items-center justify-between pointer-events-none bg-gradient-to-b from-black/80 via-black/40 to-transparent">
-                  <div className="flex items-center gap-2">
-                    <span className="px-3 py-1 rounded-full bg-primary text-white text-[10px] font-black uppercase tracking-wider shadow-md">
-                      Pílula 0{selectedPillIndex + 1}
-                    </span>
-                    <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-wider border border-white/10">
-                      {currentPill.category || "SAN"}
-                    </span>
-                  </div>
-                  <span className="text-xs font-black text-white/70">
-                    {selectedPillIndex + 1} de {minutes.length}
-                  </span>
+                {/* Bottom Overlay com Título, Explicação e Aplicação Prática (Preenche o rodapé sem sobras mortas) */}
+                <div className="relative z-30 p-6 md:p-8 bg-gradient-to-t from-black via-black/95 to-transparent space-y-3.5 pointer-events-auto">
+                  <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight leading-snug drop-shadow-md">
+                    {currentPill.title}
+                  </h3>
+
+                  {currentPill.supportText && (
+                    <p className="text-xs md:text-sm text-slate-300 font-medium leading-relaxed">
+                      {currentPill.supportText}
+                    </p>
+                  )}
+
+                  {currentPill.practicalApp && (
+                    <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-xs text-emerald-300 font-semibold flex items-start gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0 mt-0.5" />
+                      <span><strong>Aplicação Prática:</strong> {currentPill.practicalApp}</span>
+                    </div>
+                  )}
                 </div>
-
-                {/* Bottom Overlay com Título e Microexplicação (como no print 3) */}
-                {showInfoOverlay && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="relative z-20 p-6 bg-gradient-to-t from-black/95 via-black/80 to-transparent space-y-3 pointer-events-auto"
-                  >
-                    <h3 className="text-lg md:text-xl font-black text-white uppercase tracking-tight leading-snug drop-shadow-md">
-                      {currentPill.title}
-                    </h3>
-
-                    {currentPill.supportText && (
-                      <p className="text-xs text-slate-300 font-medium leading-relaxed line-clamp-2">
-                        {currentPill.supportText}
-                      </p>
-                    )}
-
-                    {currentPill.practicalApp && (
-                      <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-[11px] text-emerald-300 font-semibold flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
-                        <span><strong>Aplicação:</strong> {currentPill.practicalApp}</span>
-                      </div>
-                    )}
-                  </motion.div>
-                )}
               </motion.div>
 
               {/* Botão de Navegação Direita */}
               <button
                 onClick={handleNextVideo}
-                className="p-3.5 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur-md border border-white/20 shadow-2xl transition-all active:scale-95 shrink-0"
+                className="p-4 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur-md border border-white/25 shadow-2xl transition-all active:scale-95 shrink-0"
                 title="Próximo Vídeo (Seta Direita)"
               >
-                <ChevronRight className="h-6 w-6" />
+                <ChevronRight className="h-7 w-7" />
               </button>
 
-              {/* PRÓXIMO VÍDEO (Preview translúcido à direita, como no print 3) */}
+              {/* PRÓXIMO VÍDEO (Preview translúcido amplo à direita) */}
               {nextPill && (
                 <div 
                   onClick={handleNextVideo}
-                  className="hidden lg:flex flex-col items-center justify-center opacity-30 hover:opacity-75 transition-all cursor-pointer scale-90 shrink-0 w-44 aspect-[9/16] rounded-[2rem] overflow-hidden bg-slate-900 border border-white/10 relative shadow-2xl"
+                  className="hidden xl:flex flex-col justify-end opacity-35 hover:opacity-80 transition-all cursor-pointer scale-95 shrink-0 w-64 2xl:w-80 h-[78vh] rounded-[2.5rem] overflow-hidden bg-slate-900 border border-white/15 relative shadow-2xl group"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-4 flex flex-col justify-end">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-primary">Próximo</span>
-                    <h4 className="text-xs font-black text-white line-clamp-2">{nextPill.title}</h4>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-6 flex flex-col justify-end">
+                    <span className="text-[11px] font-black uppercase tracking-widest text-primary mb-1">Próximo Vídeo →</span>
+                    <h4 className="text-sm font-black text-white leading-snug line-clamp-2">{nextPill.title}</h4>
                   </div>
                 </div>
               )}
