@@ -7097,9 +7097,74 @@ export const librasGlossary: any[] = [
 export const librasPills: any[] = [
   {
     id: 'pill-1',
-    title: 'O que é SAN?',
+    title: 'O que é SAN? Conceito em 1 Minuto',
+    duration: '1 min',
     videoUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
-    practicalApp: 'Identificar a segurança alimentar na merenda escolar.',
+    practicalApp: 'Identificar a segurança alimentar no dia a dia da comunidade e na merenda escolar.',
+    supportText: 'A Segurança Alimentar e Nutricional assegura o direito humano básico de comer com dignidade, regularidade e qualidade biológica.',
+    category: 'Conceito Central'
+  },
+  {
+    id: 'pill-2',
+    title: 'Contaminação Cruzada na Cozinha',
+    duration: '1 min',
+    videoUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
+    practicalApp: 'Separar tábuas e facas para carnes cruas e alimentos prontos para consumo.',
+    supportText: 'Transferência de microrganismos patogênicos de um alimento cru ou superfície para outro pronto para consumo.',
+    category: 'Boas Práticas'
+  },
+  {
+    id: 'pill-3',
+    title: 'Como Higienizar Vegetais e Frutas',
+    duration: '54 seg',
+    videoUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
+    practicalApp: 'Mergulhar folhas em solução clorada na concentração correta antes de servir cru.',
+    supportText: 'A água corrente retira sujidades físicas, mas a desinfecção com cloro elimina bactérias e parasitas invisíveis.',
+    category: 'Higiene'
+  },
+  {
+    id: 'pill-4',
+    title: 'Perigo Biológico vs Perigo Químico',
+    duration: '1 min',
+    videoUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
+    practicalApp: 'Evitar armazenar desinfetantes perto de alimentos e controlar a proliferação bacteriana.',
+    supportText: 'Biológicos são bactérias, vírus e fungos; químicos são pesticidas, metais pesados e produtos de limpeza.',
+    category: 'Controle Sanitário'
+  },
+  {
+    id: 'pill-5',
+    title: 'Prazo de Validade vs Vida de Prateleira',
+    duration: '2 min',
+    videoUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
+    practicalApp: 'Conferir rótulos no mercado e aplicar o princípio PVPS (Primeiro que Vence, Primeiro que Sai).',
+    supportText: 'Período em que o alimento permanece seguro para o consumo, mantendo suas propriedades nutritivas e sensoriais.',
+    category: 'Rotulagem'
+  },
+  {
+    id: 'pill-6',
+    title: 'Higiene Correta das Mãos do Manipulador',
+    duration: '1 min',
+    videoUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
+    practicalApp: 'Lavar as mãos antes de preparar alimentos, após usar o banheiro ou tocar no lixo.',
+    supportText: 'As mãos são o principal veículo de contaminação cruzada na manipulação de alimentos.',
+    category: 'Boas Práticas'
+  },
+  {
+    id: 'pill-7',
+    title: 'Temperatura Segura: Geladeira e Fogão',
+    duration: '1 min',
+    videoUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
+    practicalApp: 'Manter alimentos quentes acima de 60°C e alimentos refrigerados abaixo de 5°C.',
+    supportText: 'A zona de perigo entre 5°C e 60°C é onde as bactérias se multiplicam rapidamente a cada 20 minutos.',
+    category: 'Conservação'
+  },
+  {
+    id: 'pill-8',
+    title: 'Alérgenos nos Alimentos: Como Identificar',
+    duration: '2 min',
+    videoUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
+    practicalApp: 'Ler alertas de ‘Alérgicos: contém glúten/leite/soja’ para proteger pessoas alérgicas.',
+    supportText: 'Proteínas alimentares que desencadeiam reações do sistema imunológico, exigindo destaque obrigatório nos rótulos.',
     category: 'Segurança Alimentar'
   }
 ];
