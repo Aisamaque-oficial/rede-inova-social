@@ -430,7 +430,7 @@ export function GlossaryFilters() {
                           title="Vídeo demonstrativo disponível"
                           className={cn(
                             "p-1.5 rounded-full flex items-center justify-center",
-                            isSelected ? "bg-white text-emerald-600" : "bg-emerald-100 text-emerald-700"
+                            isSelected ? "bg-white text-blue-700" : "bg-blue-100 text-blue-800"
                           )}
                         >
                           <Play className="h-2 w-2 fill-current" />

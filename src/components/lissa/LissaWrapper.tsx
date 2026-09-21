@@ -26,7 +26,7 @@ export function LissaWrapper({ title, icon: Icon, children }: LissaWrapperProps)
             {title}
           </h2>
           <div className="flex items-center gap-2 mt-1">
-            <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+            <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
             <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
               Estação LISSA Ativa
             </span>

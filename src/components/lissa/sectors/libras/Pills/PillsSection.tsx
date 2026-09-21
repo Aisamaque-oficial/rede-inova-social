@@ -32,8 +32,8 @@ export function PillsSection() {
   // Background gradients for thumbnails
   const gradients = [
     "from-purple-950 via-slate-900 to-primary/40",
-    "from-blue-950 via-slate-900 to-emerald-950/60",
-    "from-emerald-950 via-slate-900 to-teal-900/60",
+    "from-blue-950 via-slate-900 to-indigo-950/60",
+    "from-blue-950 via-slate-900 to-slate-950",
     "from-amber-950 via-slate-900 to-orange-950/60",
     "from-indigo-950 via-slate-900 to-cyan-950/60",
     "from-rose-950 via-slate-900 to-purple-950/60",
@@ -324,8 +324,8 @@ export function PillsSection() {
                   )}
 
                   {currentPill.practicalApp && (
-                    <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-xs text-emerald-300 font-semibold flex items-start gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0 mt-0.5" />
+                    <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-xs text-amber-200 font-semibold flex items-start gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-amber-300 shrink-0 mt-0.5" />
                       <span><strong>Aplicação Prática:</strong> {currentPill.practicalApp}</span>
                     </div>
                   )}

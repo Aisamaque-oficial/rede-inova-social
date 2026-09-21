@@ -36,9 +36,9 @@ import { cn } from "@/lib/utils";
 // Warm, organic editorial palettes inspired by Brazilian soil, agriculture & harvest
 const TRACK_THEMES = [
   {
-    bgGradient: "from-[#203D32] via-[#27463A] to-[#1A3329]",
-    badgeBg: "bg-emerald-100/90 text-emerald-900 border-emerald-300/40",
-    accentLight: "bg-emerald-50 text-emerald-800 border-emerald-200",
+    bgGradient: "from-[#1E3A8A] via-[#1D4ED8] to-[#172554]",
+    badgeBg: "bg-blue-100/90 text-blue-900 border-blue-300/40",
+    accentLight: "bg-blue-50 text-blue-800 border-blue-200",
     tag: "Comida de Verdade",
     icon: Leaf
   },
@@ -434,11 +434,11 @@ export function TracksSection() {
         {/* =========================================================
             1. HERO DOCUMENTAL EDITORIAL: ACOLHEDOR E HUMANO
             ========================================================= */}
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-[#1C2E26] via-[#243B31] to-[#15231D] text-white p-8 md:p-14 shadow-xl border border-stone-800/40">
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A] text-white p-8 md:p-14 shadow-xl border border-stone-800/40">
           
           {/* Subtle Organic Background Elements */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
           
           <div className="relative z-10 max-w-3xl space-y-5">
             {/* Humanized Badges */}
@@ -606,7 +606,7 @@ export function TracksSection() {
                         <span className="text-[11px] font-bold text-amber-700 uppercase tracking-widest block mb-1">
                           Próximo passo: {stepTitle}
                         </span>
-                        <h3 className="font-black text-lg text-stone-900 uppercase tracking-tight group-hover:text-emerald-700 transition-colors leading-snug">
+                        <h3 className="font-black text-lg text-stone-900 uppercase tracking-tight group-hover:text-blue-700 transition-colors leading-snug">
                           {track.title}
                         </h3>
                         <p className="text-xs text-stone-500 font-medium line-clamp-2 mt-1">
@@ -623,7 +623,7 @@ export function TracksSection() {
                         <div className="w-full h-2 rounded-full bg-stone-200 overflow-hidden">
                           <div 
                             style={{ width: `${stepPercent}%` }}
-                            className="h-full bg-gradient-to-r from-amber-500 to-emerald-600 rounded-full"
+                            className="h-full bg-gradient-to-r from-amber-500 to-blue-600 rounded-full"
                           />
                         </div>
                         <button
@@ -650,7 +650,7 @@ export function TracksSection() {
             ========================================================= */}
         <div className="bg-white p-6 md:p-8 rounded-[2rem] border border-stone-200/80 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-700 shrink-0">
               <Trophy className="h-6 w-6" />
             </div>
             <div>
@@ -666,14 +666,14 @@ export function TracksSection() {
           <div className="w-full md:w-72 space-y-2">
             <div className="flex justify-between text-xs font-bold">
               <span className="text-stone-500">Temporada 1</span>
-              <span className="text-emerald-700 font-bold">{progressPercentage}% do Percurso</span>
+              <span className="text-blue-700 font-bold">{progressPercentage}% do Percurso</span>
             </div>
             <div className="w-full h-3 rounded-full bg-stone-100 overflow-hidden border border-stone-200">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${progressPercentage}%` }}
                 transition={{ duration: 0.8 }}
-                className="h-full bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full"
+                className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"
               />
             </div>
           </div>
@@ -685,7 +685,7 @@ export function TracksSection() {
         <div className="space-y-6 pt-2">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-800 block">
+              <span className="text-[10px] font-black uppercase tracking-widest text-blue-800 block">
                 Série Completa
               </span>
               <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-stone-900">
@@ -732,7 +732,7 @@ export function TracksSection() {
                   transition={{ delay: i * 0.05, duration: 0.4 }}
                   className="group flex flex-col"
                 >
-                  <div className="rounded-[2.5rem] p-7 md:p-8 border border-stone-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between flex-1 relative bg-white hover:border-emerald-300/80 min-h-[360px]">
+                  <div className="rounded-[2.5rem] p-7 md:p-8 border border-stone-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between flex-1 relative bg-white hover:border-blue-300/80 min-h-[360px]">
                     <div>
                       {/* Top Badges */}
                       <div className="flex items-center justify-between mb-4">
@@ -741,8 +741,8 @@ export function TracksSection() {
                         </span>
 
                         {isCompleted ? (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-[10px] font-black uppercase tracking-wider border border-emerald-200">
-                            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-800 text-[10px] font-black uppercase tracking-wider border border-blue-200">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-blue-600" />
                             <span>Concluída</span>
                           </span>
                         ) : hasProgress ? (
@@ -758,7 +758,7 @@ export function TracksSection() {
                       </div>
 
                       {/* Título da Trilha */}
-                      <h3 className="font-black text-xl text-stone-900 uppercase tracking-tight group-hover:text-emerald-800 transition-colors leading-snug mb-3">
+                      <h3 className="font-black text-xl text-stone-900 uppercase tracking-tight group-hover:text-blue-800 transition-colors leading-snug mb-3">
                         {track.title}
                       </h3>
 
@@ -775,7 +775,7 @@ export function TracksSection() {
                           <Clock className="h-3.5 w-3.5" />
                           <span>{track.stepsCount} etapas • {track.duration}</span>
                         </span>
-                        <span className="text-emerald-800 font-semibold">Libras & Legendas</span>
+                        <span className="text-blue-800 font-semibold">Libras & Legendas</span>
                       </div>
 
                       <button
@@ -826,7 +826,7 @@ export function TracksSection() {
                   <X className="h-4 w-4" />
                 </button>
 
-                <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-800 mx-auto">
+                <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-800 mx-auto">
                   <Smartphone className="h-7 w-7" />
                 </div>
 
@@ -853,7 +853,7 @@ export function TracksSection() {
                     onClick={handleCopySyncLink}
                     className="w-full py-3.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all"
                   >
-                    {copiedLink ? <CheckCheck className="h-4 w-4 text-emerald-400" /> : <Share2 className="h-4 w-4" />}
+                    {copiedLink ? <CheckCheck className="h-4 w-4 text-blue-400" /> : <Share2 className="h-4 w-4" />}
                     <span>{copiedLink ? "Link Copiado com Sucesso!" : "Copiar Link de Acesso"}</span>
                   </button>
 
@@ -896,12 +896,12 @@ export function TracksSection() {
             className="p-3 rounded-2xl bg-stone-50 hover:bg-stone-100 text-stone-700 border border-stone-200 transition-colors flex items-center gap-2 text-xs font-bold"
             title="Levar para o celular via QR Code"
           >
-            <Smartphone className="h-4 w-4 text-emerald-700" />
+            <Smartphone className="h-4 w-4 text-blue-700" />
             <span className="hidden sm:inline">Levar ao Celular</span>
           </button>
 
           <div className="text-center sm:text-right">
-            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-800 block">
+            <span className="text-[10px] font-black uppercase tracking-widest text-blue-800 block">
               {activeTrack.category} • {activeTrack.duration}
             </span>
             <h2 className="text-lg md:text-xl font-black text-stone-900 uppercase tracking-tight">
@@ -925,14 +925,14 @@ export function TracksSection() {
                 className={cn(
                   "flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all shrink-0 border",
                   isStepActive
-                    ? "bg-emerald-800 text-white border-emerald-800 shadow-sm scale-105"
+                    ? "bg-emerald-800 text-white border-blue-800 shadow-sm scale-105"
                     : isStepCompleted
-                    ? "bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100"
+                    ? "bg-blue-50 text-blue-800 border-blue-200 hover:bg-blue-100"
                     : "bg-stone-50 text-stone-500 border-stone-200 hover:bg-stone-100 hover:text-stone-700"
                 )}
               >
                 {isStepCompleted ? (
-                  <Check className="h-3.5 w-3.5 text-emerald-700" />
+                  <Check className="h-3.5 w-3.5 text-blue-700" />
                 ) : (
                   <span className="font-mono text-[11px] opacity-80">0{idx + 1}</span>
                 )}
@@ -953,9 +953,9 @@ export function TracksSection() {
             className={cn(
               "flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all shrink-0 border",
               isQuizStage
-                ? "bg-emerald-800 text-white border-emerald-800 shadow-sm scale-105"
+                ? "bg-emerald-800 text-white border-blue-800 shadow-sm scale-105"
                 : isQuizCompleted
-                ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                ? "bg-blue-50 text-blue-800 border-blue-200"
                 : "bg-stone-50 text-stone-500 border-stone-200 hover:bg-stone-100"
             )}
           >
@@ -981,7 +981,7 @@ export function TracksSection() {
               className="space-y-6"
             >
               <div className="space-y-2">
-                <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 font-black text-[10px] uppercase tracking-wider inline-block">
+                <span className="px-3 py-1 rounded-full bg-blue-100 text-emerald-900 font-black text-[10px] uppercase tracking-wider inline-block">
                   Etapa 01 • Introdução em Libras
                 </span>
                 <h3 className="text-2xl md:text-3xl font-black text-stone-900 uppercase tracking-tight">
@@ -1005,7 +1005,7 @@ export function TracksSection() {
 
               {/* Resumo Didático em Português Claro */}
               <div className="p-6 md:p-8 rounded-[2rem] bg-stone-50 border border-stone-200/80 space-y-3">
-                <div className="flex items-center gap-2 text-emerald-800 text-xs font-black uppercase tracking-wider">
+                <div className="flex items-center gap-2 text-blue-800 text-xs font-black uppercase tracking-wider">
                   <BookOpen className="h-4 w-4" />
                   <span>Resumo Didático em Português Claro</span>
                 </div>
@@ -1018,7 +1018,7 @@ export function TracksSection() {
               <div className="flex justify-end pt-4">
                 <button
                   onClick={handleNextStep}
-                  className="px-8 py-4 rounded-2xl bg-emerald-800 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider transition-all shadow-md hover:scale-[1.02] flex items-center gap-2"
+                  className="px-8 py-4 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-black text-xs uppercase tracking-wider transition-all shadow-md hover:scale-[1.02] flex items-center gap-2"
                 >
                   <span>Avançar para Etapa 2: Sinais da Terra</span>
                   <ArrowRight className="h-4 w-4" />
@@ -1039,7 +1039,7 @@ export function TracksSection() {
               className="space-y-6"
             >
               <div className="space-y-2">
-                <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 font-black text-[10px] uppercase tracking-wider inline-block">
+                <span className="px-3 py-1 rounded-full bg-blue-100 text-emerald-900 font-black text-[10px] uppercase tracking-wider inline-block">
                   Etapa 02 • Conexão com o Glossário
                 </span>
                 <h3 className="text-2xl md:text-3xl font-black text-stone-900 uppercase tracking-tight">
@@ -1055,7 +1055,7 @@ export function TracksSection() {
                 {currentStep.conceptTerms?.map((termItem, tidx) => (
                   <div
                     key={tidx}
-                    className="p-6 rounded-[2rem] bg-stone-50 border border-stone-200 shadow-sm flex flex-col justify-between space-y-4 hover:border-emerald-400 transition-all duration-300"
+                    className="p-6 rounded-[2rem] bg-stone-50 border border-stone-200 shadow-sm flex flex-col justify-between space-y-4 hover:border-blue-400 transition-all duration-300"
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
@@ -1076,8 +1076,8 @@ export function TracksSection() {
                       </p>
                     </div>
 
-                    <div className="p-4 rounded-xl bg-emerald-50/80 border border-emerald-200/80 space-y-1.5">
-                      <div className="flex items-center gap-1.5 text-emerald-800 text-[10px] font-black uppercase tracking-wider">
+                    <div className="p-4 rounded-xl bg-blue-50/80 border border-blue-200/80 space-y-1.5">
+                      <div className="flex items-center gap-1.5 text-blue-800 text-[10px] font-black uppercase tracking-wider">
                         <Ear className="h-3.5 w-3.5" />
                         <span>Sinal em Libras</span>
                       </div>
@@ -1099,7 +1099,7 @@ export function TracksSection() {
                 </button>
                 <button
                   onClick={handleNextStep}
-                  className="px-8 py-4 rounded-2xl bg-emerald-800 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider transition-all shadow-md hover:scale-[1.02] flex items-center gap-2"
+                  className="px-8 py-4 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-black text-xs uppercase tracking-wider transition-all shadow-md hover:scale-[1.02] flex items-center gap-2"
                 >
                   <span>Avançar para Etapa 3: Minuto Prático</span>
                   <ArrowRight className="h-4 w-4" />
@@ -1120,7 +1120,7 @@ export function TracksSection() {
               className="space-y-6"
             >
               <div className="space-y-2">
-                <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 font-black text-[10px] uppercase tracking-wider inline-block">
+                <span className="px-3 py-1 rounded-full bg-blue-100 text-emerald-900 font-black text-[10px] uppercase tracking-wider inline-block">
                   Etapa 03 • Minuto do Conhecimento
                 </span>
                 <h3 className="text-2xl md:text-3xl font-black text-stone-900 uppercase tracking-tight">
@@ -1164,8 +1164,8 @@ export function TracksSection() {
                     </p>
                   </div>
 
-                  <div className="p-6 rounded-[2rem] bg-emerald-50 border border-emerald-200 space-y-2 text-emerald-900">
-                    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald-800">
+                  <div className="p-6 rounded-[2rem] bg-blue-50 border border-blue-200 space-y-2 text-emerald-900">
+                    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-blue-800">
                       <CheckCircle2 className="h-4 w-4" />
                       <span>Aplicação Prática no Dia a Dia</span>
                     </div>
@@ -1186,7 +1186,7 @@ export function TracksSection() {
                 </button>
                 <button
                   onClick={handleNextStep}
-                  className="px-8 py-4 rounded-2xl bg-emerald-800 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider transition-all shadow-md hover:scale-[1.02] flex items-center gap-2"
+                  className="px-8 py-4 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-black text-xs uppercase tracking-wider transition-all shadow-md hover:scale-[1.02] flex items-center gap-2"
                 >
                   <span>Avançar para Etapa 4: Na Vida Real</span>
                   <ArrowRight className="h-4 w-4" />
@@ -1207,7 +1207,7 @@ export function TracksSection() {
               className="space-y-6"
             >
               <div className="space-y-2">
-                <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 font-black text-[10px] uppercase tracking-wider inline-block">
+                <span className="px-3 py-1 rounded-full bg-blue-100 text-emerald-900 font-black text-[10px] uppercase tracking-wider inline-block">
                   Etapa 04 • Na Vida Real (Caso de Estudo)
                 </span>
                 <h3 className="text-2xl md:text-3xl font-black text-stone-900 uppercase tracking-tight">
@@ -1245,15 +1245,15 @@ export function TracksSection() {
                           "w-full text-left p-6 rounded-[2rem] border transition-all duration-300 flex items-start gap-4",
                           isSelected
                             ? opt.isCorrect
-                              ? "bg-emerald-50 border-emerald-500 ring-2 ring-emerald-500/20 shadow-md"
+                              ? "bg-blue-50 border-blue-500 ring-2 ring-emerald-500/20 shadow-md"
                               : "bg-rose-50 border-rose-500 ring-2 ring-rose-500/20 shadow-md"
-                            : "bg-white border-stone-200 hover:border-emerald-300 hover:bg-stone-50"
+                            : "bg-white border-stone-200 hover:border-blue-300 hover:bg-stone-50"
                         )}
                       >
                         <div className={cn(
                           "w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs",
                           isSelected
-                            ? opt.isCorrect ? "bg-emerald-600 text-white" : "bg-rose-600 text-white"
+                            ? opt.isCorrect ? "bg-blue-700 text-white" : "bg-amber-700 text-white"
                             : "border border-stone-300 text-stone-400"
                         )}>
                           {isSelected ? (opt.isCorrect ? "✓" : "✕") : ""}
@@ -1270,7 +1270,7 @@ export function TracksSection() {
                           animate={{ opacity: 1, height: "auto" }}
                           className={cn(
                             "p-5 rounded-2xl text-xs md:text-sm font-medium leading-relaxed border",
-                            opt.isCorrect ? "bg-emerald-100/70 border-emerald-200 text-emerald-900" : "bg-rose-100/70 border-rose-200 text-rose-900"
+                            opt.isCorrect ? "bg-blue-100/70 border-blue-200 text-emerald-900" : "bg-rose-100/70 border-rose-200 text-rose-900"
                           )}
                         >
                           <strong className="block mb-1">{opt.isCorrect ? "✓ Decisão Correta: " : "✕ Ponto de Reflexão: "}</strong>
@@ -1296,7 +1296,7 @@ export function TracksSection() {
                   className={cn(
                     "px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-2",
                     selectedCaseOption !== null
-                      ? "bg-emerald-800 hover:bg-emerald-700 text-white hover:scale-[1.02]"
+                      ? "bg-blue-700 hover:bg-blue-800 text-white hover:scale-[1.02]"
                       : "bg-stone-200 text-stone-400 cursor-not-allowed"
                   )}
                 >
@@ -1319,7 +1319,7 @@ export function TracksSection() {
               className="space-y-6"
             >
               <div className="space-y-2">
-                <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 font-black text-[10px] uppercase tracking-wider inline-block">
+                <span className="px-3 py-1 rounded-full bg-blue-100 text-emerald-900 font-black text-[10px] uppercase tracking-wider inline-block">
                   Etapa 05 • Conexão Territorial
                 </span>
                 <h3 className="text-2xl md:text-3xl font-black text-stone-900 uppercase tracking-tight">
@@ -1332,7 +1332,7 @@ export function TracksSection() {
 
               {/* Pergunta Reflexiva */}
               <div className="p-8 rounded-[2.5rem] bg-stone-50 border border-stone-200 space-y-5 shadow-sm">
-                <div className="flex items-center gap-2.5 text-emerald-800 text-xs font-black uppercase tracking-wider">
+                <div className="flex items-center gap-2.5 text-blue-800 text-xs font-black uppercase tracking-wider">
                   <MapPin className="h-5 w-5" />
                   <span>Reflexão Territorial</span>
                 </div>
@@ -1350,7 +1350,7 @@ export function TracksSection() {
                         className={cn(
                           "w-full text-left p-5 rounded-2xl border transition-all text-sm md:text-base font-semibold leading-relaxed flex items-center justify-between",
                           isSelected
-                            ? "bg-emerald-800 text-white border-emerald-800 font-bold shadow-sm"
+                            ? "bg-emerald-800 text-white border-blue-800 font-bold shadow-sm"
                             : "bg-white text-stone-700 border-stone-200 hover:bg-stone-100"
                         )}
                       >
@@ -1365,7 +1365,7 @@ export function TracksSection() {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-5 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs md:text-sm text-stone-700 font-medium leading-relaxed"
+                    className="p-5 rounded-2xl bg-blue-50 border border-blue-200 text-xs md:text-sm text-stone-700 font-medium leading-relaxed"
                   >
                     <strong className="text-emerald-900 block mb-1">💡 Conexão LISSA:</strong>
                     {currentStep.territoryReflection.insight}
@@ -1383,7 +1383,7 @@ export function TracksSection() {
                 </button>
                 <button
                   onClick={handleNextStep}
-                  className="px-8 py-4 rounded-2xl bg-emerald-800 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider transition-all shadow-md hover:scale-[1.02] flex items-center gap-2"
+                  className="px-8 py-4 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-black text-xs uppercase tracking-wider transition-all shadow-md hover:scale-[1.02] flex items-center gap-2"
                 >
                   <span>Ir para o Quiz de Fixação</span>
                   <Brain className="h-4 w-4" />
@@ -1407,7 +1407,7 @@ export function TracksSection() {
                 <div className="space-y-6">
                   <div className="flex items-center justify-between pb-4 border-b border-stone-200">
                     <div>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-emerald-800 block">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-blue-800 block">
                         Avaliação Didática
                       </span>
                       <h3 className="text-2xl font-black text-stone-900 uppercase tracking-tight">
@@ -1444,17 +1444,17 @@ export function TracksSection() {
                                   "w-full text-left p-5 rounded-2xl border transition-all text-sm md:text-base font-semibold leading-relaxed flex items-start gap-4",
                                   selectedAnswer !== null
                                     ? isCorrect
-                                      ? "bg-emerald-50 border-emerald-500 text-emerald-900 ring-2 ring-emerald-500/20 shadow-sm"
+                                      ? "bg-blue-50 border-blue-500 text-emerald-900 ring-2 ring-emerald-500/20 shadow-sm"
                                       : isChosen
                                       ? "bg-rose-50 border-rose-500 text-rose-900 ring-2 ring-rose-500/20 shadow-sm"
                                       : "bg-stone-50 text-stone-400 border-stone-200 opacity-60"
-                                    : "bg-white text-stone-700 border-stone-200 hover:border-emerald-300 hover:bg-stone-50"
+                                    : "bg-white text-stone-700 border-stone-200 hover:border-blue-300 hover:bg-stone-50"
                                 )}
                               >
                                 <span className={cn(
                                   "w-7 h-7 rounded-xl flex items-center justify-center shrink-0 font-bold text-xs",
                                   selectedAnswer !== null
-                                    ? isCorrect ? "bg-emerald-600 text-white" : isChosen ? "bg-rose-600 text-white" : "bg-stone-200 text-stone-500"
+                                    ? isCorrect ? "bg-blue-700 text-white" : isChosen ? "bg-amber-700 text-white" : "bg-stone-200 text-stone-500"
                                     : "bg-stone-100 text-stone-600"
                                 )}>
                                   {String.fromCharCode(65 + optIdx)}
@@ -1484,7 +1484,7 @@ export function TracksSection() {
                             className={cn(
                               "px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-2",
                               selectedAnswer !== null
-                                ? "bg-emerald-800 hover:bg-emerald-700 text-white hover:scale-[1.02]"
+                                ? "bg-blue-700 hover:bg-blue-800 text-white hover:scale-[1.02]"
                                 : "bg-stone-200 text-stone-400 cursor-not-allowed"
                             )}
                           >
@@ -1503,12 +1503,12 @@ export function TracksSection() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="text-center py-12 space-y-6"
                 >
-                  <div className="w-24 h-24 rounded-full bg-emerald-50 text-emerald-700 border-2 border-emerald-200 mx-auto flex items-center justify-center shadow-lg">
+                  <div className="w-24 h-24 rounded-full bg-blue-50 text-blue-700 border-2 border-blue-200 mx-auto flex items-center justify-center shadow-lg">
                     <CheckCircle2 className="h-12 w-12" />
                   </div>
 
                   <div className="space-y-2">
-                    <span className="text-xs font-black uppercase tracking-[0.2em] text-emerald-800">
+                    <span className="text-xs font-black uppercase tracking-[0.2em] text-blue-800">
                       Trilha Concluída com Sucesso ✓
                     </span>
                     <h3 className="text-3xl md:text-4xl font-black text-stone-900 uppercase tracking-tight">
@@ -1542,7 +1542,7 @@ export function TracksSection() {
                       return (
                         <button
                           onClick={() => handleStartTrack(nextTrack.id, 0)}
-                          className="px-8 py-4 rounded-2xl bg-emerald-800 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider transition-all shadow-md hover:scale-[1.02] flex items-center justify-center gap-2 w-full sm:w-auto"
+                          className="px-8 py-4 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-black text-xs uppercase tracking-wider transition-all shadow-md hover:scale-[1.02] flex items-center justify-center gap-2 w-full sm:w-auto"
                         >
                           <span>Iniciar Próxima Trilha: {nextTrack.title}</span>
                           <ArrowRight className="h-4 w-4" />
@@ -1574,7 +1574,7 @@ export function TracksSection() {
                 <X className="h-4 w-4" />
               </button>
 
-              <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-800 mx-auto">
+              <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-800 mx-auto">
                 <Smartphone className="h-7 w-7" />
               </div>
 
@@ -1600,7 +1600,7 @@ export function TracksSection() {
                   onClick={handleCopySyncLink}
                   className="w-full py-3.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all"
                 >
-                  {copiedLink ? <CheckCheck className="h-4 w-4 text-emerald-400" /> : <Share2 className="h-4 w-4" />}
+                  {copiedLink ? <CheckCheck className="h-4 w-4 text-blue-400" /> : <Share2 className="h-4 w-4" />}
                   <span>{copiedLink ? "Link Copiado com Sucesso!" : "Copiar Link de Acesso"}</span>
                 </button>
 
