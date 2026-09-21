@@ -556,7 +556,7 @@ export function GlossaryFilters() {
                               Vídeo em Produção
                             </span>
                             <h4 className="text-base font-black uppercase tracking-tight">
-                              Mediação em Libras
+                              Libras na Segurança Alimentar
                             </h4>
                             <p className="text-xs text-slate-400 leading-relaxed font-medium">
                               O sinal gravado está sendo preparado para este termo. Acompanhe a estratégia de sinalização abaixo.

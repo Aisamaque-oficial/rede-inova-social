@@ -60,7 +60,7 @@ export default function LaboratorioPage({ params }: { params?: { estudio?: strin
   const stations = [
     { id: "nutricao", label: "Cozinha Nutricional", icon: Apple, color: "bg-orange-500", description: "Aprenda sobre comida de verdade e escolhas conscientes." },
     { id: "materiais", label: "Biblioteca de Saberes", icon: Book, color: "bg-blue-500", description: "Acervo de guias, e-books e cartilhas autorais." },
-    { id: "libras", label: "Mediação em Libras", icon: Ear, color: "bg-purple-600", description: "Núcleo de tradução técnica, letramento científico e mediação linguística." },
+    { id: "libras", label: "Libras na Segurança Alimentar", icon: Ear, color: "bg-purple-600", description: "Núcleo de tradução técnica, letramento científico e mediação linguística." },
     { id: "agricultura", label: "Horta Comunitária", icon: Sprout, color: "bg-green-600", description: "A força da agricultura familiar e sustentabilidade." },
     { id: "jogos", label: "Arena de Desafios", icon: Gamepad2, color: "bg-indigo-600", description: "Minigames e testes de conhecimento divertidos." },
   ];
@@ -150,7 +150,7 @@ export default function LaboratorioPage({ params }: { params?: { estudio?: strin
                 )}
 
                 {activeStation === "libras" && (
-                    <LissaWrapper title="Mediação em Libras" icon={Ear}>
+                    <LissaWrapper title="Libras na Segurança Alimentar" icon={Ear}>
                         <LibrasSetor isStudio={isStudio} />
                     </LissaWrapper>
                 )}

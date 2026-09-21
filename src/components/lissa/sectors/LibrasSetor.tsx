@@ -26,7 +26,7 @@ export default function LibrasSetor({ isStudio }: LibrasSetorProps) {
         user_id: user.id,
         user_name: user.name,
         user_sector: user.activeSector || 'LISSA',
-        sector_name: 'Mediação em Libras',
+        sector_name: 'Libras na Segurança Alimentar',
         last_online: new Date().toISOString(),
         session_duration: 0
       });
