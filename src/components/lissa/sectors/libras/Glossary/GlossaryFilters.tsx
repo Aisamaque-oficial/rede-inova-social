@@ -171,13 +171,9 @@ export function GlossaryFilters() {
       <div className="space-y-8 mb-16 animate-in fade-in duration-500">
         {/* Banner Didático de Boas-Vindas */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/95 backdrop-blur-md p-8 md:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
-          <div className="space-y-2.5">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
-              <Layers className="h-3.5 w-3.5" />
-              <span>Material Didático Bilíngue (Libras / Português)</span>
-            </div>
+          <div className="space-y-2">
             <h3 className="text-2xl md:text-3xl font-black text-slate-800 uppercase tracking-tight">
-              Glossário de Inocuidade dos Alimentos
+              Glossário em Libras para Segurança Alimentar
             </h3>
             <p className="text-xs md:text-sm text-slate-500 font-medium max-w-2xl leading-relaxed">
               Para iniciar, clique em um dos 6 eixos temáticos abaixo. Dentro de cada eixo você encontrará a lista de termos com a sinalização em Libras e o texto didático explicativo em português lado a lado.
@@ -328,7 +324,7 @@ export function GlossaryFilters() {
           </span>
           <div>
             <div className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary mb-1">
-              <span>{isAllView ? "Visão Global" : `Eixo 0${axisNumber} • Inocuidade dos Alimentos`}</span>
+              <span>{isAllView ? "Visão Global" : `Eixo 0${axisNumber} • Segurança Alimentar`}</span>
             </div>
             <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight">
               {isAllView ? "Todos os 347 Termos Científicos" : currentEixo?.title}
