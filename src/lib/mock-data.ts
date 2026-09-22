@@ -7164,7 +7164,7 @@ export const librasPills: any[] = [
     id: 'pill-1',
     title: 'Segurança Alimentar × Segurança dos Alimentos: Você sabe a diferença?',
     duration: '1 min',
-    videoUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
+    videoUrl: 'https://youtube.com/shorts/cZ7bvqo1Le4?feature=share',
     thumbnail: '/images/libras/capa-seguranca-alimentar-vs-alimentos.png',
     practicalApp: 'Diferenciar o acesso e combate à fome (Segurança Alimentar) da inocuidade e prevenção de contaminações (Segurança dos Alimentos).',
     supportText: 'Segurança Alimentar é acesso a alimentos adequados todos os dias. Segurança dos Alimentos é garantir alimentos seguros para a sua saúde.',

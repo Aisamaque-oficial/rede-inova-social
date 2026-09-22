@@ -480,7 +480,10 @@ export function GlossaryFilters() {
   const getEmbedUrl = (url?: string) => {
     if (!url) return "";
     let base = url.trim();
-    if (base.includes("youtu.be/")) {
+    if (base.includes("shorts/")) {
+      const id = base.split("shorts/")[1]?.split(/[?&#]/)[0];
+      base = `https://www.youtube.com/embed/${id}`;
+    } else if (base.includes("youtu.be/")) {
       const id = base.split("youtu.be/")[1]?.split(/[?&#]/)[0];
       base = `https://www.youtube.com/embed/${id}`;
     } else if (base.includes("watch?v=")) {
