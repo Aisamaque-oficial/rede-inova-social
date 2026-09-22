@@ -22,6 +22,8 @@ export interface MinutePill {
   title: string;
   video_url: string;
   videoUrl?: string;
+  thumbnail?: string;
+  duration?: string;
   visual_reinforcement_url?: string;
   visualReinforcementUrl?: string;
   support_text?: string;

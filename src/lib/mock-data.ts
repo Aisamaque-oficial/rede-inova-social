@@ -7162,11 +7162,12 @@ export const librasGlossary: any[] = [
 export const librasPills: any[] = [
   {
     id: 'pill-1',
-    title: 'O que é SAN? Conceito em 1 Minuto',
+    title: 'Segurança Alimentar × Segurança dos Alimentos: Você sabe a diferença?',
     duration: '1 min',
     videoUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
-    practicalApp: 'Identificar a segurança alimentar no dia a dia da comunidade e na merenda escolar.',
-    supportText: 'A Segurança Alimentar e Nutricional assegura o direito humano básico de comer com dignidade, regularidade e qualidade biológica.',
+    thumbnail: '/images/libras/capa-seguranca-alimentar-vs-alimentos.png',
+    practicalApp: 'Diferenciar o acesso e combate à fome (Segurança Alimentar) da inocuidade e prevenção de contaminações (Segurança dos Alimentos).',
+    supportText: 'Segurança Alimentar é acesso a alimentos adequados todos os dias. Segurança dos Alimentos é garantir alimentos seguros para a sua saúde.',
     category: 'Conceito Central'
   },
   {

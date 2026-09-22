@@ -159,10 +159,21 @@ export function PillsSection() {
               onClick={() => setSelectedPillIndex(i)}
               className="relative w-72 sm:w-80 lg:w-[340px] aspect-[4/5] shrink-0 snap-start rounded-[2.5rem] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300 group border border-slate-200/80 select-none bg-slate-950"
             >
-              {/* Background gradient */}
-              <div className={cn("absolute inset-0 bg-gradient-to-br transition-opacity duration-300", grad)}>
-                <div className="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_50%_30%,#ffffff_0%,transparent_65%)]" />
-              </div>
+              {/* Background gradient or thumbnail image */}
+              {pill.thumbnail ? (
+                <div className="absolute inset-0 bg-slate-950">
+                  <img 
+                    src={pill.thumbnail} 
+                    alt={pill.title} 
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/40" />
+                </div>
+              ) : (
+                <div className={cn("absolute inset-0 bg-gradient-to-br transition-opacity duration-300", grad)}>
+                  <div className="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_50%_30%,#ffffff_0%,transparent_65%)]" />
+                </div>
+              )}
 
               {/* Top Row: Duration badge + Format badge + Pill number */}
               <div className="absolute top-5 left-5 right-5 z-10 flex items-center justify-between pointer-events-none">
@@ -246,6 +257,13 @@ export function PillsSection() {
                   onClick={handlePrevVideo}
                   className="hidden xl:flex flex-col justify-end opacity-40 hover:opacity-90 transition-all cursor-pointer scale-95 shrink-0 w-60 2xl:w-72 aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-slate-900 border border-white/15 relative shadow-2xl group"
                 >
+                  {prevPill.thumbnail && (
+                    <img 
+                      src={prevPill.thumbnail} 
+                      alt={prevPill.title} 
+                      className="absolute inset-0 w-full h-full object-cover opacity-35 group-hover:scale-105 transition-transform duration-500" 
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent p-6 flex flex-col justify-end">
                     <span className="text-[11px] font-black uppercase tracking-widest text-primary mb-1 flex items-center gap-1">
                       <ChevronLeft className="h-3.5 w-3.5" /> Vídeo Anterior
@@ -363,6 +381,13 @@ export function PillsSection() {
                   onClick={handleNextVideo}
                   className="hidden xl:flex flex-col justify-end opacity-40 hover:opacity-90 transition-all cursor-pointer scale-95 shrink-0 w-60 2xl:w-72 aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-slate-900 border border-white/15 relative shadow-2xl group"
                 >
+                  {nextPill.thumbnail && (
+                    <img 
+                      src={nextPill.thumbnail} 
+                      alt={nextPill.title} 
+                      className="absolute inset-0 w-full h-full object-cover opacity-35 group-hover:scale-105 transition-transform duration-500" 
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent p-6 flex flex-col justify-end">
                     <span className="text-[11px] font-black uppercase tracking-widest text-primary mb-1 flex items-center justify-end gap-1">
                       Próximo Vídeo <ChevronRight className="h-3.5 w-3.5" />
