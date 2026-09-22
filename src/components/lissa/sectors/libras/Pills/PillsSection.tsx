@@ -29,16 +29,16 @@ export function PillsSection() {
   const [isMuted, setIsMuted] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
 
-  // Background gradients for thumbnails
+  // Background gradients for thumbnails (Colorblind-safe: Blues, Indigos, Cyans, Ambers)
   const gradients = [
-    "from-purple-950 via-slate-900 to-primary/40",
-    "from-blue-950 via-slate-900 to-indigo-950/60",
-    "from-blue-950 via-slate-900 to-slate-950",
+    "from-blue-950 via-slate-900 to-primary/40",
+    "from-indigo-950 via-slate-900 to-blue-950/60",
+    "from-slate-950 via-slate-900 to-slate-900",
     "from-amber-950 via-slate-900 to-orange-950/60",
-    "from-indigo-950 via-slate-900 to-cyan-950/60",
-    "from-rose-950 via-slate-900 to-purple-950/60",
+    "from-cyan-950 via-slate-900 to-blue-950/60",
+    "from-slate-900 via-indigo-950 to-blue-950/60",
     "from-slate-950 via-slate-900 to-primary/30",
-    "from-teal-950 via-slate-900 to-blue-950/60",
+    "from-blue-900 via-slate-900 to-slate-950",
   ];
 
   // Carousel scroll functions
@@ -109,13 +109,13 @@ export function PillsSection() {
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
             <Zap className="h-3.5 w-3.5" />
-            <span>Pílulas Rápidas • Formato Vertical</span>
+            <span>Ciência em Libras • Formato 4:5</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-black text-slate-800 uppercase tracking-tight">
             Minuto do Conhecimento
           </h2>
           <p className="text-xs md:text-sm text-slate-500 font-medium max-w-2xl leading-relaxed">
-            Vídeos curtos e objetivos em Libras e português sobre conceitos fundamentais de segurança alimentar. Clique em qualquer vídeo para assistir em formato ampliado.
+            Vídeos objetivos em Libras e português sobre conceitos fundamentais de segurança alimentar no formato vertical 4:5. Clique em qualquer vídeo para assistir em tamanho ampliado.
           </p>
         </div>
 
@@ -139,8 +139,8 @@ export function PillsSection() {
       </div>
 
       {/* =========================================================
-          CARROSSEL HORIZONTAL DE VÍDEOS VERTICAIS (SHORTS/REELS)
-          Cards maiores e mais amplos para preencher melhor a tela
+          CARROSSEL HORIZONTAL DE VÍDEOS EM FORMATO 4:5
+          Proporção ideal para visualização em cards e players verticais
           ========================================================= */}
       <div 
         ref={carouselRef}
@@ -154,26 +154,31 @@ export function PillsSection() {
           return (
             <motion.div
               key={pill.id || i}
-              whileHover={{ scale: 1.04, y: -6 }}
+              whileHover={{ scale: 1.03, y: -6 }}
               transition={{ duration: 0.25 }}
               onClick={() => setSelectedPillIndex(i)}
-              className="relative w-64 sm:w-72 lg:w-80 aspect-[9/16] shrink-0 snap-start rounded-[2.5rem] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300 group border border-slate-200/80 select-none bg-slate-950"
+              className="relative w-72 sm:w-80 lg:w-[340px] aspect-[4/5] shrink-0 snap-start rounded-[2.5rem] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300 group border border-slate-200/80 select-none bg-slate-950"
             >
               {/* Background gradient */}
               <div className={cn("absolute inset-0 bg-gradient-to-br transition-opacity duration-300", grad)}>
-                <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_50%_30%,#ffffff_0%,transparent_60%)]" />
+                <div className="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_50%_30%,#ffffff_0%,transparent_65%)]" />
               </div>
 
-              {/* Top Row: Duration badge + Topic badge */}
+              {/* Top Row: Duration badge + Format badge + Pill number */}
               <div className="absolute top-5 left-5 right-5 z-10 flex items-center justify-between pointer-events-none">
                 <span className="px-3.5 py-1.5 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] font-black uppercase tracking-wider shadow-sm border border-white/10 flex items-center gap-1.5">
                   <Clock className="h-3.5 w-3.5 text-primary" />
                   <span>{duration}</span>
                 </span>
 
-                <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-wider border border-white/10">
-                  Pílula 0{i + 1}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-amber-300 text-[10px] font-black tracking-wider border border-amber-400/30">
+                    4:5
+                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-wider border border-white/10">
+                    Pílula 0{i + 1}
+                  </span>
+                </div>
               </div>
 
               {/* Center Play Button Overlay */}
@@ -184,11 +189,11 @@ export function PillsSection() {
               </div>
 
               {/* Bottom Details with gradient overlay */}
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent p-6 pt-20 flex flex-col justify-end pointer-events-none">
-                <span className="text-[11px] font-black uppercase tracking-widest text-primary mb-1.5 drop-shadow-sm">
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent p-6 pt-16 flex flex-col justify-end pointer-events-none">
+                <span className="text-[11px] font-black uppercase tracking-widest text-primary mb-1 drop-shadow-sm">
                   {pill.category || "Segurança Alimentar"}
                 </span>
-                <h3 className="font-black text-base sm:text-lg leading-snug text-white drop-shadow-md line-clamp-3">
+                <h3 className="font-black text-base sm:text-lg leading-snug text-white drop-shadow-md line-clamp-2">
                   {pill.title}
                 </h3>
               </div>
@@ -233,17 +238,20 @@ export function PillsSection() {
               </button>
             </div>
 
-            {/* Container Principal de Visualização Ampliado (Preenche a tela de ponta a ponta) */}
-            <div className="relative z-40 flex items-center justify-center gap-6 md:gap-10 w-full max-w-[1700px] h-full max-h-[92vh]">
-              {/* VÍDEO ANTERIOR (Preview translúcido amplo à esquerda) */}
+            {/* Container Principal de Visualização Ampliado (Formato 4:5) */}
+            <div className="relative z-40 flex items-center justify-center gap-4 sm:gap-6 md:gap-8 w-full max-w-[1700px] h-full max-h-[94vh]">
+              {/* VÍDEO ANTERIOR (Preview translúcido em 4:5 à esquerda) */}
               {prevPill && (
                 <div 
                   onClick={handlePrevVideo}
-                  className="hidden xl:flex flex-col justify-end opacity-35 hover:opacity-80 transition-all cursor-pointer scale-95 shrink-0 w-64 2xl:w-80 h-[78vh] rounded-[2.5rem] overflow-hidden bg-slate-900 border border-white/15 relative shadow-2xl group"
+                  className="hidden xl:flex flex-col justify-end opacity-40 hover:opacity-90 transition-all cursor-pointer scale-95 shrink-0 w-60 2xl:w-72 aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-slate-900 border border-white/15 relative shadow-2xl group"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-6 flex flex-col justify-end">
-                    <span className="text-[11px] font-black uppercase tracking-widest text-primary mb-1">← Vídeo Anterior</span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent p-6 flex flex-col justify-end">
+                    <span className="text-[11px] font-black uppercase tracking-widest text-primary mb-1 flex items-center gap-1">
+                      <ChevronLeft className="h-3.5 w-3.5" /> Vídeo Anterior
+                    </span>
                     <h4 className="text-sm font-black text-white leading-snug line-clamp-2">{prevPill.title}</h4>
+                    <span className="text-[10px] font-bold text-amber-300/80 mt-1">Formato 4:5</span>
                   </div>
                 </div>
               )}
@@ -251,82 +259,90 @@ export function PillsSection() {
               {/* Botão de Navegação Esquerda */}
               <button
                 onClick={handlePrevVideo}
-                className="p-4 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur-md border border-white/25 shadow-2xl transition-all active:scale-95 shrink-0"
+                className="p-3.5 sm:p-4 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur-md border border-white/25 shadow-2xl transition-all active:scale-95 shrink-0"
                 title="Vídeo Anterior (Seta Esquerda)"
               >
-                <ChevronLeft className="h-7 w-7" />
+                <ChevronLeft className="h-6 w-6 sm:h-7 sm:w-7" />
               </button>
 
-              {/* VÍDEO CENTRAL EM FORMATO MAIOR (O Protagonista Ampliado) */}
+              {/* VÍDEO CENTRAL EM FORMATO 4:5 */}
               <motion.div
                 key={currentPill.id || selectedPillIndex}
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.25 }}
-                className="w-full max-w-[540px] 2xl:max-w-[600px] h-[88vh] rounded-[3rem] overflow-hidden relative shadow-[0_0_100px_rgba(0,0,0,0.9)] border border-white/25 bg-slate-950 flex flex-col justify-between"
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{ duration: 0.22 }}
+                className="w-full max-w-[480px] sm:max-w-[520px] 2xl:max-w-[560px] max-h-[92vh] rounded-[2.5rem] overflow-hidden relative shadow-[0_0_80px_rgba(0,0,0,0.95)] border border-white/20 bg-slate-950 flex flex-col justify-between"
               >
                 {/* Top Overlay inside card */}
-                <div className="relative z-30 p-6 flex items-center justify-between pointer-events-none bg-gradient-to-b from-black/90 via-black/50 to-transparent">
-                  <div className="flex items-center gap-2.5">
-                    <span className="px-3.5 py-1.5 rounded-full bg-primary text-white text-[11px] font-black uppercase tracking-wider shadow-md">
+                <div className="relative z-30 px-6 py-4 flex items-center justify-between border-b border-white/10 bg-slate-950/90 backdrop-blur-md shrink-0">
+                  <div className="flex items-center gap-2">
+                    <span className="px-3 py-1 rounded-full bg-primary text-white text-[11px] font-black uppercase tracking-wider shadow-sm">
                       Pílula 0{selectedPillIndex + 1}
                     </span>
-                    <span className="px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-black uppercase tracking-wider border border-white/15">
+                    <span className="px-2.5 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[10px] font-black tracking-wider">
+                      4:5
+                    </span>
+                    <span className="px-3 py-1 rounded-full bg-white/10 text-white text-[11px] font-black uppercase tracking-wider border border-white/15">
                       {currentPill.category || "SAN"}
                     </span>
                   </div>
-                  <span className="text-xs font-black text-white/80">
+                  <span className="text-xs font-black text-white/75">
                     {selectedPillIndex + 1} de {minutes.length}
                   </span>
                 </div>
 
-                {/* Player Central (Ocupa o corpo do card com flexibilidade) */}
-                <div className="relative flex-1 w-full flex items-center justify-center bg-slate-950 overflow-hidden">
-                  {currentPill.videoUrl ? (
-                    <iframe
-                      src={getEmbedUrl(currentPill.videoUrl, isMuted)}
-                      className="w-full h-full object-cover"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      title={currentPill.title}
-                    />
-                  ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-gradient-to-br from-slate-950 via-slate-900 to-primary/30 text-white space-y-4">
-                      <div className="w-20 h-20 rounded-3xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary shadow-2xl">
-                        <Play className="h-10 w-10 fill-primary/30" />
+                {/* Player Central (Frame rigorosamente em formato 4:5 com encaixe perfeito) */}
+                <div className="relative w-full flex-1 min-h-0 flex items-center justify-center p-3 sm:p-4 bg-black/60 overflow-hidden">
+                  <div className="relative w-full aspect-[4/5] max-h-[54vh] sm:max-h-[58vh] rounded-2xl overflow-hidden bg-black shadow-2xl border border-white/10 flex items-center justify-center mx-auto">
+                    {currentPill.videoUrl ? (
+                      <iframe
+                        src={getEmbedUrl(currentPill.videoUrl, isMuted)}
+                        className="w-full h-full object-cover"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        title={currentPill.title}
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-slate-950 via-slate-900 to-primary/30 text-white space-y-3">
+                        <div className="w-16 h-16 rounded-2xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary shadow-2xl">
+                          <Play className="h-8 w-8 fill-primary/30" />
+                        </div>
+                        <div className="space-y-1.5 max-w-xs">
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                            Minuto do Conhecimento • 4:5
+                          </span>
+                          <h4 className="text-base font-black uppercase tracking-tight">
+                            {currentPill.title}
+                          </h4>
+                          <p className="text-[11px] text-slate-300 leading-relaxed font-medium">
+                            Vídeo em produção. Confira a aplicação prática abaixo.
+                          </p>
+                        </div>
                       </div>
-                      <div className="space-y-2 max-w-sm">
-                        <span className="text-xs font-black uppercase tracking-[0.2em] text-primary">
-                          Minuto do Conhecimento
-                        </span>
-                        <h4 className="text-xl font-black uppercase tracking-tight">
-                          {currentPill.title}
-                        </h4>
-                        <p className="text-xs text-slate-300 leading-relaxed font-medium">
-                          Vídeo em produção. Confira a aplicação prática abaixo.
-                        </p>
-                      </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
 
-                {/* Bottom Overlay com Título, Explicação e Aplicação Prática (Preenche o rodapé sem sobras mortas) */}
-                <div className="relative z-30 p-6 md:p-8 bg-gradient-to-t from-black via-black/95 to-transparent space-y-3.5 pointer-events-auto">
-                  <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight leading-snug drop-shadow-md">
+                {/* Bottom Details com Título, Explicação e Aplicação Prática */}
+                <div className="relative z-30 px-6 py-4 md:px-7 md:py-5 bg-slate-950/95 border-t border-white/10 space-y-3 shrink-0 overflow-y-auto max-h-[30vh]">
+                  <h3 className="text-lg md:text-xl font-black text-white uppercase tracking-tight leading-snug drop-shadow-sm">
                     {currentPill.title}
                   </h3>
 
                   {currentPill.supportText && (
-                    <p className="text-xs md:text-sm text-slate-300 font-medium leading-relaxed">
+                    <p className="text-xs text-slate-300 font-medium leading-relaxed">
                       {currentPill.supportText}
                     </p>
                   )}
 
                   {currentPill.practicalApp && (
-                    <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-xs text-amber-200 font-semibold flex items-start gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-amber-300 shrink-0 mt-0.5" />
-                      <span><strong>Aplicação Prática:</strong> {currentPill.practicalApp}</span>
+                    <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-xs text-amber-200 font-medium flex items-start gap-2.5">
+                      <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-amber-300 font-black">Aplicação Prática:</strong>{" "}
+                        <span>{currentPill.practicalApp}</span>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -335,21 +351,24 @@ export function PillsSection() {
               {/* Botão de Navegação Direita */}
               <button
                 onClick={handleNextVideo}
-                className="p-4 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur-md border border-white/25 shadow-2xl transition-all active:scale-95 shrink-0"
+                className="p-3.5 sm:p-4 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur-md border border-white/25 shadow-2xl transition-all active:scale-95 shrink-0"
                 title="Próximo Vídeo (Seta Direita)"
               >
-                <ChevronRight className="h-7 w-7" />
+                <ChevronRight className="h-6 w-6 sm:h-7 sm:w-7" />
               </button>
 
-              {/* PRÓXIMO VÍDEO (Preview translúcido amplo à direita) */}
+              {/* PRÓXIMO VÍDEO (Preview translúcido em 4:5 à direita) */}
               {nextPill && (
                 <div 
                   onClick={handleNextVideo}
-                  className="hidden xl:flex flex-col justify-end opacity-35 hover:opacity-80 transition-all cursor-pointer scale-95 shrink-0 w-64 2xl:w-80 h-[78vh] rounded-[2.5rem] overflow-hidden bg-slate-900 border border-white/15 relative shadow-2xl group"
+                  className="hidden xl:flex flex-col justify-end opacity-40 hover:opacity-90 transition-all cursor-pointer scale-95 shrink-0 w-60 2xl:w-72 aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-slate-900 border border-white/15 relative shadow-2xl group"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-6 flex flex-col justify-end">
-                    <span className="text-[11px] font-black uppercase tracking-widest text-primary mb-1">Próximo Vídeo →</span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent p-6 flex flex-col justify-end">
+                    <span className="text-[11px] font-black uppercase tracking-widest text-primary mb-1 flex items-center justify-end gap-1">
+                      Próximo Vídeo <ChevronRight className="h-3.5 w-3.5" />
+                    </span>
                     <h4 className="text-sm font-black text-white leading-snug line-clamp-2">{nextPill.title}</h4>
+                    <span className="text-[10px] font-bold text-amber-300/80 mt-1 text-right">Formato 4:5</span>
                   </div>
                 </div>
               )}

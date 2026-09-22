@@ -331,7 +331,7 @@ export default function GlossarioPage() {
                   <div className="absolute top-0 right-0 py-1.5 px-3 bg-primary text-white text-[9px] font-black uppercase tracking-widest rounded-bl-xl z-10 shadow-lg">
                     Tradução em Libras
                   </div>
-                  <div className="aspect-video md:aspect-[9/16] rounded-[2rem] overflow-hidden bg-slate-900 border-4 border-slate-900 relative">
+                  <div className="aspect-video md:aspect-[4/5] rounded-[2rem] overflow-hidden bg-slate-900 border-4 border-slate-900 relative">
                     <iframe
                       src={
                         activeVideoUrl.includes("youtu.be/")

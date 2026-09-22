@@ -1120,9 +1120,14 @@ export function TracksSection() {
               className="space-y-6"
             >
               <div className="space-y-2">
-                <span className="px-3 py-1 rounded-full bg-blue-100 text-emerald-900 font-black text-[10px] uppercase tracking-wider inline-block">
-                  Etapa 03 • Minuto do Conhecimento
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-900 font-black text-[10px] uppercase tracking-wider inline-block">
+                    Etapa 03 • Minuto do Conhecimento
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200 text-[10px] font-black tracking-wider">
+                    Formato 4:5
+                  </span>
+                </div>
                 <h3 className="text-2xl md:text-3xl font-black text-stone-900 uppercase tracking-tight">
                   {currentStep.title}
                 </h3>
@@ -1134,7 +1139,7 @@ export function TracksSection() {
               {/* Visualizador da Pílula */}
               <div className="grid md:grid-cols-12 gap-8 items-center pt-2">
                 <div className="md:col-span-6 flex justify-center">
-                  <div className="w-full max-w-[320px] aspect-[9/16] rounded-[2.5rem] overflow-hidden bg-stone-950 shadow-xl border border-stone-800 relative">
+                  <div className="w-full max-w-[380px] aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-stone-950 shadow-xl border border-stone-800 relative">
                     <iframe
                       src={getEmbedUrl(currentStep.pill.videoUrl)}
                       className="w-full h-full object-cover"

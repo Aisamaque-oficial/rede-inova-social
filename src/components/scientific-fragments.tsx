@@ -76,7 +76,7 @@ export function ScientificFragments({ activeAxisId }: ScientificFragmentsProps) 
                         whileHover={{ y: -8 }}
                     >
                         <Card 
-                            className="group relative aspect-[9/16] rounded-[2.5rem] overflow-hidden border-none shadow-xl cursor-pointer ring-1 ring-black/5"
+                            className="group relative aspect-[4/5] rounded-[2.5rem] overflow-hidden border-none shadow-xl cursor-pointer ring-1 ring-black/5"
                             onClick={() => setSelectedFragment(fragment)}
                         >
                             {/* Thumbnail */}
@@ -143,7 +143,7 @@ export function ScientificFragments({ activeAxisId }: ScientificFragmentsProps) 
                             initial={{ scale: 0.9, opacity: 0, y: 40 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.9, opacity: 0, y: 40 }}
-                            className="relative w-full max-w-[450px] aspect-[9/16] bg-slate-900 rounded-[3rem] overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.8)] border border-white/10 flex flex-col"
+                            className="relative w-full max-w-[520px] aspect-[4/5] bg-slate-900 rounded-[3rem] overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.8)] border border-white/10 flex flex-col"
                         >
                             {/* Header do Player */}
                             <div className="absolute top-0 left-0 right-0 p-8 z-20 flex justify-between items-center bg-gradient-to-b from-black/60 to-transparent">
