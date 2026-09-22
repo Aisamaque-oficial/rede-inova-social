@@ -1120,23 +1120,18 @@ export function TracksSection() {
               className="space-y-6"
             >
               <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-900 font-black text-[10px] uppercase tracking-wider inline-block">
-                    Etapa 03 • Minuto do Conhecimento
-                  </span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200 text-[10px] font-black tracking-wider">
-                    Formato 4:5
-                  </span>
-                </div>
+                <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-900 font-black text-[10px] uppercase tracking-wider inline-block">
+                  Etapa 03 • Minuto do Conhecimento
+                </span>
                 <h3 className="text-2xl md:text-3xl font-black text-stone-900 uppercase tracking-tight">
                   {currentStep.title}
                 </h3>
                 <p className="text-sm md:text-base text-stone-500 font-medium">
-                  {currentStep.subtitle} — Uma pílula em vídeo de aplicação direta no cotidiano.
+                  {currentStep.subtitle} — Vídeo objetivo de aplicação direta no cotidiano.
                 </p>
               </div>
 
-              {/* Visualizador da Pílula */}
+              {/* Visualizador do Minuto do Conhecimento */}
               <div className="grid md:grid-cols-12 gap-8 items-center pt-2">
                 <div className="md:col-span-6 flex justify-center">
                   <div className="w-full max-w-[380px] aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-stone-950 shadow-xl border border-stone-800 relative">
@@ -1151,14 +1146,9 @@ export function TracksSection() {
                 </div>
 
                 <div className="md:col-span-6 space-y-6">
-                  <div className="space-y-2">
-                    <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-200 text-[10px] font-black uppercase tracking-wider">
-                      Duração: {currentStep.pill.duration}
-                    </span>
-                    <h4 className="text-xl md:text-2xl font-black text-stone-900 uppercase tracking-tight">
-                      {currentStep.pill.title}
-                    </h4>
-                  </div>
+                  <h4 className="text-xl md:text-2xl font-black text-stone-900 uppercase tracking-tight">
+                    {currentStep.pill.title}
+                  </h4>
 
                   <div className="p-6 rounded-[2rem] bg-stone-50 border border-stone-200 space-y-2">
                     <span className="text-[10px] font-black uppercase tracking-wider text-stone-400 block">

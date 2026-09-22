@@ -109,13 +109,13 @@ export function PillsSection() {
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
             <Zap className="h-3.5 w-3.5" />
-            <span>Ciência em Libras • Formato 4:5</span>
+            <span>Ciência em Libras</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-black text-slate-800 uppercase tracking-tight">
             Minuto do Conhecimento
           </h2>
           <p className="text-xs md:text-sm text-slate-500 font-medium max-w-2xl leading-relaxed">
-            Vídeos objetivos em Libras e português sobre conceitos fundamentais de segurança alimentar no formato vertical 4:5. Clique em qualquer vídeo para assistir em tamanho ampliado.
+            Vídeos objetivos em Libras e português sobre conceitos fundamentais de alimentação e nutrição. Clique em qualquer vídeo para assistir em tamanho ampliado.
           </p>
         </div>
 
@@ -140,7 +140,7 @@ export function PillsSection() {
 
       {/* =========================================================
           CARROSSEL HORIZONTAL DE VÍDEOS EM FORMATO 4:5
-          Proporção ideal para visualização em cards e players verticais
+          Capas limpas sem badges de tempo, formato, número ou categorias
           ========================================================= */}
       <div 
         ref={carouselRef}
@@ -149,7 +149,6 @@ export function PillsSection() {
       >
         {minutes.map((pill, i) => {
           const grad = gradients[i % gradients.length];
-          const duration = pill.duration || (i % 2 === 0 ? "1 min" : "2 min");
 
           return (
             <motion.div
@@ -167,7 +166,7 @@ export function PillsSection() {
                     alt={pill.title} 
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/40" />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors duration-300" />
                 </div>
               ) : (
                 <div className={cn("absolute inset-0 bg-gradient-to-br transition-opacity duration-300", grad)}>
@@ -175,39 +174,21 @@ export function PillsSection() {
                 </div>
               )}
 
-              {/* Top Row: Duration badge + Format badge + Pill number */}
-              <div className="absolute top-5 left-5 right-5 z-10 flex items-center justify-between pointer-events-none">
-                <span className="px-3.5 py-1.5 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] font-black uppercase tracking-wider shadow-sm border border-white/10 flex items-center gap-1.5">
-                  <Clock className="h-3.5 w-3.5 text-primary" />
-                  <span>{duration}</span>
-                </span>
-
-                <div className="flex items-center gap-1.5">
-                  <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-amber-300 text-[10px] font-black tracking-wider border border-amber-400/30">
-                    4:5
-                  </span>
-                  <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-wider border border-white/10">
-                    Pílula 0{i + 1}
-                  </span>
-                </div>
-              </div>
-
               {/* Center Play Button Overlay */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md border border-white/40 flex items-center justify-center text-white shadow-2xl group-hover:scale-115 group-hover:bg-primary group-hover:border-primary transition-all duration-300">
+                <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md border border-white/40 flex items-center justify-center text-white shadow-2xl group-hover:scale-115 group-hover:bg-primary group-hover:border-primary transition-all duration-300 opacity-90 group-hover:opacity-100">
                   <Play className="h-7 w-7 fill-current translate-x-0.5" />
                 </div>
               </div>
 
-              {/* Bottom Details with gradient overlay */}
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent p-6 pt-16 flex flex-col justify-end pointer-events-none">
-                <span className="text-[11px] font-black uppercase tracking-widest text-primary mb-1 drop-shadow-sm">
-                  {pill.category || "Segurança Alimentar"}
-                </span>
-                <h3 className="font-black text-base sm:text-lg leading-snug text-white drop-shadow-md line-clamp-2">
-                  {pill.title}
-                </h3>
-              </div>
+              {/* Título exibido apenas em cards sem capa ilustrada própria */}
+              {!pill.thumbnail && (
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent p-6 pt-16 flex flex-col justify-end pointer-events-none">
+                  <h3 className="font-black text-base sm:text-lg leading-snug text-white drop-shadow-md line-clamp-3">
+                    {pill.title}
+                  </h3>
+                </div>
+              )}
             </motion.div>
           );
         })}
@@ -269,7 +250,6 @@ export function PillsSection() {
                       <ChevronLeft className="h-3.5 w-3.5" /> Vídeo Anterior
                     </span>
                     <h4 className="text-sm font-black text-white leading-snug line-clamp-2">{prevPill.title}</h4>
-                    <span className="text-[10px] font-bold text-amber-300/80 mt-1">Formato 4:5</span>
                   </div>
                 </div>
               )}
@@ -294,17 +274,9 @@ export function PillsSection() {
               >
                 {/* Top Overlay inside card */}
                 <div className="relative z-30 px-6 py-4 flex items-center justify-between border-b border-white/10 bg-slate-950/90 backdrop-blur-md shrink-0">
-                  <div className="flex items-center gap-2">
-                    <span className="px-3 py-1 rounded-full bg-primary text-white text-[11px] font-black uppercase tracking-wider shadow-sm">
-                      Pílula 0{selectedPillIndex + 1}
-                    </span>
-                    <span className="px-2.5 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[10px] font-black tracking-wider">
-                      4:5
-                    </span>
-                    <span className="px-3 py-1 rounded-full bg-white/10 text-white text-[11px] font-black uppercase tracking-wider border border-white/15">
-                      {currentPill.category || "SAN"}
-                    </span>
-                  </div>
+                  <span className="px-3.5 py-1 rounded-full bg-primary/20 text-primary border border-primary/30 text-[11px] font-black uppercase tracking-wider">
+                    Minuto do Conhecimento
+                  </span>
                   <span className="text-xs font-black text-white/75">
                     {selectedPillIndex + 1} de {minutes.length}
                   </span>
@@ -328,7 +300,7 @@ export function PillsSection() {
                         </div>
                         <div className="space-y-1.5 max-w-xs">
                           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
-                            Minuto do Conhecimento • 4:5
+                            Minuto do Conhecimento
                           </span>
                           <h4 className="text-base font-black uppercase tracking-tight">
                             {currentPill.title}
@@ -393,7 +365,6 @@ export function PillsSection() {
                       Próximo Vídeo <ChevronRight className="h-3.5 w-3.5" />
                     </span>
                     <h4 className="text-sm font-black text-white leading-snug line-clamp-2">{nextPill.title}</h4>
-                    <span className="text-[10px] font-bold text-amber-300/80 mt-1 text-right">Formato 4:5</span>
                   </div>
                 </div>
               )}
