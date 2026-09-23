@@ -412,7 +412,7 @@ export function TracksSection() {
     if (stepIdx >= track.steps.length) return "Quiz de Fixação";
     const st = track.steps[stepIdx];
     if (st.type === "video") return "Etapa 1: Apresentação em Libras";
-    if (st.type === "concepts") return "Etapa 2: Sinais da Terra (Glossário)";
+    if (st.type === "concepts") return "Etapa 2: Conceitos em Libras";
     if (st.type === "pill") return "Etapa 3: Minuto do Conhecimento";
     if (st.type === "case") return "Etapa 4: Na Vida Real (Dilema)";
     if (st.type === "territory") return "Etapa 5: Conexão com o Território";
@@ -928,7 +928,7 @@ export function TracksSection() {
                 className={cn(
                   "flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all shrink-0 border",
                   isStepActive
-                    ? "bg-emerald-800 text-white border-blue-800 shadow-sm scale-105"
+                    ? "bg-blue-800 text-white border-blue-900 shadow-sm scale-105"
                     : isStepCompleted
                     ? "bg-blue-50 text-blue-800 border-blue-200 hover:bg-blue-100"
                     : "bg-stone-50 text-stone-500 border-stone-200 hover:bg-stone-100 hover:text-stone-700"
@@ -941,7 +941,7 @@ export function TracksSection() {
                 )}
                 <span>
                   {step.type === "video" && "Apresentação"}
-                  {step.type === "concepts" && "Sinais da Terra"}
+                  {step.type === "concepts" && "Conceitos em Libras"}
                   {step.type === "pill" && "Minuto Prático"}
                   {step.type === "case" && "Na Vida Real"}
                   {step.type === "territory" && "Território"}
@@ -956,7 +956,7 @@ export function TracksSection() {
             className={cn(
               "flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all shrink-0 border",
               isQuizStage
-                ? "bg-emerald-800 text-white border-blue-800 shadow-sm scale-105"
+                ? "bg-blue-800 text-white border-blue-900 shadow-sm scale-105"
                 : isQuizCompleted
                 ? "bg-blue-50 text-blue-800 border-blue-200"
                 : "bg-stone-50 text-stone-500 border-stone-200 hover:bg-stone-100"
@@ -1023,7 +1023,7 @@ export function TracksSection() {
                   onClick={handleNextStep}
                   className="px-8 py-4 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-black text-xs uppercase tracking-wider transition-all shadow-md hover:scale-[1.02] flex items-center gap-2"
                 >
-                  <span>Avançar para Etapa 2: Sinais da Terra</span>
+                  <span>Avançar para Etapa 2: Conceitos em Libras</span>
                   <ArrowRight className="h-4 w-4" />
                 </button>
               </div>
@@ -1031,7 +1031,7 @@ export function TracksSection() {
           )}
 
           {/* =========================================================
-              ETAPA 2: OS SINAIS DA TERRA (GLOSSÁRIO EM CENA)
+              ETAPA 2: CONCEITOS EM LIBRAS (GLOSSÁRIO EM CENA)
               ========================================================= */}
           {currentStep?.type === "concepts" && (
             <motion.div
@@ -1042,7 +1042,7 @@ export function TracksSection() {
               className="space-y-6"
             >
               <div className="space-y-2">
-                <span className="px-3 py-1 rounded-full bg-blue-100 text-emerald-900 font-black text-[10px] uppercase tracking-wider inline-block">
+                <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-900 font-black text-[10px] uppercase tracking-wider inline-block">
                   Etapa 02 • Conexão com o Glossário
                 </span>
                 <h3 className="text-2xl md:text-3xl font-black text-stone-900 uppercase tracking-tight">
@@ -1062,7 +1062,7 @@ export function TracksSection() {
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="px-3 py-1 rounded-xl bg-emerald-800 text-white font-mono text-[11px] font-black">
+                        <span className="px-3 py-1 rounded-xl bg-blue-800 text-white font-mono text-[11px] font-black">
                           {termItem.codeId || `#0${tidx + 1}`}
                         </span>
                         <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">
