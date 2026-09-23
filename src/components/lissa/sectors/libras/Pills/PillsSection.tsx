@@ -120,6 +120,9 @@ export function PillsSection() {
           <p className="text-xs md:text-sm text-slate-500 font-medium max-w-2xl leading-relaxed">
             Vídeos objetivos em Libras e português sobre conceitos fundamentais de alimentação e nutrição. Clique em qualquer vídeo para assistir em tamanho ampliado.
           </p>
+          <p className="text-[11px] md:text-xs text-slate-500 font-medium italic pt-1">
+            * A capa de cada vídeo foi gerada por Inteligência Artificial.
+          </p>
         </div>
 
         {/* Botões de Avanço do Carrossel */}
@@ -195,6 +198,13 @@ export function PillsSection() {
             </motion.div>
           );
         })}
+      </div>
+
+      {/* Observação informativa da seção */}
+      <div className="px-3 -mt-4">
+        <p className="text-[11px] md:text-xs text-slate-500 font-medium italic">
+          * A capa de cada vídeo foi gerada por Inteligência Artificial.
+        </p>
       </div>
 
       {/* =========================================================
@@ -338,6 +348,10 @@ export function PillsSection() {
                       </div>
                     </div>
                   )}
+
+                  <p className="text-[11px] text-slate-400 italic pt-1">
+                    * A capa de cada vídeo foi gerada por Inteligência Artificial.
+                  </p>
                 </div>
               </motion.div>
 
