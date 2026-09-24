@@ -24,6 +24,7 @@ import { dataService } from "@/lib/data-service";
 import { CMSPageRenderer } from "@/components/cms/CMSPageRenderer";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
+import { useRouter } from "next/navigation";
 import { LissaWrapper } from "@/components/lissa/LissaWrapper";
 import { LissaGrid } from "@/components/lissa/LissaGrid";
 import CozinhaSetor from "@/components/lissa/sectors/CozinhaSetor";
@@ -33,10 +34,19 @@ import HortaSetor from "@/components/lissa/sectors/HortaSetor";
 import ArenaSetor from "@/components/lissa/sectors/ArenaSetor";
 
 export default function LaboratorioPage({ params }: { params?: { estudio?: string } }) {
+  const router = useRouter();
   const isStudio = !!params?.estudio;
   const [activeStation, setActiveStation] = useState<string>("map");
   const [hoveredStation, setHoveredStation] = useState<string | null>(null);
   const [canEditContent, setCanEditContent] = useState(false);
+
+  const handleSetActiveStation = (stationId: string) => {
+    if (stationId === "libras") {
+      router.push("/laboratorio/librascientifica" + (isStudio ? "?estudio=true" : ""));
+      return;
+    }
+    setActiveStation(stationId);
+  };
 
   useEffect(() => {
     const userId = dataService.getCurrentUserId();
@@ -60,7 +70,7 @@ export default function LaboratorioPage({ params }: { params?: { estudio?: strin
   const stations = [
     { id: "nutricao", label: "Cozinha Nutricional", icon: Apple, color: "bg-orange-500", description: "Aprenda sobre comida de verdade e escolhas conscientes." },
     { id: "materiais", label: "Biblioteca de Saberes", icon: Book, color: "bg-blue-500", description: "Acervo de guias, e-books e cartilhas autorais." },
-    { id: "libras", label: "Libras na Segurança Alimentar", icon: Ear, color: "bg-purple-600", description: "Núcleo de tradução técnica, letramento científico e mediação linguística." },
+    { id: "libras", label: "Libras na Segurança Alimentar", icon: Ear, color: "bg-purple-600", description: "Núcleo de tradução técnica, letramento científico e mediação linguística.", href: "/laboratorio/librascientifica" },
     { id: "agricultura", label: "Horta Comunitária", icon: Sprout, color: "bg-green-600", description: "A força da agricultura familiar e sustentabilidade." },
     { id: "jogos", label: "Arena de Desafios", icon: Gamepad2, color: "bg-indigo-600", description: "Minigames e testes de conhecimento divertidos." },
   ];
@@ -109,7 +119,7 @@ export default function LaboratorioPage({ params }: { params?: { estudio?: strin
                   stations={stations}
                   hoveredStation={hoveredStation}
                   setHoveredStation={setHoveredStation}
-                  setActiveStation={setActiveStation}
+                  setActiveStation={handleSetActiveStation}
                   isStudio={isStudio}
                 />
 
