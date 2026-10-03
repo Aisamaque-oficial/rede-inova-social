@@ -175,7 +175,8 @@ export const AccessibilityToolbar = ({ position = 'right' }: { position?: 'left'
                               active={isHearingAidActive} 
                               onClick={toggleHearingAid} 
                               icon={Ear} 
-                              label="Tradutor de Libras" 
+                              label="Tradução em Libras" 
+                              sublabel="Vídeos Sinalizados"
                           />
                           <ActionCard 
                               active={isDictionaryActive}
