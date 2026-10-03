@@ -32,6 +32,19 @@ export function normalizeLibrasText(str: string): string {
     .trim();
 }
 
+// Convert term name into local video slug (e.g., "Segurança dos Alimentos" -> "seguranca-dos-alimentos")
+export function getTermVideoSlug(term: string): string {
+  if (!term) return "";
+  return term
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .trim();
+}
+
 // Convert any video link into embeddable / playable info
 export function parseLibrasVideoUrl(url: string | undefined | null): VideoInfo {
   if (!url || typeof url !== "string") {
