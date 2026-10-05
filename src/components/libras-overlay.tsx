@@ -26,6 +26,7 @@ import {
   parseLibrasVideoUrl, 
   setWordLibrasVideo 
 } from "@/lib/libras-words-database";
+import { LibrasCollaborationModal } from "@/components/lissa/sectors/libras/LibrasCollaborationModal";
 import { cn } from "@/lib/utils";
 
 export const LibrasOverlay = () => {
@@ -38,6 +39,15 @@ export const LibrasOverlay = () => {
   const [isEditingVideo, setIsEditingVideo] = useState(false);
   const [videoInputUrl, setVideoInputUrl] = useState("");
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [collabModal, setCollabModal] = useState<{
+    isOpen: boolean;
+    term: string;
+    type: "new_sign" | "regional_variation";
+  }>({
+    isOpen: false,
+    term: "",
+    type: "new_sign",
+  });
 
   // Open player for a specific LibrasWord or text
   const openWordTranslation = useCallback((wordOrText: string, fallbackVideo?: string) => {
@@ -293,14 +303,20 @@ export const LibrasOverlay = () => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="flex flex-col items-center justify-center p-5 text-center space-y-2 bg-gradient-to-br from-slate-900 to-slate-950">
-              <div className="w-12 h-12 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center text-primary animate-pulse">
-                <Ear className="h-6 w-6" />
+            <div className="flex flex-col items-center justify-center p-5 text-center space-y-2.5 bg-gradient-to-br from-slate-900 via-stone-900 to-slate-950 text-white">
+              <div className="w-11 h-11 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                <Ear className="h-5 w-5" />
               </div>
-              <p className="text-xs font-black text-white uppercase tracking-tight">Sinal em Produção</p>
-              <p className="text-[11px] text-slate-300 max-w-[240px] leading-relaxed">
-                Este conceito possui estratégia de sinalização validada. O vídeo final será inserido em breve.
+              <p className="text-xs font-bold text-amber-200 leading-snug max-w-[260px]">
+                Não temos o sinal em libras dessa palavra. Se você sabe esse sinal, envie para a coordenação do projeto.
               </p>
+              <button
+                type="button"
+                onClick={() => setCollabModal({ isOpen: true, term: activeWord.term, type: "new_sign" })}
+                className="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-[10px] uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5 hover:scale-105"
+              >
+                <span>🤟 Enviar sinal desta palavra</span>
+              </button>
             </div>
           )}
 
@@ -354,6 +370,26 @@ export const LibrasOverlay = () => {
             </div>
           )}
 
+          {/* Caixa de Participação Social Digital & Variação Regional (para todas as palavras) */}
+          <div className="p-3 rounded-xl bg-gradient-to-br from-white/10 to-amber-500/10 border border-white/15 space-y-2">
+            <h5 className="text-[11px] font-black text-amber-300 flex items-start gap-1.5 leading-snug">
+              <span className="text-xs shrink-0">🗺️</span>
+              <span>Você conhece esse sinal de outra forma? Envie para a coordenação.</span>
+            </h5>
+            <p className="text-[10px] text-slate-300 leading-relaxed font-normal">
+              Como a Libras tem variações linguísticas regionais, sua colaboração amplia as possibilidades de sinais em torno da palavra por meio da participação social digital.
+            </p>
+            <div className="flex justify-end pt-0.5">
+              <button
+                type="button"
+                onClick={() => setCollabModal({ isOpen: true, term: activeWord.term, type: "regional_variation" })}
+                className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold transition-all shadow-sm hover:scale-105"
+              >
+                Enviar variação regional
+              </button>
+            </div>
+          </div>
+
           {/* Formulário Inline: Inserir / Editar Arquivo de Vídeo */}
           <div className="pt-1 border-t border-white/10">
             {!isEditingVideo ? (
@@ -401,6 +437,14 @@ export const LibrasOverlay = () => {
           </div>
         </div>
       </motion.div>
+
+      {/* Modal de Colaboração Comunitária em Libras */}
+      <LibrasCollaborationModal
+        isOpen={collabModal.isOpen}
+        onClose={() => setCollabModal(prev => ({ ...prev, isOpen: false }))}
+        term={collabModal.term}
+        initialType={collabModal.type}
+      />
     </AnimatePresence>
   );
 };

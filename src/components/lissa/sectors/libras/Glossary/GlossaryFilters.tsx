@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { librasGlossary } from "@/lib/mock-data";
+import { LibrasCollaborationModal } from "../LibrasCollaborationModal";
 import { 
   Sparkles, 
   ChevronRight, 
@@ -264,6 +265,23 @@ export function GlossaryFilters() {
   const [termSearchQuery, setTermSearchQuery] = useState("");
   const [displayMode, setDisplayMode] = useState<"bilang" | "video_only" | "text_only">("bilang");
   const [showReferences, setShowReferences] = useState(false);
+  const [collabModal, setCollabModal] = useState<{
+    isOpen: boolean;
+    term: string;
+    type: "new_sign" | "regional_variation";
+  }>({
+    isOpen: false,
+    term: "",
+    type: "new_sign",
+  });
+
+  const handleOpenCollab = (termName: string, type: "new_sign" | "regional_variation") => {
+    setCollabModal({
+      isOpen: true,
+      term: termName,
+      type,
+    });
+  };
 
   // Eixos list with guaranteed numericId
   const eixosList = useMemo(() => {
@@ -908,21 +926,25 @@ export function GlossaryFilters() {
                           title={enrichedTerm.term}
                         />
                       ) : (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-stone-900 text-white space-y-3">
-                          <div className="w-14 h-14 rounded-2xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-md">
-                            <Play className="h-7 w-7 fill-blue-500/20" />
+                        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-stone-900 text-white space-y-3.5">
+                          <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-md">
+                            <Ear className="h-6 w-6" />
                           </div>
-                          <div className="space-y-1 max-w-sm">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-300">
-                              Vídeo em Gravação Técnica
+                          <div className="space-y-1.5 max-w-sm">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-300 bg-amber-950/70 px-2.5 py-0.5 rounded-full border border-amber-500/30">
+                              Participação Social Digital
                             </span>
-                            <h4 className="text-base font-black uppercase tracking-tight">
-                              Laboratório de Libras Científica
-                            </h4>
-                            <p className="text-xs text-stone-400 leading-relaxed font-medium">
-                              A sinalização gravada está sendo refinada. Acompanhe a mediação linguística abaixo.
+                            <p className="text-xs sm:text-sm text-stone-100 leading-relaxed font-bold">
+                              Não temos o sinal em libras dessa palavra. Se você sabe esse sinal, envie para a coordenação do projeto.
                             </p>
                           </div>
+                          <button
+                            type="button"
+                            onClick={() => handleOpenCollab(enrichedTerm.term, "new_sign")}
+                            className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-2 hover:scale-105"
+                          >
+                            <span>🤟 Enviar Sinal desta Palavra</span>
+                          </button>
                         </div>
                       )}
 
@@ -958,6 +980,33 @@ export function GlossaryFilters() {
                           <ShieldCheck className="h-3.5 w-3.5 text-blue-700" />
                           <span><strong>Validação:</strong> Equipe de mediadores surdos e consultoria linguística do LISSA.</span>
                         </div>
+                      </div>
+                    </div>
+
+                    {/* CAIXA: VOCÊ CONHECE ESSE SINAL DE OUTRA FORMA? (VARIAÇÃO REGIONAL EM TODAS AS PALAVRAS) */}
+                    <div className="p-5 rounded-[2rem] bg-gradient-to-br from-blue-50/90 via-white to-amber-50/40 border border-blue-200/80 shadow-sm space-y-3">
+                      <div className="space-y-1.5">
+                        <div className="flex items-start gap-2 text-blue-900 font-black text-xs uppercase tracking-wide">
+                          <span className="text-sm shrink-0">🗺️</span>
+                          <span>Você conhece esse sinal de outra forma? Envie para a coordenação.</span>
+                        </div>
+                        <p className="text-[11px] text-stone-600 leading-relaxed font-medium">
+                          Como a Libras tem variações linguísticas regionais, este é um mecanismo importante para ampliar as possibilidades de sinais em Libras em torno da palavra por meio da participação social digital, tornando o glossário verdadeiramente colaborativo.
+                        </p>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-2 border-t border-blue-100/80">
+                        <span className="text-[10px] text-stone-400 font-semibold italic">
+                          Glossário Colaborativo • Ciência Cidadã
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleOpenCollab(enrichedTerm.term, "regional_variation")}
+                          className="px-3.5 py-1.5 rounded-xl bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs transition-all shadow-sm flex items-center gap-1.5 shrink-0 hover:scale-105"
+                        >
+                          <span>Enviar Variação Regional</span>
+                          <ArrowRight className="h-3 w-3" />
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -1072,6 +1121,14 @@ export function GlossaryFilters() {
           )}
         </div>
       </div>
+
+      {/* Modal de Colaboração em Libras / Ciência Cidadã */}
+      <LibrasCollaborationModal
+        isOpen={collabModal.isOpen}
+        onClose={() => setCollabModal(prev => ({ ...prev, isOpen: false }))}
+        term={collabModal.term}
+        initialType={collabModal.type}
+      />
     </div>
   );
 }

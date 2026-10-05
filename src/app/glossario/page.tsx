@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import { librasService } from "@/lib/libras-service";
 import MainHeader from "@/components/main-header";
 import { Badge } from "@/components/ui/badge";
-import { Library, Search, Ear, Quote, Hash, Loader2 } from "lucide-react";
+import { Library, Search, Ear, Quote, Hash, Loader2, ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { LibrasCollaborationModal } from "@/components/lissa/sectors/libras/LibrasCollaborationModal";
 
 const eixos = [
   { id: 1, title: 'Fundamentação', emoji: '🤟' },
@@ -20,6 +21,15 @@ export default function GlossarioPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeEixoFilter, setActiveEixoFilter] = useState<string | number>("todos");
   const [activeVideoUrl, setActiveVideoUrl] = useState<string | null>(null);
+  const [collabModal, setCollabModal] = useState<{
+    isOpen: boolean;
+    term: string;
+    type: "new_sign" | "regional_variation";
+  }>({
+    isOpen: false,
+    term: "",
+    type: "new_sign",
+  });
   
   const [allTerms, setAllTerms] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -212,7 +222,7 @@ export default function GlossarioPage() {
                             {displayTitle}
                           </span>
                         </div>
-                        {term.videoUrl && (
+                        {term.videoUrl ? (
                           <button
                             onClick={() =>
                               setActiveVideoUrl(isActive ? null : (term.videoUrl || null))
@@ -228,6 +238,15 @@ export default function GlossarioPage() {
                               className={`h-4 w-4 ${isActive ? "animate-pulse" : ""}`}
                             />
                           </button>
+                        ) : (
+                          <button
+                            onClick={() => setCollabModal({ isOpen: true, term: term.term, type: "new_sign" })}
+                            className="shrink-0 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-1.5"
+                            title="Colaborar com sinal para a coordenação"
+                          >
+                            <Ear className="h-3.5 w-3.5 text-amber-700" />
+                            <span>Indicar Sinal</span>
+                          </button>
                         )}
                       </div>
 
@@ -237,9 +256,28 @@ export default function GlossarioPage() {
                         {term.term}
                       </h3>
 
-                      <p className="text-sm font-medium text-slate-600 leading-relaxed mb-6">
+                      <p className="text-sm font-medium text-slate-600 leading-relaxed mb-4">
                         {term.description}
                       </p>
+
+                      {!term.videoUrl && (
+                        <div className="bg-amber-50/80 p-3.5 rounded-2xl border border-amber-200/80 mb-6 space-y-2">
+                          <div className="flex items-center gap-1.5 text-amber-900 font-black text-[10px] uppercase tracking-wider">
+                            <Ear className="h-3.5 w-3.5 text-amber-700" />
+                            <span>Participação Social Digital</span>
+                          </div>
+                          <p className="text-xs font-bold text-amber-950 leading-relaxed">
+                            Não temos o sinal em libras dessa palavra. Se você sabe esse sinal, envie para a coordenação do projeto.
+                          </p>
+                          <button
+                            onClick={() => setCollabModal({ isOpen: true, term: term.term, type: "new_sign" })}
+                            className="inline-flex items-center gap-1.5 text-xs font-black text-amber-800 hover:text-amber-950 underline underline-offset-2"
+                          >
+                            <span>🤟 Enviar sinal para a coordenação</span>
+                            <ArrowRight className="h-3 w-3" />
+                          </button>
+                        </div>
+                      )}
 
                       <div className="space-y-4">
                         {term.context && (
@@ -308,6 +346,28 @@ export default function GlossarioPage() {
                             ))}
                           </div>
                         )}
+
+                        {/* Caixa: Você conhece esse sinal de outra forma? Envie para a coordenação. */}
+                        <div className="bg-gradient-to-br from-blue-50/80 via-white to-amber-50/40 p-4 rounded-2xl border border-blue-200/80 space-y-2.5 mt-4">
+                          <div className="space-y-1">
+                            <h5 className="text-xs font-black text-blue-900 leading-snug flex items-start gap-1.5">
+                              <span className="text-sm shrink-0">🗺️</span>
+                              <span>Você conhece esse sinal de outra forma? Envie para a coordenação.</span>
+                            </h5>
+                            <p className="text-[11px] text-slate-600 leading-relaxed font-normal">
+                              Como a Libras tem variações linguísticas regionais, este é um mecanismo importante para ampliar as possibilidades de sinais em torno da palavra tornando o glossário colaborativo por meio da participação social digital.
+                            </p>
+                          </div>
+                          <div className="flex justify-end pt-1">
+                            <button
+                              onClick={() => setCollabModal({ isOpen: true, term: term.term, type: "regional_variation" })}
+                              className="px-3 py-1.5 rounded-xl bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs transition-all shadow-sm flex items-center gap-1.5 hover:scale-105"
+                            >
+                              <span>Enviar variação regional</span>
+                              <ArrowRight className="h-3 w-3" />
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </motion.div>
                   );
@@ -373,6 +433,14 @@ export default function GlossarioPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal de Colaboração em Libras / Ciência Cidadã */}
+      <LibrasCollaborationModal
+        isOpen={collabModal.isOpen}
+        onClose={() => setCollabModal(prev => ({ ...prev, isOpen: false }))}
+        term={collabModal.term}
+        initialType={collabModal.type}
+      />
     </div>
   );
 }
