@@ -7181,10 +7181,11 @@ export const librasPills: any[] = [
   },
   {
     id: 'pill-3',
-    title: 'Como Higienizar Vegetais e Frutas',
-    duration: '54 seg',
-    videoUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
-    practicalApp: 'Mergulhar folhas em solução clorada na concentração correta antes de servir cru.',
+    title: 'Como higienizar frutas e hortaliças',
+    duration: '1 min',
+    videoUrl: 'https://youtube.com/shorts/Cujj6rp2bv0',
+    thumbnail: '/images/libras/capa-como-higienizar-frutas-e-hortalicas.png',
+    practicalApp: 'Lavar em água corrente e depois mergulhar em solução clorada (1 colher de sopa de água sanitária própria para alimentos por litro de água) por 15 minutos.',
     supportText: 'A água corrente retira sujidades físicas, mas a desinfecção com cloro elimina bactérias e parasitas invisíveis.',
     category: 'Higiene'
   },
@@ -7290,13 +7291,14 @@ export const librasTracks: any[] = [
         "stepNumber": 3,
         "type": "pill",
         "title": "Etapa 3 — Minuto do Conhecimento",
-        "subtitle": "Pílula rápida em vídeo de 54 segundos",
+        "subtitle": "Pílula rápida em vídeo de 1 minuto",
         "pill": {
-          "title": "Como Higienizar Vegetais e Frutas Corretamente",
-          "duration": "54 seg",
-          "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+          "title": "Como higienizar frutas e hortaliças",
+          "duration": "1 min",
+          "videoUrl": "https://youtube.com/shorts/Cujj6rp2bv0",
+          "thumbnail": "/images/libras/capa-como-higienizar-frutas-e-hortalicas.png",
           "supportText": "A água corrente retira poeira e sujidades físicas, mas somente a imersão em água clorada elimina bactérias e parasitas invisíveis.",
-          "practicalApp": "Mergulhar folhas em 1 litro de água com 1 colher de água sanitária própria para alimentos por 15 minutos."
+          "practicalApp": "Mergulhar folhas, frutas e hortaliças em 1 litro de água com 1 colher de água sanitária própria para alimentos por 15 minutos."
         }
       },
       {
