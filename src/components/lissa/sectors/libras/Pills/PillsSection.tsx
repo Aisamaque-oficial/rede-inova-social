@@ -28,6 +28,8 @@ export function PillsSection() {
   const { minutes } = useLibras();
   const [selectedPillIndex, setSelectedPillIndex] = useState<number | null>(null);
   const [isMuted, setIsMuted] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [mounted, setMounted] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -47,9 +49,22 @@ export function PillsSection() {
     }
   }, [selectedPillIndex]);
 
+  // Reset showInfo when switching video
+  useEffect(() => {
+    setShowInfo(false);
+  }, [selectedPillIndex]);
+
   const handleOpenPill = (index: number) => {
     setSelectedPillIndex(index);
     sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  const handleShare = (url?: string) => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(url || window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2200);
+    }
   };
 
   // Background gradients for thumbnails (Colorblind-safe: Blues, Indigos, Cyans, Ambers)
@@ -59,7 +74,6 @@ export function PillsSection() {
     "from-slate-950 via-slate-900 to-slate-900",
     "from-amber-950 via-slate-900 to-orange-950/60",
     "from-cyan-950 via-slate-900 to-blue-950/60",
-    "from-slate-900 via-indigo-950 to-blue-950/60",
     "from-slate-950 via-slate-900 to-primary/30",
     "from-blue-900 via-slate-900 to-slate-950",
   ];
@@ -77,6 +91,8 @@ export function PillsSection() {
     }
   };
 
+  const total = minutes.length;
+
   // Keyboard navigation for the modal
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -87,20 +103,24 @@ export function PillsSection() {
         handlePrevVideo();
       } else if (e.key === "ArrowRight") {
         handleNextVideo();
+      } else if (e.key === "m" || e.key === "M") {
+        setIsMuted(prev => !prev);
+      } else if (e.key === "i" || e.key === "I") {
+        setShowInfo(prev => !prev);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedPillIndex, minutes.length]);
+  }, [selectedPillIndex, total]);
 
   const handlePrevVideo = () => {
-    if (selectedPillIndex === null || minutes.length === 0) return;
-    setSelectedPillIndex(prev => (prev !== null && prev > 0 ? prev - 1 : minutes.length - 1));
+    if (selectedPillIndex === null || total === 0) return;
+    setSelectedPillIndex(prev => (prev !== null && prev > 0 ? prev - 1 : total - 1));
   };
 
   const handleNextVideo = () => {
-    if (selectedPillIndex === null || minutes.length === 0) return;
-    setSelectedPillIndex(prev => (prev !== null && prev < minutes.length - 1 ? prev + 1 : 0));
+    if (selectedPillIndex === null || total === 0) return;
+    setSelectedPillIndex(prev => (prev !== null && prev < total - 1 ? prev + 1 : 0));
   };
 
   // Helper for YouTube embed (supports regular, shorts and youtu.be)
@@ -123,8 +143,17 @@ export function PillsSection() {
   };
 
   const currentPill = selectedPillIndex !== null ? minutes[selectedPillIndex] : null;
-  const prevPill = selectedPillIndex !== null ? (selectedPillIndex > 0 ? minutes[selectedPillIndex - 1] : minutes[minutes.length - 1]) : null;
-  const nextPill = selectedPillIndex !== null ? (selectedPillIndex < minutes.length - 1 ? minutes[selectedPillIndex + 1] : minutes[0]) : null;
+
+  const getPillAt = (offset: number) => {
+    if (selectedPillIndex === null || total === 0) return null;
+    const idx = (selectedPillIndex + offset + total) % total;
+    return { pill: minutes[idx], index: idx };
+  };
+
+  const prev2 = total > 4 ? getPillAt(-2) : null;
+  const prev1 = total > 1 ? getPillAt(-1) : null;
+  const next1 = total > 1 ? getPillAt(1) : null;
+  const next2 = total > 4 ? getPillAt(2) : null;
 
   return (
     <div 
@@ -171,7 +200,7 @@ export function PillsSection() {
       </div>
 
       {/* =========================================================
-          CARROSSEL HORIZONTAL DE VÍDEOS EM FORMATO 4:5
+          CARROSSEL HORIZONTAL DE VÍDEOS EM FORMATO VERTICAL 9:16 (SHORTS/REELS)
           Capas limpas sem badges de tempo, formato, número ou categorias
           ========================================================= */}
       <div 
@@ -188,7 +217,7 @@ export function PillsSection() {
               whileHover={{ scale: 1.03, y: -6 }}
               transition={{ duration: 0.25 }}
               onClick={() => handleOpenPill(i)}
-              className="relative w-72 sm:w-80 lg:w-[340px] aspect-[4/5] shrink-0 snap-start rounded-[2.5rem] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300 group border border-slate-200/80 select-none bg-slate-950"
+              className="relative w-64 sm:w-72 lg:w-80 aspect-[9/16] shrink-0 snap-start rounded-[2.5rem] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300 group border border-slate-200/80 select-none bg-slate-950"
             >
               {/* Background gradient or thumbnail image */}
               {pill.thumbnail ? (
@@ -234,185 +263,299 @@ export function PillsSection() {
       </div>
 
       {/* =========================================================
-          MODAL EM FORMATO MAIOR (AMPLIADO PARA PREENCHER O ESPAÇO)
-          Teleportado para document.body para garantir centralização perfeita
-          na tela do navegador, sem interferência de transforms ou parent overflow
+          MODAL FULL SCREEN EM FORMATO STORIES / G1
+          Vídeo vertical 9:16 ocupa quase 100% da altura da tela (h-[92vh]/[95vh]),
+          com cards adjacentes nas laterais e botões circulares flutuantes.
           ========================================================= */}
       {mounted && typeof document !== "undefined" && createPortal(
         <AnimatePresence>
           {selectedPillIndex !== null && currentPill && (
-            <div className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-6 md:p-8 select-none w-screen h-screen overflow-hidden">
+            <div className="fixed inset-0 z-[99999] flex items-center justify-center select-none w-screen h-screen overflow-hidden bg-black/95 backdrop-blur-2xl">
               {/* Dark immersive backdrop */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={() => setSelectedPillIndex(null)}
-                className="fixed inset-0 bg-black/95 backdrop-blur-3xl"
+                className="fixed inset-0 bg-black/90"
               />
 
-              {/* Top Close Button */}
-              <button
-                onClick={() => setSelectedPillIndex(null)}
-                className="fixed top-5 right-5 sm:top-6 sm:right-6 z-[100000] p-3 sm:p-3.5 rounded-full bg-white/10 hover:bg-white/25 text-white transition-all backdrop-blur-md border border-white/20 shadow-2xl"
-                title="Fechar (Esc)"
-              >
-                <X className="h-6 w-6" />
-              </button>
-
-              {/* Top Audio toggle */}
-              <div className="fixed top-5 left-5 sm:top-6 sm:left-6 z-[100000] flex items-center gap-3">
-                <button
-                  onClick={() => setIsMuted(!isMuted)}
-                  className="p-3 sm:p-3.5 rounded-full bg-white/10 hover:bg-white/25 text-white transition-all backdrop-blur-md border border-white/20 shadow-2xl"
-                  title={isMuted ? "Ativar som" : "Desativar som"}
-                >
-                  {isMuted ? <VolumeX className="h-6 w-6 text-amber-400" /> : <Volume2 className="h-6 w-6 text-white" />}
-                </button>
-              </div>
-
-              {/* Container Principal de Visualização Ampliado (Formato 4:5) */}
-              <div className="relative z-40 flex items-center justify-center gap-4 sm:gap-6 md:gap-8 w-full max-w-[1700px] h-full max-h-[92vh]">
-                {/* VÍDEO ANTERIOR (Preview translúcido em 4:5 à esquerda) */}
-                {prevPill && (
-                  <div 
-                    onClick={handlePrevVideo}
-                    className="hidden xl:flex flex-col justify-end opacity-40 hover:opacity-90 transition-all cursor-pointer scale-95 shrink-0 w-60 2xl:w-72 aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-slate-900 border border-white/15 relative shadow-2xl group"
+              {/* Main Stories Flex Row */}
+              <div className="relative z-40 flex items-center justify-center gap-3 sm:gap-4 md:gap-5 lg:gap-6 w-full h-full max-h-screen px-2 md:px-6">
+                
+                {/* 1. Preview Card: 2 atrás (visível em telas 2xl) */}
+                {prev2 && (
+                  <div
+                    onClick={() => setSelectedPillIndex(prev2.index)}
+                    className="hidden 2xl:flex flex-col justify-end opacity-25 hover:opacity-75 transition-all cursor-pointer scale-90 shrink-0 h-[74vh] aspect-[9/16] rounded-2xl overflow-hidden bg-slate-900 border border-white/10 relative shadow-2xl group"
                   >
-                    {prevPill.thumbnail && (
-                      <img 
-                        src={prevPill.thumbnail} 
-                        alt={prevPill.title} 
-                        className="absolute inset-0 w-full h-full object-cover opacity-35 group-hover:scale-105 transition-transform duration-500" 
+                    {prev2.pill.thumbnail ? (
+                      <img
+                        src={prev2.pill.thumbnail}
+                        alt={prev2.pill.title}
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-950 via-slate-900 to-slate-950" />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent p-6 flex flex-col justify-end">
-                      <span className="text-[11px] font-black uppercase tracking-widest text-primary mb-1 flex items-center gap-1">
-                        <ChevronLeft className="h-3.5 w-3.5" /> Vídeo Anterior
-                      </span>
-                      <h4 className="text-sm font-black text-white leading-snug line-clamp-2">{prevPill.title}</h4>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent p-4 flex flex-col justify-end">
+                      <h5 className="text-xs font-black text-white leading-snug line-clamp-2 drop-shadow-md">
+                        {prev2.pill.title}
+                      </h5>
                     </div>
                   </div>
                 )}
 
-                {/* Botão de Navegação Esquerda */}
+                {/* 2. Preview Card: 1 atrás (visível em telas lg+) */}
+                {prev1 && (
+                  <div
+                    onClick={() => setSelectedPillIndex(prev1.index)}
+                    className="hidden lg:flex flex-col justify-end opacity-40 hover:opacity-85 transition-all cursor-pointer scale-95 shrink-0 h-[84vh] aspect-[9/16] rounded-2xl overflow-hidden bg-slate-900 border border-white/15 relative shadow-2xl group"
+                  >
+                    {prev1.pill.thumbnail ? (
+                      <img
+                        src={prev1.pill.thumbnail}
+                        alt={prev1.pill.title}
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-950" />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent p-5 flex flex-col justify-end">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-primary mb-1 flex items-center gap-1">
+                        <ChevronLeft className="h-3.5 w-3.5" /> Anterior
+                      </span>
+                      <h5 className="text-xs sm:text-sm font-black text-white leading-snug line-clamp-2 drop-shadow-md">
+                        {prev1.pill.title}
+                      </h5>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Botão Seta Esquerda (Navegação) */}
                 <button
                   onClick={handlePrevVideo}
-                  className="p-3.5 sm:p-4 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur-md border border-white/25 shadow-2xl transition-all active:scale-95 shrink-0"
+                  className="p-3 sm:p-4 rounded-full bg-white/20 hover:bg-white/35 active:scale-95 text-white backdrop-blur-md border border-white/25 shadow-2xl transition-all shrink-0 z-30"
                   title="Vídeo Anterior (Seta Esquerda)"
                 >
                   <ChevronLeft className="h-6 w-6 sm:h-7 sm:w-7" />
                 </button>
 
-                {/* VÍDEO CENTRAL EM FORMATO 4:5 */}
+                {/* 4. VÍDEO CENTRAL ATIVO (9:16 FULL HEIGHT, FORMATO G1) */}
                 <motion.div
                   key={currentPill.id || selectedPillIndex}
                   initial={{ opacity: 0, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.96 }}
-                  transition={{ duration: 0.22 }}
-                  className="w-full max-w-[440px] sm:max-w-[480px] 2xl:max-w-[520px] max-h-[90vh] rounded-[2.5rem] overflow-hidden relative shadow-[0_0_80px_rgba(0,0,0,0.95)] border border-white/20 bg-slate-950 flex flex-col justify-between shrink-0"
+                  transition={{ duration: 0.2 }}
+                  className="relative h-[92vh] sm:h-[95vh] max-h-[96vh] aspect-[9/16] rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.95)] border border-white/20 bg-black flex flex-col shrink-0 z-20 group"
                 >
-                  {/* Top Overlay inside card */}
-                  <div className="relative z-30 px-6 py-3.5 flex items-center justify-between border-b border-white/10 bg-slate-950/90 backdrop-blur-md shrink-0">
-                    <span className="px-3.5 py-1 rounded-full bg-primary/20 text-primary border border-primary/30 text-[10px] font-black uppercase tracking-wider">
-                      Minuto do Conhecimento
-                    </span>
-                    <span className="text-xs font-black text-white/75">
-                      {selectedPillIndex + 1} de {minutes.length}
-                    </span>
-                  </div>
-
-                  {/* Player Central (Frame rigorosamente em formato 4:5 com encaixe perfeito) */}
-                  <div className="relative w-full flex-1 min-h-0 flex items-center justify-center p-3 sm:p-4 bg-black/60 overflow-hidden">
-                    <div className="relative w-full aspect-[4/5] max-h-[48vh] sm:max-h-[52vh] rounded-2xl overflow-hidden bg-black shadow-2xl border border-white/10 flex items-center justify-center mx-auto">
-                      {currentPill.videoUrl ? (
-                        <iframe
-                          src={getEmbedUrl(currentPill.videoUrl, isMuted)}
-                          className="w-full h-full object-cover"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          title={currentPill.title}
-                        />
-                      ) : (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-slate-950 via-slate-900 to-primary/30 text-white space-y-3">
-                          <div className="w-16 h-16 rounded-2xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary shadow-2xl">
-                            <Play className="h-8 w-8 fill-primary/30" />
-                          </div>
-                          <div className="space-y-1.5 max-w-xs">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
-                              Minuto do Conhecimento
-                            </span>
-                            <h4 className="text-base font-black uppercase tracking-tight">
-                              {currentPill.title}
-                            </h4>
-                            <p className="text-[11px] text-slate-300 leading-relaxed font-medium">
-                              Vídeo em produção. Confira a aplicação prática abaixo.
-                            </p>
-                          </div>
+                  {/* Player de Vídeo em Full Bleed (ocupa 100% da altura e largura da moldura 9:16) */}
+                  <div className="absolute inset-0 w-full h-full bg-black overflow-hidden">
+                    {currentPill.videoUrl ? (
+                      <iframe
+                        src={getEmbedUrl(currentPill.videoUrl, isMuted)}
+                        className="w-full h-full object-cover border-0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        title={currentPill.title}
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-slate-950 via-slate-900 to-primary/30 text-white space-y-4">
+                        <div className="w-16 h-16 rounded-2xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary shadow-2xl">
+                          <Play className="h-8 w-8 fill-primary/30" />
                         </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Bottom Details com Título, Explicação e Aplicação Prática */}
-                  <div className="relative z-30 px-6 py-4 md:px-7 md:py-4 bg-slate-950/95 border-t border-white/10 space-y-2.5 shrink-0 overflow-y-auto max-h-[28vh]">
-                    <h3 className="text-base md:text-lg font-black text-white uppercase tracking-tight leading-snug drop-shadow-sm">
-                      {currentPill.title}
-                    </h3>
-
-                    {currentPill.supportText && (
-                      <p className="text-xs text-slate-300 font-medium leading-relaxed">
-                        {currentPill.supportText}
-                      </p>
-                    )}
-
-                    {currentPill.practicalApp && (
-                      <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-xs text-amber-200 font-medium flex items-start gap-2.5">
-                        <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
-                        <div>
-                          <strong className="text-amber-300 font-black">Aplicação Prática:</strong>{" "}
-                          <span>{currentPill.practicalApp}</span>
+                        <div className="space-y-1.5 max-w-xs">
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                            Minuto do Conhecimento
+                          </span>
+                          <h4 className="text-base font-black uppercase tracking-tight">
+                            {currentPill.title}
+                          </h4>
+                          <p className="text-xs text-slate-300 leading-relaxed font-medium">
+                            Vídeo em produção técnica.
+                          </p>
                         </div>
                       </div>
                     )}
+                  </div>
 
-                    <p className="text-[11px] text-slate-400 italic pt-0.5">
+                  {/* Gradiente Superior com Indicador de Vídeo */}
+                  <div className="absolute inset-x-0 top-0 pt-4 pb-12 px-5 bg-gradient-to-b from-black/85 via-black/40 to-transparent pointer-events-none z-10 flex items-center justify-between">
+                    <span className="px-3.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-wider border border-white/20 shadow-lg">
+                      Minuto do Conhecimento • {selectedPillIndex + 1} de {total}
+                    </span>
+                  </div>
+
+                  {/* Gradiente Inferior com Título e Acesso à Aplicação Prática */}
+                  <div className="absolute inset-x-0 bottom-0 pt-20 pb-5 px-5 bg-gradient-to-t from-black/95 via-black/70 to-transparent z-10 space-y-2 pointer-events-auto">
+                    <h3 className="text-sm sm:text-base md:text-lg font-black text-white leading-snug drop-shadow-md">
+                      {currentPill.title}
+                    </h3>
+
+                    {(currentPill.supportText || currentPill.practicalApp) && (
+                      <button
+                        onClick={() => setShowInfo(!showInfo)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md text-white text-xs font-bold transition-all border border-white/20 shadow-md"
+                      >
+                        <Info className="h-3.5 w-3.5 text-amber-300" />
+                        <span>{showInfo ? "Ocultar detalhes" : "Ver aplicação prática"}</span>
+                      </button>
+                    )}
+
+                    <p className="text-[10px] sm:text-[11px] text-slate-400 font-medium italic pt-1">
                       * A capa de cada vídeo foi gerada por Inteligência Artificial.
                     </p>
                   </div>
+
+                  {/* Drawer de Detalhes / Aplicação Prática (slide-up) */}
+                  <AnimatePresence>
+                    {showInfo && (
+                      <motion.div
+                        initial={{ y: "100%", opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: "100%", opacity: 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="absolute inset-x-0 bottom-0 max-h-[75%] bg-slate-950/95 backdrop-blur-xl border-t border-white/20 p-5 rounded-t-3xl z-20 overflow-y-auto space-y-3.5 shadow-2xl text-slate-200"
+                      >
+                        <div className="flex items-center justify-between pb-2 border-b border-white/10">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 flex items-center gap-1.5">
+                            <Sparkles className="h-3.5 w-3.5" /> Mediação & Aplicação Prática
+                          </span>
+                          <button
+                            onClick={() => setShowInfo(false)}
+                            className="p-1 rounded-full text-slate-400 hover:text-white"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+
+                        {currentPill.supportText && (
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+                              Conceito & Contexto:
+                            </span>
+                            <p className="text-xs text-slate-300 leading-relaxed font-medium">
+                              {currentPill.supportText}
+                            </p>
+                          </div>
+                        )}
+
+                        {currentPill.practicalApp && (
+                          <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-100 font-medium space-y-1">
+                            <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 block flex items-center gap-1">
+                              <CheckCircle2 className="h-3.5 w-3.5 text-amber-400" /> Como aplicar no dia a dia:
+                            </span>
+                            <p className="text-xs leading-relaxed">{currentPill.practicalApp}</p>
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
 
-                {/* Botão de Navegação Direita */}
+                {/* 5. Botões Flutuantes de Ação no Lado Direito (G1 Style) */}
+                <div className="flex flex-col items-center gap-3 shrink-0 z-30">
+                  {/* Botão Fechar */}
+                  <button
+                    onClick={() => setSelectedPillIndex(null)}
+                    className="p-3 sm:p-3.5 rounded-full bg-white/20 hover:bg-white/35 text-white backdrop-blur-md border border-white/25 shadow-2xl transition-all active:scale-95"
+                    title="Fechar (Esc)"
+                  >
+                    <X className="h-5 w-5 sm:h-6 sm:w-6" />
+                  </button>
+
+                  {/* Botão Áudio Mute / Unmute */}
+                  <button
+                    onClick={() => setIsMuted(!isMuted)}
+                    className="p-3 sm:p-3.5 rounded-full bg-white/20 hover:bg-white/35 text-white backdrop-blur-md border border-white/25 shadow-2xl transition-all active:scale-95"
+                    title={isMuted ? "Ativar som" : "Desativar som"}
+                  >
+                    {isMuted ? <VolumeX className="h-5 w-5 text-amber-400" /> : <Volume2 className="h-5 w-5 text-white" />}
+                  </button>
+
+                  {/* Botão Detalhes / Info */}
+                  <button
+                    onClick={() => setShowInfo(!showInfo)}
+                    className={cn(
+                      "p-3 sm:p-3.5 rounded-full backdrop-blur-md border shadow-2xl transition-all active:scale-95",
+                      showInfo 
+                        ? "bg-amber-400 text-slate-950 border-amber-300" 
+                        : "bg-white/20 hover:bg-white/35 text-white border-white/25"
+                    )}
+                    title="Ver aplicação prática e contexto"
+                  >
+                    <Info className="h-5 w-5" />
+                  </button>
+
+                  {/* Botão Compartilhar */}
+                  <button
+                    onClick={() => handleShare(currentPill.videoUrl)}
+                    className="p-3 sm:p-3.5 rounded-full bg-white/20 hover:bg-white/35 text-white backdrop-blur-md border border-white/25 shadow-2xl transition-all active:scale-95 relative"
+                    title="Compartilhar vídeo"
+                  >
+                    {copied ? <CheckCircle2 className="h-5 w-5 text-emerald-400" /> : <Share2 className="h-5 w-5 text-white" />}
+                  </button>
+                </div>
+
+                {/* 6. Botão Seta Direita (Navegação) */}
                 <button
                   onClick={handleNextVideo}
-                  className="p-3.5 sm:p-4 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur-md border border-white/25 shadow-2xl transition-all active:scale-95 shrink-0"
+                  className="p-3 sm:p-4 rounded-full bg-white/20 hover:bg-white/35 active:scale-95 text-white backdrop-blur-md border border-white/25 shadow-2xl transition-all shrink-0 z-30"
                   title="Próximo Vídeo (Seta Direita)"
                 >
                   <ChevronRight className="h-6 w-6 sm:h-7 sm:w-7" />
                 </button>
 
-                {/* PRÓXIMO VÍDEO (Preview translúcido em 4:5 à direita) */}
-                {nextPill && (
-                  <div 
-                    onClick={handleNextVideo}
-                    className="hidden xl:flex flex-col justify-end opacity-40 hover:opacity-90 transition-all cursor-pointer scale-95 shrink-0 w-60 2xl:w-72 aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-slate-900 border border-white/15 relative shadow-2xl group"
+                {/* 7. Preview Card: 1 à frente (visível em telas lg+) */}
+                {next1 && (
+                  <div
+                    onClick={() => setSelectedPillIndex(next1.index)}
+                    className="hidden lg:flex flex-col justify-end opacity-40 hover:opacity-85 transition-all cursor-pointer scale-95 shrink-0 h-[84vh] aspect-[9/16] rounded-2xl overflow-hidden bg-slate-900 border border-white/15 relative shadow-2xl group"
                   >
-                    {nextPill.thumbnail && (
-                      <img 
-                        src={nextPill.thumbnail} 
-                        alt={nextPill.title} 
-                        className="absolute inset-0 w-full h-full object-cover opacity-35 group-hover:scale-105 transition-transform duration-500" 
+                    {next1.pill.thumbnail ? (
+                      <img
+                        src={next1.pill.thumbnail}
+                        alt={next1.pill.title}
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-950" />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent p-6 flex flex-col justify-end">
-                      <span className="text-[11px] font-black uppercase tracking-widest text-primary mb-1 flex items-center justify-end gap-1">
-                        Próximo Vídeo <ChevronRight className="h-3.5 w-3.5" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent p-5 flex flex-col justify-end">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-primary mb-1 flex items-center justify-end gap-1">
+                        Próximo <ChevronRight className="h-3.5 w-3.5" />
                       </span>
-                      <h4 className="text-sm font-black text-white leading-snug line-clamp-2">{nextPill.title}</h4>
+                      <h5 className="text-xs sm:text-sm font-black text-white leading-snug line-clamp-2 drop-shadow-md">
+                        {next1.pill.title}
+                      </h5>
                     </div>
                   </div>
                 )}
+
+                {/* 8. Preview Card: 2 à frente (visível em telas 2xl) */}
+                {next2 && (
+                  <div
+                    onClick={() => setSelectedPillIndex(next2.index)}
+                    className="hidden 2xl:flex flex-col justify-end opacity-25 hover:opacity-75 transition-all cursor-pointer scale-90 shrink-0 h-[74vh] aspect-[9/16] rounded-2xl overflow-hidden bg-slate-900 border border-white/10 relative shadow-2xl group"
+                  >
+                    {next2.pill.thumbnail ? (
+                      <img
+                        src={next2.pill.thumbnail}
+                        alt={next2.pill.title}
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-950 via-slate-900 to-slate-950" />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent p-4 flex flex-col justify-end">
+                      <h5 className="text-xs font-black text-white leading-snug line-clamp-2 drop-shadow-md">
+                        {next2.pill.title}
+                      </h5>
+                    </div>
+                  </div>
+                )}
+
               </div>
             </div>
           )}
