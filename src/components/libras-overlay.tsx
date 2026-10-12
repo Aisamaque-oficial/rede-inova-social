@@ -418,8 +418,6 @@ export const LibrasOverlay = () => {
           </div>
         </div>
       </motion.div>
-        initialType={collabModal.type}
-      />
     </AnimatePresence>
   );
 };
