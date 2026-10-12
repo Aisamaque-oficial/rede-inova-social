@@ -26,18 +26,33 @@ export function SignDisplay() {
 
   const rawVideoUrl = activeTermObj.videoUrl || activeTermObj.video_url || "";
   const slug = getTermVideoSlug(activeTermObj.term);
-  const localVideoUrl = `/videos/libras/${slug}.mp4`;
-  
-  // Effective video URL: configured URL, or fallback to local .mp4 if no URL is provided
-  const candidateUrl = rawVideoUrl && rawVideoUrl.trim() !== "" && rawVideoUrl !== "#"
-    ? rawVideoUrl
-    : localVideoUrl;
+  // Default to glossario subfolder, fallback to libras legacy folder
+  const [activeSrcIndex, setActiveSrcIndex] = useState(0);
+  const potentialPaths = [
+    rawVideoUrl && rawVideoUrl.trim() !== "" && rawVideoUrl !== "#" ? rawVideoUrl : null,
+    `/videos/glossario/${slug}.mp4`,
+    `/videos/libras/${slug}.mp4`,
+  ].filter(Boolean) as string[];
 
-  const videoInfo = parseLibrasVideoUrl(candidateUrl);
-  const hasPlayableVideo = !loadError && videoInfo.type !== "empty";
+  const currentCandidate = potentialPaths[activeSrcIndex] || "";
+  const videoInfo = parseLibrasVideoUrl(currentCandidate);
+  const hasPlayableVideo = !loadError && videoInfo.type !== "empty" && activeSrcIndex < potentialPaths.length;
+
+  const handleVideoError = () => {
+    if (activeSrcIndex < potentialPaths.length - 1) {
+      setActiveSrcIndex(prev => prev + 1);
+    } else {
+      setLoadError(true);
+    }
+  };
+
+  useEffect(() => {
+    setActiveSrcIndex(0);
+    setLoadError(false);
+  }, [activeTermKey]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 select-none" onContextMenu={(e) => e.preventDefault()}>
       <AnimatePresence mode="wait">
         <motion.div
           key={activeTermKey}
@@ -85,20 +100,32 @@ export function SignDisplay() {
                   className="absolute inset-0 w-full h-full z-10"
                   allow="autoplay; encrypted-media; fullscreen"
                   allowFullScreen
-                  onError={() => setLoadError(true)}
+                  onError={handleVideoError}
                   title={`Sinal de ${activeTermObj.term} em Libras`}
                 />
               ) : (
-                <video
-                  src={videoInfo.url}
-                  controls
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  onError={() => setLoadError(true)}
-                  className="absolute inset-0 w-full h-full object-cover z-10"
-                />
+                <div className="relative w-full h-full select-none">
+                  <video
+                    src={videoInfo.url}
+                    controls
+                    controlsList="nodownload nofullscreen noplaybackrate"
+                    disablePictureInPicture
+                    disableRemotePlayback
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    onContextMenu={(e) => e.preventDefault()}
+                    onError={handleVideoError}
+                    className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-auto"
+                  />
+                  {/* Marca d'água perolada de segurança e proteção de tela */}
+                  <div className="absolute inset-0 pointer-events-none z-20 flex items-center justify-center opacity-10 select-none">
+                    <span className="text-xs sm:text-sm font-black uppercase tracking-widest text-white rotate-[-25deg]">
+                      Rede Inova Social • Protegido
+                    </span>
+                  </div>
+                </div>
               )}
               
               <div className="absolute top-4 left-4 pointer-events-none z-30">

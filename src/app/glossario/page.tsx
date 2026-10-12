@@ -391,20 +391,43 @@ export default function GlossarioPage() {
                   <div className="absolute top-0 right-0 py-1.5 px-3 bg-primary text-white text-[9px] font-black uppercase tracking-widest rounded-bl-xl z-10 shadow-lg">
                     Tradução em Libras
                   </div>
-                  <div className="aspect-video md:aspect-[4/5] rounded-[2rem] overflow-hidden bg-slate-900 border-4 border-slate-900 relative">
-                    <iframe
-                      src={
-                        activeVideoUrl.includes("youtu.be/")
-                          ? `https://www.youtube.com/embed/${activeVideoUrl.split("youtu.be/")[1]?.split(/[?&#]/)[0]}?autoplay=1&controls=1&rel=0`
-                          : activeVideoUrl.includes("watch?v=")
-                          ? `https://www.youtube.com/embed/${activeVideoUrl.split("watch?v=")[1]?.split(/[?&#]/)[0]}?autoplay=1&controls=1&rel=0`
-                          : activeVideoUrl
-                      }
-                      className="absolute inset-0 w-full h-full"
-                      allow="autoplay; encrypted-media; fullscreen"
-                      allowFullScreen
-                      title="Libras Video"
-                    />
+                  <div className="aspect-video md:aspect-[4/5] rounded-[2rem] overflow-hidden bg-slate-900 border-4 border-slate-900 relative select-none">
+                    {/\.(mp4|webm|mov|ogg)(\?.*)?$/i.test(activeVideoUrl) ? (
+                      <div className="relative w-full h-full select-none">
+                        <video
+                          src={activeVideoUrl}
+                          controls
+                          controlsList="nodownload nofullscreen noplaybackrate"
+                          disablePictureInPicture
+                          disableRemotePlayback
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          onContextMenu={(e) => e.preventDefault()}
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 pointer-events-none z-20 flex items-center justify-center opacity-10 select-none">
+                          <span className="text-xs font-black uppercase tracking-widest text-white rotate-[-25deg]">
+                            Rede Inova Social • Protegido
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <iframe
+                        src={
+                          activeVideoUrl.includes("youtu.be/")
+                            ? `https://www.youtube.com/embed/${activeVideoUrl.split("youtu.be/")[1]?.split(/[?&#]/)[0]}?autoplay=1&controls=1&rel=0`
+                            : activeVideoUrl.includes("watch?v=")
+                            ? `https://www.youtube.com/embed/${activeVideoUrl.split("watch?v=")[1]?.split(/[?&#]/)[0]}?autoplay=1&controls=1&rel=0`
+                            : activeVideoUrl
+                        }
+                        className="absolute inset-0 w-full h-full"
+                        allow="autoplay; encrypted-media; fullscreen"
+                        allowFullScreen
+                        title="Libras Video"
+                      />
+                    )}
                   </div>
                   <button
                     onClick={() => setActiveVideoUrl(null)}

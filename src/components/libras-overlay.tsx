@@ -41,25 +41,32 @@ export const LibrasOverlay = () => {
 
   // Open player for a specific LibrasWord or text
   const openWordTranslation = useCallback((wordOrText: string, fallbackVideo?: string) => {
+    const slug = getTermVideoSlug(wordOrText);
     const matched = findSignedWord(wordOrText);
+    const defaultBotaoVideo = `/videos/botoes/${slug}.mp4`;
+    const defaultGlossarioVideo = `/videos/glossario/${slug}.mp4`;
+    const defaultLibrasVideo = `/videos/libras/${slug}.mp4`;
+
     if (matched) {
       setActiveWord(matched);
       setDisplayText(matched.term);
-      setActiveVideoUrl(matched.videoUrl || fallbackVideo || "");
-      setVideoInputUrl(matched.videoUrl || "");
+      const chosenVideo = matched.videoUrl || fallbackVideo || defaultGlossarioVideo;
+      setActiveVideoUrl(chosenVideo);
+      setVideoInputUrl(chosenVideo);
     } else {
-      // Create ad-hoc word object if not in glossary
+      // Create ad-hoc word object if not in glossary (e.g., buttons, actions or clicked text)
       const cleanText = wordOrText.trim().substring(0, 60);
+      const chosenVideo = fallbackVideo || defaultBotaoVideo;
       setActiveWord({
         id: "adhoc-term",
         term: cleanText,
         normalizedTerm: cleanText.toLowerCase(),
-        definition: "Palavra ou trecho selecionado para tradução em Libras.",
-        videoUrl: fallbackVideo || "",
+        definition: "Ação de interface ou trecho selecionado para tradução em Libras.",
+        videoUrl: chosenVideo,
       });
       setDisplayText(cleanText);
-      setActiveVideoUrl(fallbackVideo || "");
-      setVideoInputUrl(fallbackVideo || "");
+      setActiveVideoUrl(chosenVideo);
+      setVideoInputUrl(chosenVideo);
     }
     setIsEditingVideo(false);
     setSaveSuccess(false);
@@ -283,15 +290,26 @@ export const LibrasOverlay = () => {
               title={`Tradução em Libras: ${activeWord.term}`}
             />
           ) : videoInfo.type === "video" ? (
-            <video
-              src={videoInfo.url}
-              controls
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-            />
+            <div className="relative w-full h-full select-none">
+              <video
+                src={videoInfo.url}
+                controls
+                controlsList="nodownload nofullscreen noplaybackrate"
+                disablePictureInPicture
+                disableRemotePlayback
+                autoPlay
+                loop
+                muted
+                playsInline
+                onContextMenu={(e) => e.preventDefault()}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 pointer-events-none z-20 flex items-center justify-center opacity-10 select-none">
+                <span className="text-[10px] font-black uppercase tracking-widest text-white rotate-[-25deg]">
+                  Rede Inova Social
+                </span>
+              </div>
+            </div>
           ) : (
             <div className="flex flex-col items-center justify-center p-5 text-center space-y-2.5 bg-gradient-to-br from-slate-900 via-stone-900 to-slate-950 text-white">
               <div className="w-11 h-11 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
