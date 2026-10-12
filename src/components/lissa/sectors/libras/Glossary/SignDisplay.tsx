@@ -17,8 +17,10 @@ export function SignDisplay() {
     isOpen: false,
     type: "new_sign",
   });
+  const [activeSrcIndex, setActiveSrcIndex] = useState(0);
 
   useEffect(() => {
+    setActiveSrcIndex(0);
     setLoadError(false);
   }, [activeTermKey]);
 
@@ -27,7 +29,6 @@ export function SignDisplay() {
   const rawVideoUrl = activeTermObj.videoUrl || activeTermObj.video_url || "";
   const slug = getTermVideoSlug(activeTermObj.term);
   // Default to glossario subfolder, fallback to libras legacy folder
-  const [activeSrcIndex, setActiveSrcIndex] = useState(0);
   const potentialPaths = [
     rawVideoUrl && rawVideoUrl.trim() !== "" && rawVideoUrl !== "#" ? rawVideoUrl : null,
     `/videos/glossario/${slug}.mp4`,
