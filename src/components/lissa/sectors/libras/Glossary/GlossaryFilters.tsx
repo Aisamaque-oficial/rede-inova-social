@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { librasGlossary } from "@/lib/mock-data";
+import { findRegisteredVideo } from "@/lib/libras-video-catalog";
 import { LibrasCollaborationModal } from "../LibrasCollaborationModal";
 import { 
   Sparkles, 
@@ -308,22 +309,34 @@ export function GlossaryFilters() {
   const rawTerms = useMemo(() => {
     if (!selectedAxisId) return [];
     if (selectedAxisId === "todos") {
-      return eixosList.flatMap(e => (e.terms || []).map((t, idx) => ({ 
-        ...t, 
-        axisTitle: e.title, 
-        axisEmoji: e.emoji, 
-        axisNum: e.numericId,
-        codeId: `${e.numericId}${String.fromCharCode(65 + (idx % 26))}${idx >= 26 ? Math.floor(idx / 26) : ""}`
-      })));
+      return eixosList.flatMap(e => (e.terms || []).map((t, idx) => {
+        const catalogVid = findRegisteredVideo(t.term);
+        const effectiveVideo = catalogVid || t.videoUrl || t.video_url || "";
+        return { 
+          ...t, 
+          videoUrl: effectiveVideo,
+          video_url: effectiveVideo,
+          axisTitle: e.title, 
+          axisEmoji: e.emoji, 
+          axisNum: e.numericId,
+          codeId: `${e.numericId}${String.fromCharCode(65 + (idx % 26))}${idx >= 26 ? Math.floor(idx / 26) : ""}`
+        };
+      }));
     }
     if (!currentEixo) return [];
-    return (currentEixo.terms || []).map((t, idx) => ({ 
-      ...t, 
-      axisTitle: currentEixo.title, 
-      axisEmoji: currentEixo.emoji, 
-      axisNum: currentEixo.numericId,
-      codeId: `${currentEixo.numericId}${String.fromCharCode(65 + (idx % 26))}${idx >= 26 ? Math.floor(idx / 26) : ""}`
-    }));
+    return (currentEixo.terms || []).map((t, idx) => {
+      const catalogVid = findRegisteredVideo(t.term);
+      const effectiveVideo = catalogVid || t.videoUrl || t.video_url || "";
+      return { 
+        ...t, 
+        videoUrl: effectiveVideo,
+        video_url: effectiveVideo,
+        axisTitle: currentEixo.title, 
+        axisEmoji: currentEixo.emoji, 
+        axisNum: currentEixo.numericId,
+        codeId: `${currentEixo.numericId}${String.fromCharCode(65 + (idx % 26))}${idx >= 26 ? Math.floor(idx / 26) : ""}`
+      };
+    });
   }, [selectedAxisId, currentEixo, eixosList]);
 
   // Smart search recognizing questions, comparisons and colloquial words
@@ -916,15 +929,38 @@ export function GlossaryFilters() {
                     displayMode === "bilang" ? "xl:col-span-6" : "w-full"
                   )}>
                     {/* Container do Player de Vídeo */}
-                    <div className="rounded-[2rem] overflow-hidden bg-stone-950 aspect-video shadow-md border border-stone-800 flex items-center justify-center relative group">
+                    <div className="rounded-[2rem] overflow-hidden bg-stone-950 aspect-video shadow-md border border-stone-800 flex items-center justify-center relative group select-none">
                       {enrichedTerm.videoUrl || enrichedTerm.video_url ? (
-                        <iframe
-                          src={getEmbedUrl(enrichedTerm.videoUrl || enrichedTerm.video_url)}
-                          className="w-full h-full object-cover"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          title={enrichedTerm.term}
-                        />
+                        /\.(mp4|webm|mov|ogg)(\?.*)?$/i.test(enrichedTerm.videoUrl || enrichedTerm.video_url) ? (
+                          <div className="relative w-full h-full select-none">
+                            <video
+                              src={enrichedTerm.videoUrl || enrichedTerm.video_url}
+                              controls
+                              controlsList="nodownload nofullscreen noplaybackrate"
+                              disablePictureInPicture
+                              disableRemotePlayback
+                              autoPlay
+                              loop
+                              muted
+                              playsInline
+                              onContextMenu={(e) => e.preventDefault()}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 pointer-events-none z-20 flex items-center justify-center opacity-10 select-none">
+                              <span className="text-xs sm:text-sm font-black uppercase tracking-widest text-white rotate-[-25deg]">
+                                Rede Inova Social • Protegido
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <iframe
+                            src={getEmbedUrl(enrichedTerm.videoUrl || enrichedTerm.video_url)}
+                            className="w-full h-full object-cover"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            title={enrichedTerm.term}
+                          />
+                        )
                       ) : (
                         <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-stone-900 text-white space-y-3.5">
                           <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-md">
