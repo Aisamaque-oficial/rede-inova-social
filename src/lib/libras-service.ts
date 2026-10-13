@@ -1,5 +1,6 @@
 import { supabase } from "./supabase";
 import { librasGlossary, librasPills as mockPills, librasTracks as mockTracks } from "./mock-data";
+import { findRegisteredVideo } from "./libras-video-catalog";
 
 export interface GlossaryTerm {
   id: string;
@@ -67,6 +68,8 @@ function getLocalGlossaryFallback(parsedAxis: number | 'todos'): any[] {
     const axisNum = axis.numericId || (index + 1);
     if (parsedAxis === 'todos' || parsedAxis === axisNum) {
       (axis.terms || []).forEach((t: any, termIdx: number) => {
+        const registered = findRegisteredVideo(t.term);
+        const resolvedVideo = registered || t.video_url || t.videoUrl || '';
         result.push({
           id: t.id || `local-term-${axisNum}-${termIdx + 1}`,
           term: t.term,
@@ -74,8 +77,8 @@ function getLocalGlossaryFallback(parsedAxis: number | 'todos'): any[] {
           definition: t.definition || t.description || '',
           description: t.description || t.definition || '',
           context: t.context || '',
-          video_url: t.video_url || t.videoUrl || '',
-          videoUrl: t.videoUrl || t.video_url || '',
+          video_url: resolvedVideo,
+          videoUrl: resolvedVideo,
           sign_strategy: t.sign_strategy || t.signStrategy || '',
           signStrategy: t.signStrategy || t.sign_strategy || '',
           tags: t.tags || [],

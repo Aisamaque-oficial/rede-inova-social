@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Ear, ArrowRight } from "lucide-react";
 import { useLibras } from "../LibrasContext";
 import { parseLibrasVideoUrl, getTermVideoSlug } from "@/lib/libras-words-database";
+import { findRegisteredVideo } from "@/lib/libras-video-catalog";
 import { LibrasCollaborationModal } from "../LibrasCollaborationModal";
 
 export function SignDisplay() {
@@ -28,9 +29,14 @@ export function SignDisplay() {
 
   const rawVideoUrl = activeTermObj.videoUrl || activeTermObj.video_url || "";
   const slug = getTermVideoSlug(activeTermObj.term);
-  // Default to glossario subfolder, fallback to libras legacy folder
+  const catalogVideo = findRegisteredVideo(activeTermObj.term);
+  
+  // Default to registered catalog, configured URL, glossario subfolders, or libras legacy folder
   const potentialPaths = [
+    catalogVideo,
     rawVideoUrl && rawVideoUrl.trim() !== "" && rawVideoUrl !== "#" ? rawVideoUrl : null,
+    `/videos/glossario/EIXO 5/${activeTermObj.term}.mp4`,
+    `/videos/glossario/EIXO 6/${activeTermObj.term}.mp4`,
     `/videos/glossario/${slug}.mp4`,
     `/videos/libras/${slug}.mp4`,
   ].filter(Boolean) as string[];

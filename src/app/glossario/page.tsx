@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Library, Search, Ear, Quote, Hash, Loader2, ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { LibrasCollaborationModal } from "@/components/lissa/sectors/libras/LibrasCollaborationModal";
+import { findRegisteredVideo } from "@/lib/libras-video-catalog";
 
 const eixos = [
   { id: 1, title: 'Fundamentação', emoji: '🤟' },
@@ -198,8 +199,8 @@ export default function GlossarioPage() {
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-6">
                 {filteredTerms.map((term, i) => {
-                  const isActive =
-                    activeVideoUrl === term.videoUrl && !!term.videoUrl;
+                  const resolvedVideo = findRegisteredVideo(term.term) || term.videoUrl;
+                  const isActive = activeVideoUrl === resolvedVideo && !!resolvedVideo;
 
                   const eixoMapped = eixos.find(e => e.id === Number(term.axis_id));
                   const displayTitle = eixoMapped?.title || term.eixoTitle || 'Conceito Técnico';
@@ -222,10 +223,10 @@ export default function GlossarioPage() {
                             {displayTitle}
                           </span>
                         </div>
-                        {term.videoUrl ? (
+                        {resolvedVideo ? (
                           <button
                             onClick={() =>
-                              setActiveVideoUrl(isActive ? null : (term.videoUrl || null))
+                              setActiveVideoUrl(isActive ? null : resolvedVideo)
                             }
                             className={`shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-all ${
                               isActive

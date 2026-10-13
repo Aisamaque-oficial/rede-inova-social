@@ -24,8 +24,10 @@ import {
   findSignedWord, 
   getAllSignedWords, 
   parseLibrasVideoUrl, 
-  setWordLibrasVideo 
+  setWordLibrasVideo,
+  getTermVideoSlug
 } from "@/lib/libras-words-database";
+import { findRegisteredVideo } from "@/lib/libras-video-catalog";
 import { cn } from "@/lib/utils";
 
 export const LibrasOverlay = () => {
@@ -43,20 +45,20 @@ export const LibrasOverlay = () => {
   const openWordTranslation = useCallback((wordOrText: string, fallbackVideo?: string) => {
     const slug = getTermVideoSlug(wordOrText);
     const matched = findSignedWord(wordOrText);
-    const defaultBotaoVideo = `/videos/botoes/${slug}.mp4`;
-    const defaultGlossarioVideo = `/videos/glossario/${slug}.mp4`;
-    const defaultLibrasVideo = `/videos/libras/${slug}.mp4`;
+    const catalogVideo = findRegisteredVideo(wordOrText);
+    const defaultBotaoVideo = catalogVideo || `/videos/botoes/${slug}.mp4`;
+    const defaultGlossarioVideo = catalogVideo || `/videos/glossario/${slug}.mp4`;
 
     if (matched) {
       setActiveWord(matched);
       setDisplayText(matched.term);
-      const chosenVideo = matched.videoUrl || fallbackVideo || defaultGlossarioVideo;
+      const chosenVideo = matched.videoUrl || fallbackVideo || catalogVideo || defaultGlossarioVideo;
       setActiveVideoUrl(chosenVideo);
       setVideoInputUrl(chosenVideo);
     } else {
       // Create ad-hoc word object if not in glossary (e.g., buttons, actions or clicked text)
       const cleanText = wordOrText.trim().substring(0, 60);
-      const chosenVideo = fallbackVideo || defaultBotaoVideo;
+      const chosenVideo = fallbackVideo || catalogVideo || defaultBotaoVideo;
       setActiveWord({
         id: "adhoc-term",
         term: cleanText,

@@ -1,4 +1,5 @@
 import { librasGlossary } from "./mock-data";
+import { findRegisteredVideo } from "./libras-video-catalog";
 
 export interface LibrasWord {
   id: string;
@@ -143,7 +144,8 @@ export function getAllSignedWords(): LibrasWord[] {
 
       const normalized = normalizeLibrasText(term);
       const customVideo = overrides[normalized];
-      const video = customVideo || t.videoUrl || t.video_url || "";
+      const registeredVideo = findRegisteredVideo(term);
+      const video = customVideo || registeredVideo || t.videoUrl || t.video_url || "";
 
       wordMap.set(normalized, {
         id: t.id || `term-${axisId}-${termIdx + 1}`,
