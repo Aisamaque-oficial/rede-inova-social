@@ -28,17 +28,12 @@ export function SignDisplay() {
   if (!activeTermObj) return null;
 
   const rawVideoUrl = activeTermObj.videoUrl || activeTermObj.video_url || "";
-  const slug = getTermVideoSlug(activeTermObj.term);
   const catalogVideo = findRegisteredVideo(activeTermObj.term);
   
-  // Default to registered catalog, configured URL, glossario subfolders, or libras legacy folder
+  // Use registered video from catalog or custom video URL if explicitly provided
   const potentialPaths = [
     catalogVideo,
     rawVideoUrl && rawVideoUrl.trim() !== "" && rawVideoUrl !== "#" ? rawVideoUrl : null,
-    `/videos/glossario/EIXO 5/${activeTermObj.term}.mp4`,
-    `/videos/glossario/EIXO 6/${activeTermObj.term}.mp4`,
-    `/videos/glossario/${slug}.mp4`,
-    `/videos/libras/${slug}.mp4`,
   ].filter(Boolean) as string[];
 
   const currentCandidate = potentialPaths[activeSrcIndex] || "";

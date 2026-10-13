@@ -135,13 +135,5 @@ export function findRegisteredVideo(termOrButton: string): string | null {
   if (REGISTERED_VIDEOS_MAP[key]) {
     return REGISTERED_VIDEOS_MAP[key];
   }
-
-  // Tenta correspondência parcial (ex: "Ir para Início" -> "inicio")
-  for (const [k, v] of Object.entries(REGISTERED_VIDEOS_MAP)) {
-    if (key === k || key.includes(k) || k.includes(key)) {
-      return v;
-    }
-  }
-
   return null;
 }

@@ -442,15 +442,22 @@ export default function GlossarioPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="bg-white/50 backdrop-blur-sm rounded-[2.5rem] p-10 border border-slate-200 border-dashed text-center h-[500px] flex flex-col items-center justify-center text-slate-400"
+                  className="bg-white/70 backdrop-blur-sm rounded-[2.5rem] p-8 border border-slate-200 border-dashed text-center min-h-[460px] flex flex-col items-center justify-center text-slate-500 space-y-4"
                 >
-                  <Ear className="h-12 w-12 mb-4 text-slate-300" />
-                  <p className="font-bold text-sm uppercase tracking-widest mb-2">
-                    Traduções em Atualização
-                  </p>
-                  <p className="text-xs font-medium">
-                    Os vídeos de tradução oficial em Libras estão sendo atualizados no momento. Retorne em breve para conferir as novidades.
-                  </p>
+                  <div className="h-14 w-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-600">
+                    <Ear className="h-7 w-7" />
+                  </div>
+                  <div className="space-y-1.5 max-w-xs">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-700 bg-amber-100/70 px-3 py-1 rounded-full border border-amber-300">
+                      Participação Social Digital
+                    </span>
+                    <h5 className="font-black text-sm text-slate-800 pt-1">
+                      Sinais em Gravação e Colaboração
+                    </h5>
+                    <p className="text-xs text-slate-500 leading-relaxed font-medium">
+                      Os termos com vídeo já estão sinalizados. Para palavras que ainda não têm o sinal em Libras, você pode colaborar clicando em <strong>"Indicar Sinal"</strong> no card da palavra.
+                    </p>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
