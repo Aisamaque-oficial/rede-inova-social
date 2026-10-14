@@ -110,6 +110,7 @@ export function SignDisplay() {
                   <video
                     src={videoInfo.url}
                     controls
+                    preload="metadata"
                     controlsList="nodownload nofullscreen noplaybackrate"
                     disablePictureInPicture
                     disableRemotePlayback

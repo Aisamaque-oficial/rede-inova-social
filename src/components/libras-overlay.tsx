@@ -296,6 +296,7 @@ export const LibrasOverlay = () => {
               <video
                 src={videoInfo.url}
                 controls
+                preload="metadata"
                 controlsList="nodownload nofullscreen noplaybackrate"
                 disablePictureInPicture
                 disableRemotePlayback

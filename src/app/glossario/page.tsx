@@ -398,6 +398,7 @@ export default function GlossarioPage() {
                         <video
                           src={activeVideoUrl}
                           controls
+                          preload="metadata"
                           controlsList="nodownload nofullscreen noplaybackrate"
                           disablePictureInPicture
                           disableRemotePlayback

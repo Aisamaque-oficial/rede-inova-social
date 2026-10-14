@@ -936,6 +936,7 @@ export function GlossaryFilters() {
                             <video
                               src={enrichedTerm.videoUrl || enrichedTerm.video_url}
                               controls
+                              preload="metadata"
                               controlsList="nodownload nofullscreen noplaybackrate"
                               disablePictureInPicture
                               disableRemotePlayback
